@@ -192,6 +192,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;b
 .mem-top{padding:10px 16px;text-align:center}.mem-top .poscycle{display:inline-flex;gap:6px;margin-top:8px;flex-wrap:wrap;justify-content:center}
 .posbtn{padding:7px 12px;border-radius:10px;font-weight:700;font-size:12px;background:#16204f;border:1px solid var(--line);color:var(--muted);cursor:pointer}
 .posbtn.active{background:linear-gradient(180deg,#e0a532,#c2841d);color:#241a00;border-color:#e0a532}
+.memtabs{display:flex;gap:8px;justify-content:center;margin-bottom:10px}
+.memtab{padding:8px 16px;border-radius:10px;font-weight:700;font-size:13px;background:#16204f;border:1px solid var(--line);color:var(--muted);cursor:pointer}
+.memtab.active{background:linear-gradient(180deg,#4f8cff,#3567d6);color:#fff;border-color:#4f8cff}
+.posbtn.b3.active{background:linear-gradient(180deg,#d05cff,#9b3cdf);color:#fff;border-color:#d05cff}
+.posbtn.bcall.active{background:linear-gradient(180deg,#2f9d68,#1f7a4d);color:#fff;border-color:#2f9d68}
+.posbtn.berase.active{background:linear-gradient(180deg,#5a6488,#434c70);color:#fff;border-color:#5a6488}
 .mem-actions{display:flex;gap:8px;padding:12px 14px calc(14px + env(safe-area-inset-bottom))}
 .mem-actions button{flex:1;border:none;border-radius:12px;padding:13px;font-weight:800;font-size:14px;color:#fff;cursor:pointer}
 .mem-actions .check{background:linear-gradient(180deg,#2f9d68,#1f7a4d)}.mem-actions .clear{background:linear-gradient(180deg,#5a6488,#434c70)}.mem-actions .reveal{background:linear-gradient(180deg,#4f8cff,#3567d6)}
@@ -463,8 +469,13 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;b
     <div class="screen" id="screen-mem">
       <div class="game-meta"><span class="hcount">Range Trainer</span><span class="mid">Построй диапазон</span><span class="x" onclick="nav('home')"><span class="ic">✕</span></span></div>
       <div class="body">
-        <div class="mem-top"><div style="color:var(--muted);font-size:13px">Отметь руки, которые ОТКРЫВАЕШЬ рейзом:</div><div class="poscycle" id="memPosBtns"></div></div>
-        <div class="gridwrap"><div class="grid13" id="memGrid"></div><div class="gridlegend"><span><i style="background:linear-gradient(180deg,#e0a532,#c2841d)"></i>raise</span><span><i style="background:#1a2350"></i>fold</span></div></div>
+        <div class="mem-top">
+          <div class="memtabs" id="memTabs"></div>
+          <div id="memInstr" style="color:var(--muted);font-size:13px"></div>
+          <div class="poscycle" id="memPosBtns"></div>
+          <div class="poscycle" id="memBrush" style="display:none;margin-top:8px"></div>
+        </div>
+        <div class="gridwrap"><div class="grid13" id="memGrid"></div><div class="gridlegend" id="memLegend"></div></div>
         <div class="mem-result" id="memResult"></div>
       </div>
       <div class="mem-actions"><button class="clear" onclick="memClear()">Очистить</button><button class="reveal" onclick="memReveal()">Показать GTO</button><button class="check" onclick="memCheck()">Проверить</button></div>
@@ -594,6 +605,7 @@ function newDeck(){const used=new Set();return {
 function expandToken(t){t=t.trim();const out=[];let m;
   if(m=t.match(/^([2-9TJQKA])\1\+$/)){for(let v=RVAL[m[1]];v<=12;v++)out.push(RCHAR[v]+RCHAR[v]);return out;}
   if(m=t.match(/^([2-9TJQKA])\1$/)){out.push(t);return out;}
+  if(m=t.match(/^([2-9TJQKA])\1-([2-9TJQKA])\2$/)){const a=RVAL[m[1]],b=RVAL[m[2]];for(let v=Math.min(a,b);v<=Math.max(a,b);v++)out.push(RCHAR[v]+RCHAR[v]);return out;}
   if(m=t.match(/^([2-9TJQKA])([2-9TJQKA])([so])\+$/)){const hi=m[1],s=m[3],hv=RVAL[hi];for(let v=RVAL[m[2]];v<hv;v++)out.push(hi+RCHAR[v]+s);return out;}
   if(m=t.match(/^([2-9TJQKA])([2-9TJQKA])([so])-([2-9TJQKA])([2-9TJQKA])([so])$/)){const hi=m[1],s=m[3];for(let v=Math.min(RVAL[m[2]],RVAL[m[5]]);v<=Math.max(RVAL[m[2]],RVAL[m[5]]);v++)out.push(hi+RCHAR[v]+s);return out;}
   if(m=t.match(/^([2-9TJQKA])([2-9TJQKA])([so])$/)){out.push(t);return out;}
@@ -1124,23 +1136,62 @@ function endSession(bust){
 function replaySession(){if(!session)return;if(session.type==='drill')startDrill(session.modeKey);else if(session.type==='daily')startDaily();else if(session.type==='review')startReview();else if(session.type==='survival')startSurvival();}
 function handleDaily(){const today=new Date().toISOString().slice(0,10);if(profile.lastDaily!==today){const y=new Date(Date.now()-86400000).toISOString().slice(0,10);profile.dailyStreak=(profile.lastDaily===y)?(profile.dailyStreak||0)+1:1;profile.lastDaily=today;profile.rating+=10;saveProfile();checkAch();setTimeout(()=>toast('Daily +10 · стрик '+profile.dailyStreak+' 🔥'),400);}}
 
-/* ===== MEMORIZE ===== */
-let memPos='UTG',memSel=new Set();
-function openMemorize(){show('mem');setTitle('Range Trainer');memPos='UTG';memSel=new Set();renderMemPos();renderMemGrid();$('memResult').textContent='';}
-function renderMemPos(){const w=$('memPosBtns');w.innerHTML='';['UTG','HJ','CO','BTN','SB'].forEach(p=>{const b=document.createElement('div');b.className='posbtn'+(p===memPos?' active':'');b.textContent=p+' '+RFI_PCT[p]+'%';b.onclick=()=>{memPos=p;memSel=new Set();renderMemPos();renderMemGrid();$('memResult').textContent='';};w.appendChild(b);});}
+/* ===== MEMORIZE (RFI + vs Open) ===== */
+let memMode='rfi',memPos='UTG',memVsIdx=0,memBrush='3',memSel=new Set(),mem3=new Set(),memCall=new Set();
 function cellCode(r,c){if(r===c)return RANKS[r]+RANKS[c];if(r<c)return RANKS[r]+RANKS[c]+'s';return RANKS[c]+RANKS[r]+'o';}
 function cellDisp(r,c){return r<=c?RANKS[r]+RANKS[c]:RANKS[c]+RANKS[r];}
-function renderMemGrid(reveal){const g=$('memGrid');g.innerHTML='';for(let r=0;r<13;r++)for(let c=0;c<13;c++){const code=cellCode(r,c);const cell=document.createElement('div');cell.className='gc';cell.textContent=cellDisp(r,c);
-  if(reveal){if(RFI[memPos].has(code))cell.classList.add('in');}else if(memSel.has(code))cell.classList.add('in');
-  cell.onclick=()=>{if(reveal)return;if(memSel.has(code))memSel.delete(code);else memSel.add(code);cell.classList.toggle('in');};g.appendChild(cell);}}
-function memClear(){memSel=new Set();renderMemGrid();$('memResult').textContent='';}
-function memReveal(){renderMemGrid(true);$('memResult').innerHTML='Эталон GTO '+memPos+' ('+RFI_PCT[memPos]+'%). Запоминай.';}
-function memCheck(){const gto=RFI[memPos];let hit=0,miss=0,extra=0;gto.forEach(h=>{if(memSel.has(h))hit++;else miss++;});memSel.forEach(h=>{if(!gto.has(h))extra++;});
-  const total=gto.size;const score=Math.max(0,Math.round((hit-extra*0.5)/total*100));
-  const g=$('memGrid');g.innerHTML='';for(let r=0;r<13;r++)for(let c=0;c<13;c++){const code=cellCode(r,c);const cell=document.createElement('div');cell.className='gc';cell.textContent=cellDisp(r,c);const inG=gto.has(code),inS=memSel.has(code);
-    if(inG&&inS)cell.classList.add('incall');else if(inG&&!inS)cell.style.cssText='background:#7a3a3a;color:#ffc0c0';else if(!inG&&inS)cell.style.cssText='background:#b8862a;color:#241a00';g.appendChild(cell);}
-  $('memResult').innerHTML='<b>'+score+'%</b> · попал '+hit+'/'+total+' · лишних '+extra+'<div style="font-size:11px;color:var(--muted);margin-top:4px"><span style="color:#9bf0c0">●</span> верно <span style="color:#ffc0c0">●</span> пропуск <span style="color:#ffd98a">●</span> лишнее</div>';
-  applyResult('memorize',score>=75,1050,'Запоминание диапазонов');$('tbRating').textContent=profile.rating;checkAch();}
+function openMemorize(){show('mem');setTitle('Range Trainer');memMode='rfi';memPos='UTG';memVsIdx=0;memBrush='3';memSel=new Set();mem3=new Set();memCall=new Set();renderMemTabs();renderMemControls();renderMemGrid();$('memResult').textContent='';}
+function renderMemTabs(){$('memTabs').innerHTML='<div class="memtab'+(memMode==='rfi'?' active':'')+'" onclick="memSwitch(\'rfi\')">Открытие (RFI)</div><div class="memtab'+(memMode==='vs'?' active':'')+'" onclick="memSwitch(\'vs\')">Против опена</div>';}
+function memSwitch(m){memMode=m;memSel=new Set();mem3=new Set();memCall=new Set();SND.tick();renderMemTabs();renderMemControls();renderMemGrid();$('memResult').textContent='';}
+function renderMemControls(){
+  const instr=$('memInstr'),pb=$('memPosBtns'),br=$('memBrush'),lg=$('memLegend');
+  if(memMode==='rfi'){
+    instr.textContent='Отметь руки, которые ОТКРЫВАЕШЬ рейзом:';br.style.display='none';
+    pb.innerHTML='';['UTG','HJ','CO','BTN','SB'].forEach(p=>{const b=document.createElement('div');b.className='posbtn'+(p===memPos?' active':'');b.textContent=p+' '+RFI_PCT[p]+'%';b.onclick=()=>{memPos=p;memSel=new Set();renderMemControls();renderMemGrid();$('memResult').textContent='';};pb.appendChild(b);});
+    lg.innerHTML='<span><i style="background:linear-gradient(180deg,#e0a532,#c2841d)"></i>raise</span><span><i style="background:#1a2350"></i>fold</span>';
+  }else{
+    instr.textContent='Раскрась 3-бет и колл против опена (выбери кисть):';br.style.display='';
+    pb.innerHTML='';VS_RAW.forEach((m,i)=>{const b=document.createElement('div');b.className='posbtn'+(i===memVsIdx?' active':'');b.textContent=m.hero+' vs '+m.opener;b.onclick=()=>{memVsIdx=i;mem3=new Set();memCall=new Set();renderMemControls();renderMemGrid();$('memResult').textContent='';};pb.appendChild(b);});
+    br.innerHTML='';[['3','3-бет','b3'],['call','Колл','bcall'],['erase','Ластик','berase']].forEach(x=>{const b=document.createElement('div');b.className='posbtn '+x[2]+(memBrush===x[0]?' active':'');b.textContent=x[1];b.onclick=()=>{memBrush=x[0];SND.tick();renderMemControls();};br.appendChild(b);});
+    lg.innerHTML='<span><i style="background:linear-gradient(180deg,#d05cff,#9b3cdf)"></i>3-бет</span><span><i style="background:linear-gradient(180deg,#2f9d68,#1f7a4d)"></i>колл</span><span><i style="background:#1a2350"></i>фолд</span>';
+  }
+}
+function renderMemGrid(reveal){const g=$('memGrid');g.innerHTML='';const m=VS_RAW[memVsIdx];
+  for(let r=0;r<13;r++)for(let c=0;c<13;c++){const code=cellCode(r,c);const cell=document.createElement('div');cell.className='gc';cell.textContent=cellDisp(r,c);
+    if(memMode==='rfi'){
+      if(reveal){if(RFI[memPos].has(code))cell.classList.add('in');}else if(memSel.has(code))cell.classList.add('in');
+      cell.onclick=()=>{if(reveal)return;if(memSel.has(code))memSel.delete(code);else memSel.add(code);renderMemGrid();};
+    }else{
+      if(reveal){if(m.tbS.has(code))cell.classList.add('in3');else if(m.clS.has(code))cell.classList.add('incall');}
+      else{if(mem3.has(code))cell.classList.add('in3');else if(memCall.has(code))cell.classList.add('incall');}
+      cell.onclick=()=>{if(reveal)return;mem3.delete(code);memCall.delete(code);if(memBrush==='3')mem3.add(code);else if(memBrush==='call')memCall.add(code);renderMemGrid();};
+    }
+    g.appendChild(cell);}
+}
+function memClear(){if(memMode==='rfi')memSel=new Set();else{mem3=new Set();memCall=new Set();}SND.tick();renderMemGrid();$('memResult').textContent='';}
+function memReveal(){renderMemGrid(true);if(memMode==='rfi')$('memResult').innerHTML='Эталон GTO '+memPos+' ('+RFI_PCT[memPos]+'%). Запоминай.';else{const m=VS_RAW[memVsIdx];$('memResult').innerHTML='Эталон '+m.hero+' vs '+m.opener+': <span style="color:#d99bff">фиолет = 3-бет</span>, <span style="color:#9bf0c0">зелёное = колл</span>.';}}
+function memCheck(){
+  const g=$('memGrid');g.innerHTML='';
+  if(memMode==='rfi'){
+    const gto=RFI[memPos];let hit=0,extra=0;gto.forEach(h=>{if(memSel.has(h))hit++;});memSel.forEach(h=>{if(!gto.has(h))extra++;});const total=gto.size;const score=Math.max(0,Math.round((hit-extra*0.5)/total*100));
+    for(let r=0;r<13;r++)for(let c=0;c<13;c++){const code=cellCode(r,c);const cell=document.createElement('div');cell.className='gc';cell.textContent=cellDisp(r,c);const inG=gto.has(code),inS=memSel.has(code);
+      if(inG&&inS)cell.classList.add('incall');else if(inG&&!inS)cell.style.cssText='background:#7a3a3a;color:#ffc0c0';else if(!inG&&inS)cell.style.cssText='background:#b8862a;color:#241a00';g.appendChild(cell);}
+    $('memResult').innerHTML='<b>'+score+'%</b> · попал '+hit+'/'+total+' · лишних '+extra+'<div style="font-size:11px;color:var(--muted);margin-top:4px"><span style="color:#9bf0c0">●</span> верно <span style="color:#ffc0c0">●</span> пропуск <span style="color:#ffd98a">●</span> лишнее</div>';
+    applyResult('memorize',score>=75,1050,'Запоминание диапазонов');
+  }else{
+    const m=VS_RAW[memVsIdx];let hit=0,extra=0;const tot=m.tbS.size+m.clS.size;
+    for(let r=0;r<13;r++)for(let c=0;c<13;c++){const code=cellCode(r,c);const cell=document.createElement('div');cell.className='gc';cell.textContent=cellDisp(r,c);
+      const truth=m.tbS.has(code)?'3':m.clS.has(code)?'call':'fold';const user=mem3.has(code)?'3':memCall.has(code)?'call':'none';
+      if(truth!=='fold'&&user===truth){hit++;cell.classList.add(truth==='3'?'in3':'incall');}
+      else if(truth!=='fold'&&user!==truth){cell.style.cssText='background:#7a3a3a;color:#ffc0c0';}
+      else if(truth==='fold'&&user!=='none'){extra++;cell.style.cssText='background:#b8862a;color:#241a00';}
+      g.appendChild(cell);}
+    const score=Math.max(0,Math.round((hit-extra*0.5)/tot*100));
+    $('memResult').innerHTML='<b>'+score+'%</b> · верно '+hit+'/'+tot+' · лишних '+extra+'<div style="font-size:11px;color:var(--muted);margin-top:4px">3-бет/колл верно · <span style="color:#ffc0c0">красное</span> ошибка · <span style="color:#ffd98a">жёлтое</span> лишнее</div>';
+    applyResult('memorize',score>=70,1100,'vs-диапазоны');
+  }
+  $('tbRating').textContent=profile.rating;checkAch();SND.correct();
+}
 
 /* ===== HOF ===== */
 const BOTS=[{n:'CharlieChan',r:2180},{n:'ze tov',r:2040},{n:'frogg',r:1960},{n:'Skitmo',r:1880},{n:'KingAko',r:1790},{n:'kate_b03',r:1680},{n:'Pit',r:1610},{n:'Lenylson',r:1540},{n:'Ori Levin',r:1470},{n:'donk_slayer',r:1390},{n:'fish_chips',r:1320},{n:'nitreg',r:1240},{n:'callstation',r:1150},{n:'newbie_joe',r:1020}];
