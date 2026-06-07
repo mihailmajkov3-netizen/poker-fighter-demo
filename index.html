@@ -664,7 +664,14 @@ const VS_RAW=[
   {opener:'SB',hero:'BB',label:'SB открывает',tb:['99+','ATs+','KJs+','AJo+','KQo','A5s','A4s'],cl:['22-88','A9s-A6s','A3s','A2s','KTs','QTs+','J9s+','T9s','98s','87s','76s','ATo','KJo','QJo']},
   {opener:'HJ',hero:'BB',label:'HJ открывает',tb:['JJ+','AQs+','AKo','A5s'],cl:['22-TT','A6s-AJs','A4s','A3s','A2s','KTs+','QTs+','JTs','T9s','98s','87s','76s','65s','ATo-AQo','KJo+','QJo']},
   {opener:'HJ',hero:'BTN',label:'HJ открывает',tb:['TT+','AQs+','AKo','A5s','A4s'],cl:['22-99','AJs','ATs','A9s','KTs+','QTs+','J9s+','T9s','98s','87s','76s','AQo','AJo','KQo']},
-  {opener:'BTN',hero:'SB',label:'BTN открывает',tb:['88+','ATs+','KJs+','AJo+','KQo','A5s','A4s','A3s'],cl:['22-77','A9s-A6s','KTs','QTs+','JTs','T9s']}
+  {opener:'BTN',hero:'SB',label:'BTN открывает',tb:['88+','ATs+','KJs+','AJo+','KQo','A5s','A4s','A3s'],cl:['22-77','A9s-A6s','KTs','QTs+','JTs','T9s']},
+  {opener:'UTG',hero:'HJ',label:'UTG открывает',tb:['QQ+','AKs','AKo','A5s'],cl:['99-JJ','AQs','AJs','ATs','KQs','KJs','QJs','JTs','T9s','AQo']},
+  {opener:'UTG',hero:'CO',label:'UTG открывает',tb:['QQ+','AKs','AKo','A5s'],cl:['88-JJ','AQs','AJs','ATs','KQs','KJs','QJs','JTs','T9s','98s','AQo','KQo']},
+  {opener:'HJ',hero:'CO',label:'HJ открывает',tb:['TT+','AQs+','AKo','A5s','A4s'],cl:['66-99','AJs','ATs','A9s','KTs+','QTs+','JTs','T9s','98s','87s','AQo','KQo']},
+  {opener:'UTG',hero:'SB',label:'UTG открывает',tb:['TT+','AQs+','AKo','A5s'],cl:['88-99','ATs','AJs','KQs','QJs','JTs']},
+  {opener:'HJ',hero:'SB',label:'HJ открывает',tb:['99+','AJs+','KQs','AQo+','A5s','A4s'],cl:['66-88','ATs','A9s','KJs','QJs','JTs','T9s']},
+  {opener:'CO',hero:'SB',label:'CO открывает',tb:['88+','ATs+','KJs+','AJo+','KQo','A5s','A4s','A3s'],cl:['55-77','A9s-A6s','KTs','QTs+','JTs','T9s','98s']},
+  {opener:'UTG',hero:'BB',label:'UTG открывает',tb:['TT+','AQs+','AKo','A5s','A4s'],cl:['22-99','A9s-A6s','A3s','A2s','AJs','ATs','KTs+','QTs+','JTs','T9s','98s','87s','76s','ATo-AQo','KJo+','QJo']}
 ].map(m=>({...m,tbS:buildRange(m.tb),clS:buildRange(m.cl)}));
 
 /* ===== PROFILE ===== */
