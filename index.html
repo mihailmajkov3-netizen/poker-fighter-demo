@@ -372,10 +372,36 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;b
 .vsverdict.fold{background:linear-gradient(180deg,#5a6488,#434c70)}
 .vswhy{font-size:12px;color:#d8e0fb;line-height:1.55;background:#0e1640;border-radius:11px;padding:11px;margin-top:9px;border-left:3px solid var(--accent)}
 .vizgridmini .grid13{max-width:280px}
+
+/* ===== ambient casino background ===== */
+#ambient{position:absolute;inset:0;z-index:0;overflow:hidden;pointer-events:none}
+#ambient::before{content:"";position:absolute;left:50%;top:28%;width:170%;aspect-ratio:1;transform:translate(-50%,-50%);
+  background:conic-gradient(from 0deg,rgba(123,92,255,.07),transparent 25%,rgba(79,140,255,.07) 50%,transparent 75%,rgba(255,207,77,.06));
+  animation:spin 44s linear infinite}
+.amb{position:absolute;bottom:-30px;opacity:0;will-change:transform,opacity;animation:drift linear infinite;text-shadow:0 0 8px currentColor}
+.amb.s{color:#aebbe6}.amb.h{color:#ff7a8a}.amb.d{color:#7db8ff}.amb.c{color:#8fe6ab}.amb.k{text-shadow:0 0 10px rgba(255,207,77,.5)}
+@keyframes drift{0%{transform:translateY(40px) rotate(0deg) scale(.9);opacity:0}12%{opacity:var(--o,.14)}88%{opacity:var(--o,.14)}100%{transform:translateY(-500px) rotate(var(--r,180deg)) scale(1.05);opacity:0}}
+
+/* ===== animated hero ===== */
+.ava,.pf-card .ava{animation:heroFloat 3.4s ease-in-out infinite}
+.seat.hero .av{animation:heroFloat 3s ease-in-out infinite,heroAura 2.6s ease-in-out infinite}
+@keyframes heroFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+@keyframes heroAura{0%,100%{box-shadow:0 0 0 0 rgba(255,207,77,0),0 0 12px rgba(255,207,77,.3)}50%{box-shadow:0 0 0 4px rgba(255,207,77,.14),0 0 22px rgba(255,207,77,.5)}}
+.seat.hero .av.win{animation:heroWin .6s ease}
+.seat.hero .av.lose{animation:heroLose .5s ease}
+@keyframes heroWin{0%{transform:translateY(0) scale(1)}30%{transform:translateY(-14px) scale(1.22)}60%{transform:translateY(0) scale(1.06)}100%{transform:none}}
+@keyframes heroLose{0%,100%{transform:translateX(0) rotate(0)}20%{transform:translateX(-7px) rotate(-7deg)}60%{transform:translateX(7px) rotate(7deg)}}
+.heroemoji{position:absolute;font-size:30px;z-index:7;pointer-events:none;animation:heroPop 1s ease forwards}
+@keyframes heroPop{0%{opacity:0;transform:translateX(-50%) translateY(0) scale(.5)}25%{opacity:1}100%{opacity:0;transform:translateX(-50%) translateY(-66px) scale(1.2)}}
+.phead .ava,.pf-card .ava{position:relative}
+.phead .ava::after,.pf-card .ava::after{content:"";position:absolute;inset:-4px;border-radius:50%;
+  background:conic-gradient(from 0deg,rgba(255,207,77,.5),transparent 40%,rgba(123,92,255,.4),transparent 80%,rgba(255,207,77,.5));
+  z-index:-1;animation:spin 6s linear infinite;filter:blur(2px)}
 </style>
 </head>
 <body>
 <div id="app">
+  <div id="ambient"></div>
   <div id="splash"><h1>POKER FIGHTER</h1><p>Learn · Practice · Improve</p><div class="spinner"></div></div>
   <div class="topbar">
     <div class="burger" onclick="openDrawer()"><span></span><span></span><span></span></div>
@@ -981,6 +1007,7 @@ function choose(key){
   const delta=applyResult(sp.mode||session.modeKey,g.correct,(sp.oppR||1050)+(isBoss?120:0),sp.concept);
   countUp($('tbRating'),profile.rating);
   fxFlash(g.correct?'g':'r');
+  if(sp.view==='table')heroReact(g.correct);
   if(g.correct){
     session.combo++;session.maxCombo=Math.max(session.maxCombo,session.combo);
     const pts=100*Math.min(session.combo,5)*(isBoss?2:1);session.score+=pts;
@@ -1152,6 +1179,14 @@ function playActionAnim(sp,key,cb){let delay=140;
   if(sp.view==='table'){if(key==='fold'){muckHero();delay=420;}else{chipToPot();delay=470;}}
   else if(sp.view==='potodds'){if(key==='call'){poChip();delay=420;}else delay=200;}
   setTimeout(cb,delay);}
+function initAmbient(){const a=$('ambient');if(!a)return;a.innerHTML='';
+  const sym=[['♠','s'],['♥','h'],['♦','d'],['♣','c'],['🪙','k'],['♠','s'],['♥','h'],['🪙','k'],['♦','d'],['♣','c'],['♠','s'],['🪙','k'],['♥','h'],['♦','d']];
+  sym.forEach(it=>{const e=document.createElement('div');e.className='amb '+it[1];e.textContent=it[0];
+    e.style.fontSize=(14+rnd(26))+'px';e.style.left=rnd(100)+'%';const dur=12+rnd(12);
+    e.style.animationDuration=dur+'s';e.style.animationDelay=(-rnd(dur))+'s';
+    e.style.setProperty('--o',(0.08+Math.random()*0.12).toFixed(2));e.style.setProperty('--r',(rnd(360)-180)+'deg');a.appendChild(e);});}
+function heroReact(ok){const av=document.querySelector('.seat.hero .av');if(av){av.classList.remove('win','lose');void av.offsetWidth;av.classList.add(ok?'win':'lose');}
+  const tw=document.querySelector('.table-wrap');if(tw){const e=document.createElement('div');e.className='heroemoji';e.textContent=ok?oneOf(['😎','🔥','💪','🤑']):oneOf(['😬','😵','😤']);e.style.left='50%';e.style.bottom='86px';tw.appendChild(e);setTimeout(()=>e.remove(),1000);}}
 function countUp(el,to){if(!el)return;to=Math.round(to);const from=parseInt((el.textContent||'').replace(/[^\d-]/g,''))||0;if(from===to){el.textContent=to;return;}const t0=performance.now();function s(t){const k=Math.min(1,(t-t0)/600);el.textContent=Math.round(from+(to-from)*(1-Math.pow(1-k,3)));if(k<1)requestAnimationFrame(s);}requestAnimationFrame(s);}
 
 /* ===== MODAL QUEUE ===== */
@@ -1328,7 +1363,7 @@ function startTutorial(){const po=genPotOdds();po.tutHint='💡 Сравни э�
   beginSession('🎓 Обучение');}
 
 /* ===== INIT ===== */
-ensureQuests();updateCoins();applyIdentityUI();renderHome();fxSize();window.addEventListener('resize',fxSize);
+ensureQuests();updateCoins();applyIdentityUI();renderHome();fxSize();initAmbient();window.addEventListener('resize',fxSize);
 setTimeout(()=>{const s=$('splash');if(s){s.style.opacity='0';setTimeout(()=>{s.remove();if(!profile.onboarded)startOnboarding();},520);}},1100);
 </script>
 </body>
