@@ -158,6 +158,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;b
 .po-info .box{background:#0e1640;border:1px solid var(--line);border-radius:12px;padding:9px 15px;text-align:center}
 .po-info .box .v{font-size:17px;font-weight:900;color:var(--gold)}.po-info .box .l{font-size:10px;color:var(--muted);text-transform:uppercase;margin-top:2px}
 .po-draw{text-align:center;color:var(--muted);font-size:13px}.po-draw b{color:var(--txt)}
+.po-outs{background:#0e1640;border:1px solid var(--line);border-radius:12px;padding:8px 10px;margin-bottom:2px;max-width:340px;animation:fade .3s ease}
+.po-outs-h{font-size:11px;color:var(--gold);font-weight:700;text-align:center;margin-bottom:6px}
+.po-outs-row{display:flex;gap:3px;flex-wrap:wrap;justify-content:center}
+.po-outs-row .card{animation:deal .3s ease backwards}
 
 .actionbar{display:flex;gap:7px;padding:10px 10px calc(10px + env(safe-area-inset-bottom));background:linear-gradient(180deg,#0e1640,#0a1030)}
 .abtn{flex:1;border:none;border-radius:13px;padding:13px 4px;font-weight:800;font-size:14px;color:#fff;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;box-shadow:0 5px 14px rgba(0,0,0,.35);transition:transform .08s}
@@ -768,7 +772,14 @@ VIEW.preflop=function(sp,stage){
 };
 VIEW.potodds=function(sp,stage){
   const v=document.createElement('div');v.className='po-view';
-  v.innerHTML='<div style="color:var(--muted);font-size:12px">ФЛОП · оппонент ставит</div>';
+  if(sp.outCards&&sp.outCards.length){
+    const ow=document.createElement('div');ow.className='po-outs';
+    ow.innerHTML='<div class="po-outs-h">⬆ Ауты — карты, которые тебе помогают ('+sp.outCards.length+')</div>';
+    const row=document.createElement('div');row.className='po-outs-row';
+    sp.outCards.forEach((id,i)=>{const c=cardEl(id,'xs');c.style.animationDelay=(i*0.025)+'s';row.appendChild(c);});
+    ow.appendChild(row);v.appendChild(ow);
+  }
+  const flop=document.createElement('div');flop.style.cssText='color:var(--muted);font-size:12px;margin-top:4px';flop.textContent='ФЛОП · оппонент ставит';v.appendChild(flop);
   const bd=document.createElement('div');bd.style.cssText='display:flex;gap:5px';sp.board.forEach(c=>bd.appendChild(cardEl(c,'tbl')));v.appendChild(bd);
   const ml=document.createElement('div');ml.style.cssText='color:var(--muted);font-size:11px;margin-top:4px';ml.textContent='ТВОЯ РУКА';v.appendChild(ml);
   const mine=document.createElement('div');mine.style.cssText='display:flex;gap:5px';sp.hero.forEach(c=>mine.appendChild(cardEl(c,'sm')));v.appendChild(mine);
@@ -966,31 +977,46 @@ function genPostflop(diffCap){
   return sp;
 }
 /* ===== POT ODDS (procedural) ===== */
-const DRAWS=[
-  {name:'Флеш-дро',outs:9,eq:35,build:fdCards},
-  {name:'Двусторонний стрит-дро',outs:8,eq:31,build:oesdCards},
-  {name:'Гатшот',outs:4,eq:16,build:gutCards},
-  {name:'Две оверкарты',outs:6,eq:24,build:overCards},
-  {name:'Флеш-дро + гатшот',outs:12,eq:45,build:fdGutCards},
-  {name:'Комбо: флеш + стрит',outs:15,eq:54,build:fdGutCards},
-  {name:'Пара + флеш-дро',outs:14,eq:51,build:fdCards},
-  {name:'Только бэкдоры',outs:3,eq:12,build:overCards}
-];
+const POT_BUILDS=[fdCards,oesdCards,gutCards,fdGutCards];
+/* compute the actual out cards (flush/straight completions) from real cards */
+function findOuts(hero,board){
+  const cards=hero.concat(board);const used=new Set(cards.map(c=>c.r+c.s.c));
+  const sc={};cards.forEach(c=>sc[c.s.c]=(sc[c.s.c]||0)+1);
+  const baseVals=new Set(cards.map(c=>RVAL[c.r]));if(baseVals.has(12))baseVals.add(-1);
+  function straightWith(extra){const s=new Set(baseVals);s.add(extra);if(extra===12)s.add(-1);for(let lo=-1;lo<=8;lo++){let ok=true;for(let k=0;k<5;k++)if(!s.has(lo+k)){ok=false;break;}if(ok)return true;}return false;}
+  function already(){for(let lo=-1;lo<=8;lo++){let ok=true;for(let k=0;k<5;k++)if(!baseVals.has(lo+k)){ok=false;break;}if(ok)return true;}return false;}
+  const outs=new Set();let flush=false;const straightRanks=new Set();
+  ['s','h','d','c'].forEach(su=>{if((sc[su]||0)===4){flush=true;RANKS.forEach(r=>{const id=r+su;if(!used.has(id))outs.add(id);});}});
+  if(!already()){for(let v=0;v<=12;v++){if(straightWith(v)){straightRanks.add(v);['s','h','d','c'].forEach(su=>{const id=RCHAR[v]+su;if(!used.has(id))outs.add(id);});}}}
+  return {cards:[...outs],flush,straightN:straightRanks.size};
+}
+function drawNameFor(o){if(o.flush&&o.straightN>0)return 'Флеш + стрит дро';if(o.flush)return 'Флеш-дро';if(o.straightN>=2)return 'Двусторонний стрит-дро';if(o.straightN===1)return 'Гатшот';return 'Дро';}
+function equityFromOuts(n){return Math.max(4,Math.min(57,n*4-Math.max(0,n-8)));}
 function fdCards(d){const su=oneOf(['s','h','d','c']);const h=[d.takeSuit(su,['A','K','Q']),d.takeSuit(su,['J','T','9'])];const low=RANKS.filter(r=>RVAL[r]<8);const board=[d.takeSuit(su,['K','Q','J','T']),d.takeSuit(su,low),d.takeOffSuit(su,low)];return {hero:h,board};}
 function oesdCards(d){const base=oneOf([9,8,7]);const h=[d.takeRank(RCHAR[base]),d.takeRank(RCHAR[base-1])];const su=shuffle(['s','h','d','c']);const board=[d.takeRC(RCHAR[base-2],su[0]),d.takeRC(RCHAR[base+1]||'A',su[1]),d.takeRC(oneOf(['A','2','3']),su[2])];return {hero:h,board};}
-function gutCards(d){const h=[d.takeRank(oneOf(['K','Q'])),d.takeRank(oneOf(['J','T']))];const su=shuffle(['s','h','d','c']);const board=[d.takeRC('A',su[0]),d.takeRC(oneOf(['9','8']),su[1]),d.takeRC(oneOf(['5','4','3']),su[2])];return {hero:h,board};}
+function gutCards(d){
+  const hi=oneOf([12,11,10,9]);const w=[hi,hi-1,hi-2,hi-3,hi-4];const gap=w[2];
+  const present=shuffle(w.filter(v=>v!==gap));const su=shuffle(['s','h','d','c']);
+  const h=[d.takeRC(RCHAR[present[0]],su[0]),d.takeRC(RCHAR[present[1]],su[1])];
+  const blankPool=RANKS.filter(r=>RVAL[r]<Math.min(...w)-1||RVAL[r]>Math.max(...w)+1);
+  const board=[d.takeRC(RCHAR[present[2]],su[2]),d.takeRC(RCHAR[present[3]],su[3]),d.takeRank(oneOf(blankPool.length?blankPool:['2']))];
+  return {hero:h,board};
+}
 function overCards(d){const h=[d.takeRank('A'),d.takeRank(oneOf(['K','Q']))];const su=shuffle(['s','h','d','c']);const lows=shuffle(RANKS.filter(r=>RVAL[r]<7)).slice(0,3);const board=[d.takeRC(lows[0],su[0]),d.takeRC(lows[1],su[1]),d.takeRC(lows[2],su[2])];return {hero:h,board};}
 function fdGutCards(d){const su=oneOf(['s','h','d','c']);const h=[d.takeSuit(su,['T','9','8']),d.takeSuit(su,['J','Q'])];const board=[d.takeSuit(su,['6','5','4']),d.takeSuit(su,['9','8','7']),d.takeOffSuit(su,['A','K'])];return {hero:h,board};}
 function genPotOdds(){
-  const dr=oneOf(DRAWS);const d=newDeck();const cards=dr.build(d);
+  let cards,o,n;
+  for(let i=0;i<30;i++){const d=newDeck();cards=oneOf(POT_BUILDS)(d);o=findOuts(cards.hero,cards.board);n=o.cards.length;if(n>=3)break;}
+  const eq=equityFromOuts(n);
   const pot=oneOf([8,10,12,14,16,20,24]);const frac=oneOf([0.33,0.5,0.66,0.75,1]);const bet=Math.max(2,Math.round(pot*frac));
-  const req=Math.round(bet/(pot+bet)*100);const best=dr.eq>=req?'call':'fold';
+  const req=Math.round(bet/(pot+bet)*100);const best=eq>=req?'call':'fold';
   return {view:'potodds',mode:'potodds',concept:'Шансы банка',hero:cards.hero,board:cards.board,pot,bet,oppR:1090,
-    drawText:'<b>'+dr.name+'</b> · ~'+dr.outs+' аутов',
+    outCards:o.cards,
+    drawText:'<b>'+drawNameFor(o)+'</b> · '+n+' аутов',
     actions:[{key:'fold',label:'FOLD',cls:'fold'},{key:'call',label:'CALL',cls:'call',sub:'$'+bet}],
     grade(key){const ok=key===best;
-      this.coach=(dr.eq>=req?'Эквити '+dr.eq+'% ≥ '+req+'% — колл прибыльный.':'Эквити '+dr.eq+'% < '+req+'% — колл убыточный, фолд.')+' Правило: ауты ×2 (одна карта) / ×4 (две карты).';
-      return {correct:ok,body:'<div class="evrow"><span>Твоё эквити (~'+dr.outs+' аутов)</span><span>~'+dr.eq+'%</span></div><div class="evrow best"><span>Нужно: '+bet+'/('+pot+'+'+bet+')</span><span>'+req+'%</span></div>'};}};
+      this.coach=(eq>=req?'Эквити '+eq+'% ≥ '+req+'% — колл прибыльный.':'Эквити '+eq+'% < '+req+'% — колл убыточный, фолд.')+' Правило: ауты ×2 (одна карта) / ×4 (две карты). У тебя '+n+' аутов → ~'+eq+'%.';
+      return {correct:ok,body:'<div class="evrow"><span>Твоё эквити ('+n+' аутов ×4)</span><span>~'+eq+'%</span></div><div class="evrow best"><span>Нужно: '+bet+'/('+pot+'+'+bet+')</span><span>'+req+'%</span></div>'};}};
 }
 
 /* ===== MIXED generator (career/daily) ===== */
