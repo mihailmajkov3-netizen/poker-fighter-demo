@@ -165,6 +165,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;b
 .abtn.fold{background:linear-gradient(180deg,#5a6488,#434c70)}.abtn.call{background:linear-gradient(180deg,#2f9d68,#1f7a4d)}
 .abtn.raise{background:linear-gradient(180deg,#e0a532,#c2841d)}.abtn.threebet{background:linear-gradient(180deg,#d05cff,#9b3cdf)}
 .abtn.ghost{flex:0 0 54px;background:linear-gradient(180deg,#2a3568,#1d264f);font-size:9px;color:var(--muted)}.abtn:disabled{opacity:.4;filter:grayscale(.4)}
+.abtn.adv{background:linear-gradient(180deg,#4f8cff,#3567d6);font-size:16px}
+.abtn.lose{background:linear-gradient(180deg,#ff5b6e,#c2364a);font-size:15px}
 
 .fb{position:absolute;left:10px;right:10px;top:50%;transform:translate(0,-50%);z-index:30;background:linear-gradient(180deg,#1b2766,#121a45);border:1px solid var(--line);border-radius:18px;padding:16px;box-shadow:0 18px 50px rgba(0,0,0,.6);display:none;animation:pop .25s ease;max-height:90%;overflow-y:auto}
 .fb.show{display:block}
@@ -767,7 +769,7 @@ function dealHand(){const d=newDeck();const c1=d.takeRank(oneOf(RANKS)),c2=d.tak
 function genRFI(){
   const pos=oneOf(['UTG','HJ','CO','BTN','SB']);const hand=dealHand();const inR=RFI[pos].has(hand.code);
   return {view:'preflop',mode:'rfi',concept:'Диапазон открытия',pos,opener:null,hand,oppR:1040,
-    prompt:'Все сбросили до тебя. Открываешь рейзом или фолд?',
+    prompt:'Твоё слово первое — открываешь рейзом или фолд?',
     actions:[{key:'raise',label:'RAISE',cls:'raise'},{key:'fold',label:'FOLD',cls:'fold'}],
     grade(key){const ca=inR?'raise':'fold';const ok=key===ca;
       this.coach=ok?(inR?hand.code+' входит в диапазон '+pos+' ('+RFI_PCT[pos]+'%). Прибыльный опен.':hand.code+' вне диапазона '+pos+'. Фолд верный.'):(inR?hand.code+' ВХОДИТ в диапазон '+pos+' — фолд теряет EV.':hand.code+' слишком слаб для '+pos+' ('+RFI_PCT[pos]+'%). Рейз — лик.');
@@ -1035,8 +1037,9 @@ function showFeedback(sp,g,delta,bust){
   html+='<div class="sub">Рейтинг <span class="rd '+(delta<0?'neg':'')+'">'+(delta>=0?'+':'')+delta+'</span> → '+profile.rating+'</div>';
   if(g.body)html+=g.body;
   if(sp.coach)html+='<div class="coach"><b>Тренер:</b> '+sp.coach+'</div>';
-  const btn=bust?'<button class="nextbtn" style="background:linear-gradient(180deg,#ff5b6e,#c2364a)" onclick="endSession(true)">ВЫЛЕТ — ИТОГИ</button>':'<button class="nextbtn" onclick="nextSpot()">'+(last?'ИТОГИ':'ДАЛЕЕ ›')+'</button>';
-  fb.innerHTML=html+btn;fb.classList.add('show');
+  fb.innerHTML=html;fb.classList.add('show');
+  const bar=$('actionbar');
+  bar.innerHTML='<button class="abtn '+(bust?'lose':'adv')+'" onclick="'+(bust?'endSession(true)':'nextSpot()')+'">'+(bust?'ВЫЛЕТ — ИТОГИ':(last?'ИТОГИ ›':'ДАЛЕЕ ›'))+'</button>';
 }
 function nextSpot(){$('fb').classList.remove('show');if(session.idx>=session.n-1){endSession(false);return;}session.idx++;renderCurrent();}
 
@@ -1354,7 +1357,7 @@ function skipOnboarding(){profile.onboarded=true;saveProfile();$('onb').classLis
 function finishOnboarding(){const nm=((($('onbName')||{}).value||onbNameVal)||'').trim();profile.name=nm||'Игрок';profile.avatar=onbAvatar;if(!profile.owned.includes(onbAvatar))profile.owned.push(onbAvatar);profile.onboarded=true;saveProfile();$('onb').classList.remove('show');applyIdentityUI();SND.win();fxBurst(true);startTutorial();}
 function tutRFISpot(pos,a,b,hint){const c1=nc(a),c2=nc(b);const hand={c1,c2,code:handCode(c1.r,c2.r,c1.s.c===c2.s.c),suited:c1.s.c===c2.s.c};const inR=RFI[pos].has(hand.code);
   return {view:'preflop',mode:'rfi',concept:'Обучение',pos,opener:null,hand,oppR:900,tutHint:hint,
-    prompt:'Все сбросили до тебя. Открываешь рейзом или фолд?',
+    prompt:'Твоё слово первое — открываешь рейзом или фолд?',
     actions:[{key:'raise',label:'RAISE',cls:'raise'},{key:'fold',label:'FOLD',cls:'fold'}],
     grade(key){const ca=inR?'raise':'fold';const ok=key===ca;this.coach=ok?('Отлично! '+hand.code+(inR?' — сильная рука для открытия.':' — слишком слабо, фолд верный.')):('В этот раз правильно '+(ca==='raise'?'RAISE':'FOLD')+'. Дальше получится!');return {correct:ok,body:gridHTML({in:RFI[pos]},hand.code)};}};}
 function startTutorial(){const po=genPotOdds();po.tutHint='💡 Сравни эквити с шансами банка: если эквити больше — CALL.';
