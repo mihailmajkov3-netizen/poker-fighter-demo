@@ -839,9 +839,27 @@ const ARCH=[
    build(d){const pr=oneOf(['66','77','88','99','TT']);const h=[d.takeRank(pr[0]),d.takeRank(pr[0])];const board=dryLowBoard(d,RVAL[pr[0]]);board[2]=d.takeRank(pr[0]);board.push(d.takeRank(oneOf(['A','K'])));board.push(d.takeRank(oneOf(['2','3','4'])));return {hero:h,board,oop:false};},
    coach:'Сет на ривере — почти всегда лучшая рука. Ставь за велью: чек упустит ценность от топ-пар и две пары.'}
 ];
+/* real hand evaluator — guarantees built cards match the archetype's category */
+function evalMade(cards){
+  const byR={},byS={};
+  cards.forEach(c=>{const v=RVAL[c.r];byR[v]=(byR[v]||0)+1;(byS[c.s.c]=byS[c.s.c]||[]).push(v);});
+  const counts=Object.values(byR).sort((a,b)=>b-a);const c0=counts[0]||0,c1=counts[1]||0;
+  function hasStr(vals){const s=new Set(vals);if(s.has(12))s.add(-1);for(let lo=8;lo>=-1;lo--){let ok=true;for(let k=0;k<5;k++)if(!s.has(lo+k)){ok=false;break;}if(ok)return true;}return false;}
+  const flushSuit=Object.keys(byS).find(s=>byS[s].length>=5);
+  const straight=hasStr(cards.map(c=>RVAL[c.r]));
+  const sflush=flushSuit?hasStr(byS[flushSuit]):false;
+  let cat,name;
+  if(sflush){cat=8;name='Стрит-флеш';}else if(c0===4){cat=7;name='Каре';}else if(c0>=3&&c1>=2){cat=6;name='Фулл-хаус';}
+  else if(flushSuit){cat=5;name='Флеш';}else if(straight){cat=4;name='Стрит';}else if(c0===3){cat=3;name='Трипс';}
+  else if(c0===2&&c1===2){cat=2;name='Две пары';}else if(c0===2){cat=1;name='Пара';}else{cat=0;name='Старшая карта';}
+  return {cat,name};
+}
+const ARCH_CAT={overpair_dry:1,tptk:1,set_wet:3,twopair:2,nfd_oop:0,oesd_ip:0,fd_call:0,midpair_call:1,overpair_scary:1,air_akq_fold:0,overcards_fold:0,underpair_fold:1,tp_face_raise:1,combo_raise:0,trips_value:3,flush_made:5,straight_made:4,bluffcatch_call:1,river_fold:1,checkraise:2,turn_barrel:1,gutshot_fold:0,set_river:3};
 function genPostflop(diffCap){
-  diffCap=diffCap||3;const cand=ARCH.filter(a=>a.diff<=diffCap);const a=oneOf(cand);const d=newDeck();
-  const heroPos=oneOf(['BTN','CO','HJ','BB']);const built=a.build(d);
+  diffCap=diffCap||3;const cand=ARCH.filter(a=>a.diff<=diffCap);const a=oneOf(cand);
+  const want=ARCH_CAT[a.id];let built,d;
+  for(let i=0;i<40;i++){d=newDeck();built=a.build(d);if(want==null||evalMade(built.hero.concat(built.board)).cat===want)break;}
+  const heroPos=oneOf(['BTN','CO','HJ','BB']);
   const dr=dressing(a.facing,heroPos);
   const sp={view:'table',mode:'postflop',concept:a.concept,diff:a.diff,archId:a.id,
     hero:built.hero,board:built.board,handLabel:a.handLabel,boardLabel:a.boardLabel,pos:heroPos,oop:built.oop!=null?built.oop:(heroPos==='BB'),
