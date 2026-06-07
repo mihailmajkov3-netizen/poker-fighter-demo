@@ -327,6 +327,33 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;b
 .toggle.on{background:var(--green)}
 .toggle i{position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:.2s}
 .toggle.on i{left:23px}
+
+/* lesson visuals */
+.reader{overflow-y:auto}
+.viz{margin-top:16px;animation:fade .3s ease}
+.vizcap{font-size:11px;color:var(--muted);text-align:center;margin-top:9px;line-height:1.4}
+.vizcards{display:flex;gap:6px;justify-content:center}
+.vizrow{display:flex;gap:5px;align-items:center;justify-content:center;margin:7px 0}
+.vlbl{font-size:10px;color:var(--muted);width:40px;text-align:right;margin-right:6px;text-transform:uppercase;font-weight:700}
+.vizcmp{display:flex;gap:10px}
+.vc{flex:1;background:#0e1640;border:1px solid var(--line);border-radius:12px;padding:13px 8px;text-align:center}
+.vctag{font-size:12px;color:var(--gold);font-weight:800;margin-bottom:9px}
+.vbar{margin:9px 0}
+.vbtop{display:flex;justify-content:space-between;font-size:12px;margin-bottom:5px;font-weight:600}
+.vbtrack{height:13px;background:#0c1335;border-radius:7px;overflow:hidden;border:1px solid var(--line)}
+.vbtrack i{display:block;height:100%;border-radius:7px;background:linear-gradient(90deg,#4f8cff,#7b5cff);animation:growbar .7s ease}
+@keyframes growbar{from{width:0 !important}}
+.vizspot .vsfelt{background:radial-gradient(120% 95% at 50% 50%,#2a9e63,#0f4d30);border:5px solid #0c2c1d;border-radius:90px/64px;padding:14px 10px;text-align:center;box-shadow:inset 0 0 26px rgba(0,0,0,.45)}
+.vspos{display:inline-block;background:rgba(8,14,40,.72);color:#fff;font-weight:800;font-size:12px;padding:3px 13px;border-radius:20px;margin-bottom:10px}
+.vsboard{display:flex;gap:5px;justify-content:center;margin-bottom:10px;min-height:20px}
+.vsboard.empty{color:rgba(255,255,255,.55);font-size:12px;align-items:center}
+.vshero{display:flex;gap:5px;justify-content:center}
+.vsverdict{margin-top:12px;font-weight:800;font-size:14px;border-radius:11px;padding:10px;color:#fff;text-align:center}
+.vsverdict.raise{background:linear-gradient(180deg,#e0a532,#c2841d)}
+.vsverdict.call{background:linear-gradient(180deg,#2f9d68,#1f7a4d)}
+.vsverdict.fold{background:linear-gradient(180deg,#5a6488,#434c70)}
+.vswhy{font-size:12px;color:#d8e0fb;line-height:1.55;background:#0e1640;border-radius:11px;padding:11px;margin-top:9px;border-left:3px solid var(--accent)}
+.vizgridmini .grid13{max-width:280px}
 </style>
 </head>
 <body>
@@ -1146,27 +1173,48 @@ const SHOP_THEME=[{id:'green',n:'Классика',p:0,c:['#2a9e63','#1f7a4d','#
 function themeColors(id){return (SHOP_THEME.find(t=>t.id===id)||SHOP_THEME[0]).c;}
 
 /* ===== LESSONS ===== */
+function vc(c,size){c=nc(c);return '<div class="card '+(size||'sm')+' '+(c.s.red?'red':'blk')+'"><span class="r">'+c.r+'</span><span class="s">'+c.s.sym+'</span></div>';}
+function renderViz(v){
+  if(!v)return '';
+  if(v.type==='grid')return '<div class="viz vizgridmini">'+gridHTML({in:RFI[v.pos]},v.hl)+'<div class="vizcap">'+(v.cap||('Диапазон открытия '+v.pos+' — '+RFI_PCT[v.pos]+'%'))+'</div></div>';
+  if(v.type==='cards')return '<div class="viz"><div class="vizcards">'+v.cards.map(c=>vc(c,'')).join('')+'</div><div class="vizcap">'+(v.cap||'')+'</div></div>';
+  if(v.type==='board')return '<div class="viz"><div class="vizrow"><span class="vlbl">Рука</span>'+v.hero.map(c=>vc(c,'tbl')).join('')+'</div><div class="vizrow"><span class="vlbl">Борд</span>'+v.board.map(c=>vc(c,'tbl')).join('')+'</div><div class="vizcap">'+(v.cap||'')+'</div></div>';
+  if(v.type==='boardcompare')return '<div class="viz"><div class="vizcmp"><div class="vc"><div class="vctag">'+v.a.label+'</div><div class="vizcards">'+v.a.cards.map(c=>vc(c,'sm')).join('')+'</div></div><div class="vc"><div class="vctag">'+v.b.label+'</div><div class="vizcards">'+v.b.cards.map(c=>vc(c,'sm')).join('')+'</div></div></div><div class="vizcap">'+(v.cap||'')+'</div></div>';
+  if(v.type==='bars')return '<div class="viz">'+v.items.map(it=>'<div class="vbar"><div class="vbtop"><span>'+it.label+'</span><span>'+it.val+'</span></div><div class="vbtrack"><i style="width:'+it.pct+'%;background:'+(it.color||'linear-gradient(90deg,#4f8cff,#7b5cff)')+'"></i></div></div>').join('')+'<div class="vizcap">'+(v.cap||'')+'</div></div>';
+  if(v.type==='spot')return '<div class="viz vizspot"><div class="vsfelt"><div class="vspos">'+v.pos+'</div>'+(v.board?'<div class="vsboard">'+v.board.map(c=>vc(c,'tbl')).join('')+'</div>':'<div class="vsboard empty">префлоп</div>')+'<div class="vshero">'+v.hero.map(c=>vc(c,'tbl')).join('')+'</div></div><div class="vsverdict '+(v.actCls||'raise')+'">Верное действие: '+v.action+'</div><div class="vswhy">'+v.why+'</div></div>';
+  return '';
+}
 const LESSONS=[
   {id:'pos',ic:'🪑',t:'Позиция решает',pages:[
-    {h:'Что такое позиция',x:'Позиция — это порядок хода. Кто действует последним на постфлопе — тот «в позиции» (IP) и видит решение соперника перед своим. Это огромное преимущество.'},
-    {h:'Почему это деньги',x:'В позиции ты контролируешь размер банка, ловишь больше блефов и реже попадаешь в трудные споты. Поэтому из поздних позиций открываемся намного шире.'},
-    {h:'Запомни',x:'Чем позже позиция — тем шире диапазон. UTG ≈ 15% рук, BTN ≈ 45%. Это фундамент префлопа.'}]},
+    {h:'Что такое позиция',x:'Позиция — порядок хода. Кто действует последним на постфлопе («в позиции», IP), видит решение соперника перед своим. Это большое преимущество: контроль банка и больше пойманных блефов.'},
+    {h:'Чем позже — тем шире',x:'Из поздних позиций открываем намного больше рук, потому что играем точнее и чаще в позиции.',viz:{type:'bars',cap:'Доля рук для открытия по позициям',items:[{label:'UTG',val:'15%',pct:33,color:'linear-gradient(90deg,#ff5b6e,#c2364a)'},{label:'HJ',val:'19%',pct:42},{label:'CO',val:'25%',pct:56},{label:'BTN',val:'44%',pct:100,color:'linear-gradient(90deg,#34d17a,#1f7a4d)'},{label:'SB',val:'34%',pct:76}]}},
+    {h:'Практический пример',x:'KQ оффсьют на баттоне — лёгкий опен. На UTG ту же руку часто фолдят: впереди слишком много игроков.',viz:{type:'spot',pos:'BTN · в позиции',hero:['Ks','Qd'],action:'RAISE',actCls:'raise',why:'KQo входит в диапазон открытия BTN (~44%). Позиция позволяет открывать широко за велью и инициативу.'}}
+  ]},
   {id:'ranges',ic:'🎯',t:'Диапазоны рук',pages:[
-    {h:'Не рука, а диапазон',x:'Сильные игроки думают не «что у меня», а «какой диапазон рук я бы так сыграл». Диапазон — все руки, с которыми ты делаешь данное действие.'},
-    {h:'Сетка 13×13',x:'169 стартовых комбинаций: пары по диагонали, одномастные сверху, разномастные снизу. На ней закрашивается диапазон открытия.'},
-    {h:'Учи края',x:'Главное — границы: какие руки ещё открываем, а какие уже фолд. Тренируй это в режиме Range Trainer.'}]},
+    {h:'Думай диапазонами',x:'Сильные игроки думают не «что у меня», а «какой диапазон рук я бы так сыграл». Диапазон — все руки данного действия.'},
+    {h:'Как выглядит диапазон',x:'На сетке 13×13: пары по диагонали, одномастные сверху, разномастные снизу. Золотом — руки, которые открываем с Cutoff.',viz:{type:'grid',pos:'CO'}},
+    {h:'Практический пример',x:'A5s входит в диапазон как блефовый компонент: туз-блокер мешает оппоненту иметь AA/AK, а масть и колесо дают потенциал.',viz:{type:'cards',cards:['As','5s'],cap:'A5s — туз-блокер + потенциал младшего стрита и флеша'}}
+  ]},
   {id:'odds',ic:'🧮',t:'Пот-оддсы',pages:[
-    {h:'Шансы банка',x:'Это отношение твоего колла к итоговому банку. В банке $10, коллить $5: вкладываешь $5, чтобы выиграть $15 → нужно ≥33% эквити.'},
-    {h:'Формула',x:'Требуемое эквити = колл ÷ (банк + колл). Если твой шанс выиграть выше — колл прибыльный. Ниже — фолд.'}]},
+    {h:'Шансы банка',x:'Это отношение твоего колла к итоговому банку. Формула: нужное эквити = колл ÷ (банк + колл).'},
+    {h:'Считаем на примере',x:'В банке $10, оппонент ставит, коллить $5. Нужно ≥ 5/(10+5) = 33% эквити. У флеш-дро ~9 аутов ≈ 35%.',viz:{type:'board',hero:['Ah','Qh'],board:['Kh','8h','2c'],cap:'Флеш-дро: ~9 аутов → ~35% эквити'}},
+    {h:'Практический пример',x:'35% эквити больше требуемых 33% — значит колл прибыльный на дистанции.',viz:{type:'spot',pos:'Колл по шансам',board:['Kh','8h','2c'],hero:['Ah','Qh'],action:'CALL',actCls:'call',why:'Эквити флеш-дро (~35%) выше пот-оддсов (33%). Такой колл в долгую зарабатывает.'}}
+  ]},
   {id:'outs',ic:'🎲',t:'Ауты и эквити',pages:[
-    {h:'Ауты',x:'Аут — карта, делающая твою руку выигрышной. Флеш-дро = 9 аутов, двусторонний стрит = 8, гатшот = 4.'},
-    {h:'Правило 2 и 4',x:'Эквити ≈ ауты × 2 (одна карта) или × 4 (две карты до вскрытия). 9 аутов × 4 ≈ 36% собрать флеш к риверу.'}]},
+    {h:'Что такое ауты',x:'Аут — карта, делающая руку выигрышной. Флеш-дро = 9 аутов, двусторонний стрит = 8, гатшот = 4.'},
+    {h:'Правило 2 и 4',x:'Эквити ≈ ауты × 2 (одна карта) или × 4 (две карты до вскрытия).',viz:{type:'bars',cap:'Примерное эквити по аутам (две карты)',items:[{label:'Гатшот · 4 аута',val:'~16%',pct:30,color:'linear-gradient(90deg,#ff5b6e,#c2364a)'},{label:'Стрит-дро · 8',val:'~32%',pct:59},{label:'Флеш-дро · 9',val:'~35%',pct:65},{label:'Комбо · 15',val:'~54%',pct:100,color:'linear-gradient(90deg,#34d17a,#1f7a4d)'}]}},
+    {h:'Практический пример',x:'Двусторонний стрит-дро: 8 аутов, ~32% дойти. С нормальными шансами банка — колл или полублеф.',viz:{type:'spot',pos:'В позиции',board:['Qs','9d','4c'],hero:['Jh','Th'],action:'CALL / BET',actCls:'call',why:'JT на Q-9-4 — 8 аутов на стрит (нужна K или 8). Достаточно эквити, чтобы продолжать.'}}
+  ]},
   {id:'ev',ic:'➕',t:'EV — ценность решения',pages:[
-    {h:'Что такое EV',x:'EV — сколько в среднем приносит решение на дистанции. +EV зарабатывает, −EV теряет. Цель — всегда выбирать вариант с максимальным EV.'},
-    {h:'Решение ≠ результат',x:'Можно принять верное +EV решение и проиграть раздачу — это нормально. Покер про дистанцию: важны решения, а не один результат.'}]},
+    {h:'Что такое EV',x:'EV — сколько в среднем приносит решение на дистанции. +EV зарабатывает, −EV теряет. Цель — выбирать вариант с максимальным EV.'},
+    {h:'Сравни варианты',x:'У каждого действия свой EV. С оверпарой на сухом борде бет приносит больше всего.',viz:{type:'bars',cap:'EV действий (bb) — AA на 4-7-5',items:[{label:'Fold',val:'−10 bb',pct:8,color:'linear-gradient(90deg,#ff5b6e,#c2364a)'},{label:'Check/Call',val:'+6 bb',pct:64},{label:'Bet ★',val:'+9 bb',pct:100,color:'linear-gradient(90deg,#34d17a,#1f7a4d)'}]}},
+    {h:'Практический пример',x:'AA на 4-7-5 — топовая рука. Бет за велью имеет максимальный EV: платят пары и дро.',viz:{type:'spot',pos:'Велью-бет',board:['4d','7s','5h'],hero:['As','Ac'],action:'BET',actCls:'raise',why:'Оверпара на сухом борде. Бет (+9 bb) прибыльнее чека (+6) — не упускай ценность.'}}
+  ]},
   {id:'texture',ic:'🌊',t:'Текстура борда',pages:[
-    {h:'Сухой и мокрый',x:'Сухой борд (K-7-2 разномастный) почти не даёт дро. Мокрый (J-T-9 одной масти) — куча стрит- и флеш-дро.'},
-    {h:'Как играть',x:'На сухих бордах ставим тоньше за велью и чаще блефуем. На мокрых — защищаем сильные руки крупным бетом, осторожнее со средними.'}]}
+    {h:'Сухой и мокрый',x:'Сухой борд почти не даёт дро. Мокрый — много стрит- и флеш-дро. От этого зависит, как играть.'},
+    {h:'Почувствуй разницу',x:'Слева — сухой радужный борд. Справа — мокрый: одномастный и связанный, куча дро.',viz:{type:'boardcompare',a:{label:'Сухой',cards:['Kc','7d','2s']},b:{label:'Мокрый',cards:['Js','Ts','9s']},cap:'На сухом ставим тоньше; на мокром — защищаем руку крупнее'}},
+    {h:'Практический пример',x:'Топ-пара на сухом K-7-2 — тонкий велью-бет: мало что обгоняет, платят младшие пары.',viz:{type:'spot',pos:'Велью на сухом',board:['Kc','7d','2s'],hero:['Kh','Qd'],action:'BET',actCls:'raise',why:'KQ = топ-пара на сухом борде. Дро почти нет — ставь тонко за велью, оплатят худшие короли и пары.'}}
+  ]}
 ];
 function renderLearn(){const w=$('learnGrid');w.innerHTML='';$('learnProg').textContent=profile.lessonsRead.length+'/'+LESSONS.length;
   LESSONS.forEach(l=>{const read=profile.lessonsRead.includes(l.id);const el=document.createElement('div');el.className='lcard';el.onclick=()=>openLesson(l.id);
@@ -1174,7 +1222,8 @@ function renderLearn(){const w=$('learnGrid');w.innerHTML='';$('learnProg').text
 let lsCur=null,lsPage=0;
 function openLesson(id){lsCur=LESSONS.find(l=>l.id===id);lsPage=0;show('lesson');setTitle('Урок');renderLesson();}
 function renderLesson(){const l=lsCur,p=l.pages[lsPage];$('lsTitle').textContent=l.t;
-  $('lsReader').innerHTML='<div class="rdots">'+l.pages.map((_,i)=>'<i class="'+(i===lsPage?'on':'')+'"></i>').join('')+'</div><div class="ric">'+l.ic+'</div><h3>'+p.h+'</h3><div class="rtext">'+p.x+'</div>';
+  $('lsReader').innerHTML='<div class="rdots">'+l.pages.map((_,i)=>'<i class="'+(i===lsPage?'on':'')+'"></i>').join('')+'</div><div class="ric">'+l.ic+'</div><h3>'+p.h+'</h3><div class="rtext">'+p.x+'</div>'+renderViz(p.viz);
+  $('lsReader').scrollTop=0;
   $('lsPrev').style.visibility=lsPage===0?'hidden':'visible';
   $('lsNext').textContent=lsPage===l.pages.length-1?'Завершить ✓':'Дальше ›';}
 function lessonPrev(){SND.tick();if(lsPage>0){lsPage--;renderLesson();}}
