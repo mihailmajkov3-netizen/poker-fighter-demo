@@ -1045,7 +1045,7 @@ function renderCurrent(){
   VIEW[curSpot.view](curSpot,stage);SND.deal();
   if(s.type==='tutorial'&&curSpot.tutHint)setTimeout(()=>toast(curSpot.tutHint),250);
   const bar=$('actionbar');bar.innerHTML='';
-  if(curSpot.baseCoach||curSpot.coach){const g=document.createElement('button');g.className='abtn ghost';g.innerHTML='💡<br>ПОДСКАЗКА';g.onclick=()=>hint(curSpot);bar.appendChild(g);}
+  if(curSpot.baseCoach||curSpot.coach){const g=document.createElement('button');g.className='abtn ghost';g.innerHTML='<span style="font-size:24px;line-height:1">💡</span>';g.title='Подсказка';g.onclick=()=>hint(curSpot);bar.appendChild(g);}
   curSpot.actions.forEach(a=>{const b=document.createElement('button');b.className='abtn '+a.cls;b.innerHTML=a.label+(a.sub?'<small>'+a.sub+'</small>':'');b.onclick=()=>choose(a.key);bar.appendChild(b);});
   if(curSpot.view==='preflop'){const bs=[].slice.call(bar.querySelectorAll('.abtn')).filter(b=>!b.classList.contains('ghost'));bs.forEach(b=>b.disabled=true);setTimeout(()=>{if(session&&session._cur===curSpot)bs.forEach(b=>b.disabled=false);},820);}
 }
