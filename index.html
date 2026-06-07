@@ -405,6 +405,26 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;b
 .phead .ava::after,.pf-card .ava::after{content:"";position:absolute;inset:-4px;border-radius:50%;
   background:conic-gradient(from 0deg,rgba(255,207,77,.5),transparent 40%,rgba(123,92,255,.4),transparent 80%,rgba(255,207,77,.5));
   z-index:-1;animation:spin 6s linear infinite;filter:blur(2px)}
+
+/* preflop oval table */
+.pf-oval{position:relative}
+.pf-oval .card{animation:deal .42s cubic-bezier(.2,.8,.3,1.1) backwards}
+.pseat{position:absolute;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:2px;width:80px;z-index:2;animation:seatIn .45s ease backwards}
+.pav{width:40px;height:40px;border-radius:50%;background:linear-gradient(180deg,#34407e,#1a2350);border:2px solid #56badf;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;color:#bfe6ff}
+.pseat.hero .pav{border-color:#34d17a;box-shadow:0 0 0 3px rgba(52,209,122,.22),0 0 16px rgba(52,209,122,.5);background:linear-gradient(180deg,#1f5a3a,#123a26)}
+.pseat.aggr .pav{border-color:#ff5b6e;box-shadow:0 0 0 3px rgba(255,91,110,.22),0 0 16px rgba(255,91,110,.5);background:linear-gradient(180deg,#5a1f28,#3a1219)}
+.pseat .pinfo{background:rgba(8,14,40,.82);border-radius:9px;padding:2px 8px;text-align:center;line-height:1.2}
+.pseat .ppos{font-size:11px;font-weight:800}.pseat .pstk{font-size:9px;color:var(--gold)}
+.pseat.hero .ppos{color:#7fe0a8}.pseat.aggr .ppos{color:#ff97a4}
+.praisetag{position:absolute;top:-13px;background:#c2364a;color:#fff;font-size:9px;font-weight:800;padding:2px 8px;border-radius:6px;white-space:nowrap;animation:pop .3s ease backwards}
+.pdealer{position:absolute;transform:translate(-50%,-50%);width:18px;height:18px;border-radius:50%;background:#fff;color:#1a2350;font-size:11px;font-weight:900;display:flex;align-items:center;justify-content:center;z-index:3;box-shadow:0 2px 4px rgba(0,0,0,.5)}
+.pchip{position:absolute;transform:translate(-50%,-50%);display:flex;align-items:center;gap:3px;background:rgba(8,14,40,.8);padding:2px 7px;border-radius:10px;font-size:9px;font-weight:700;color:#ffe89a;z-index:2;animation:chipDrop .4s ease backwards}
+.pchip .pd{width:8px;height:8px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#ff8a9c,#c83145);border:1px dashed #fff}
+.cardback{width:18px;height:25px;border-radius:3px;background:repeating-linear-gradient(45deg,#27408b,#27408b 3px,#1c2f6e 3px,#1c2f6e 6px);border:1px solid #3a4d8a}
+.pf-banner{padding:10px 16px 4px;text-align:center;color:var(--muted);font-size:13px;line-height:1.45}
+.pf-banner b{color:var(--txt)}
+@keyframes seatIn{from{opacity:0;transform:translate(-50%,-50%) scale(.55)}to{opacity:1;transform:translate(-50%,-50%) scale(1)}}
+@keyframes chipDrop{from{opacity:0;transform:translate(-50%,-130%) scale(.6)}to{opacity:1;transform:translate(-50%,-50%) scale(1)}}
 </style>
 </head>
 <body>
@@ -720,14 +740,31 @@ function quitGame(){if(confirm('Выйти из забега? Рейтинг п�
 /* ===== CARD VIEWS ===== */
 const VIEW={};
 VIEW.preflop=function(sp,stage){
-  const v=document.createElement('div');v.className='pf-view';
-  const order=['UTG','HJ','CO','BTN','SB','BB'];
-  let strip='<div class="tablestrip">';
-  order.forEach(p=>{let cls='seatmini';if(p===sp.pos)cls+=' you';else if(p===sp.opener)cls+=' raiser';strip+='<div class="'+cls+'"><div class="b">'+p+'</div></div>';});
-  strip+='</div>';
-  v.innerHTML='<div class="poschip"><span class="dot"></span>'+sp.pos+'</div>'+strip+'<div class="bigcards" id="pfc"></div><div class="handlabel">'+sp.hand.code+'</div><div class="pf-prompt">'+sp.prompt+'</div>';
-  stage.appendChild(v);
-  const cc=v.querySelector('#pfc');cc.appendChild(cardEl(sp.hand.c1));cc.appendChild(cardEl(sp.hand.c2));
+  const col=document.createElement('div');col.style.cssText='flex:1;display:flex;flex-direction:column;min-height:0';
+  const tw=document.createElement('div');tw.className='table-wrap pf-oval';
+  const tc=themeColors(profile.theme);tw.style.background='radial-gradient(120% 90% at 50% 42%,'+tc[0]+' 0%,'+tc[1]+' 45%,'+tc[2]+' 100%)';
+  const ORDER=['BTN','SB','BB','UTG','HJ','CO'];
+  const SLOT=[[50,80],[86,62],[86,24],[50,13],[14,24],[14,62]];
+  const heroIdx=ORDER.indexOf(sp.pos);
+  const seatByPos={};for(let i=0;i<6;i++){seatByPos[ORDER[(heroIdx+i+6)%6]]=SLOT[i];}
+  ORDER.forEach(pos=>{
+    const isHero=pos===sp.pos,isAggr=pos===sp.opener;const xy=seatByPos[pos],x=xy[0],y=xy[1];
+    const ord=(ORDER.indexOf(pos)-heroIdx+6)%6;
+    const seat=document.createElement('div');seat.className='pseat'+(isHero?' hero':'')+(isAggr?' aggr':'');
+    seat.style.left=x+'%';seat.style.top=y+'%';seat.style.animationDelay=(ord*0.07)+'s';
+    seat.innerHTML=(isAggr?'<div class="praisetag" style="animation-delay:.95s">RAISE</div>':'')+'<div class="pav">'+(isHero?profile.avatar:'')+'</div><div class="pinfo"><div class="ppos">'+pos+'</div><div class="pstk">100bb</div></div>';
+    if(isHero){const hc=document.createElement('div');hc.style.cssText='display:flex;gap:3px;margin-top:2px';hc.appendChild(cardEl(sp.hand.c1,'sm'));hc.appendChild(cardEl(sp.hand.c2,'sm'));[...hc.children].forEach((c,ci)=>c.style.animationDelay=(1.0+ci*0.1)+'s');seat.appendChild(hc);}
+    else{const bk=document.createElement('div');bk.style.cssText='display:flex;gap:3px;margin-top:2px';bk.innerHTML='<div class="cardback"></div><div class="cardback"></div>';seat.appendChild(bk);}
+    tw.appendChild(seat);
+    if(pos==='BTN'){const d=document.createElement('div');d.className='pdealer';d.style.left=(x+(50-x)*0.2)+'%';d.style.top=(y+(50-y)*0.2)+'%';d.textContent='D';tw.appendChild(d);}
+  });
+  function chip(pos,txt,delay){const xy=seatByPos[pos];const cx=xy[0]+(50-xy[0])*0.34,cy=xy[1]+(50-xy[1])*0.34;const c=document.createElement('div');c.className='pchip';c.style.left=cx+'%';c.style.top=cy+'%';c.style.animationDelay=delay+'s';c.innerHTML='<span class="pd"></span>'+txt;tw.appendChild(c);}
+  chip('SB','0.5bb',0.55);chip('BB','1bb',0.62);
+  if(sp.opener)chip(sp.opener,'2.5bb',0.95);
+  col.appendChild(tw);
+  const banner=document.createElement('div');banner.className='pf-banner';banner.innerHTML='<b style="color:var(--gold);font-size:18px">'+sp.hand.code+'</b><br>'+sp.prompt;
+  col.appendChild(banner);
+  stage.appendChild(col);
 };
 VIEW.potodds=function(sp,stage){
   const v=document.createElement('div');v.className='po-view';
@@ -1010,6 +1047,7 @@ function renderCurrent(){
   const bar=$('actionbar');bar.innerHTML='';
   if(curSpot.baseCoach||curSpot.coach){const g=document.createElement('button');g.className='abtn ghost';g.innerHTML='💡<br>ПОДСКАЗКА';g.onclick=()=>hint(curSpot);bar.appendChild(g);}
   curSpot.actions.forEach(a=>{const b=document.createElement('button');b.className='abtn '+a.cls;b.innerHTML=a.label+(a.sub?'<small>'+a.sub+'</small>':'');b.onclick=()=>choose(a.key);bar.appendChild(b);});
+  if(curSpot.view==='preflop'){const bs=[].slice.call(bar.querySelectorAll('.abtn')).filter(b=>!b.classList.contains('ghost'));bs.forEach(b=>b.disabled=true);setTimeout(()=>{if(session&&session._cur===curSpot)bs.forEach(b=>b.disabled=false);},820);}
 }
 function hint(sp){toast('💡 '+(sp.baseCoach||sp.coach||'').split('.')[0]+'.');}
 function choose(key){
