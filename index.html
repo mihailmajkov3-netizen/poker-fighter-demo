@@ -16,9 +16,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;b
 #screens{flex:1;position:relative;overflow:hidden}
 .screen{position:absolute;inset:0;display:none;flex-direction:column;animation:fade .25s ease}
 .screen.active{display:flex}
-@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@keyframes fade{from{opacity:0;transform:translateX(26px)}to{opacity:1;transform:none}}
 @keyframes pop{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:scale(1)}}
-@keyframes deal{from{opacity:0;transform:translateY(-30px) scale(.8) rotate(-8deg)}to{opacity:1;transform:none}}
+@keyframes deal{0%{opacity:0;transform:translateY(-46px) rotateY(85deg) scale(.92)}55%{opacity:1}100%{opacity:1;transform:none}}
+@keyframes rowin{from{opacity:0;transform:translateX(-18px)}to{opacity:1;transform:none}}
+@keyframes potpulse{0%,100%{transform:translateX(-50%) scale(1)}40%{transform:translateX(-50%) scale(1.18)}}
 @keyframes spin{to{transform:rotate(360deg)}}
 @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-7px)}75%{transform:translateX(7px)}}
 @media (min-width:560px) and (min-height:640px){
@@ -129,8 +131,24 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;b
 .betchip{position:absolute;transform:translate(-50%,-50%);display:flex;align-items:center;gap:4px;background:rgba(8,14,40,.78);padding:2px 7px;border-radius:10px;font-size:10px;font-weight:700;color:#ffe89a;z-index:2}
 .betchip .dot{width:9px;height:9px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#ff8a9c,#c83145);border:1px dashed #fff}
 .board{position:absolute;top:42%;left:50%;transform:translate(-50%,-50%);display:flex;gap:5px;z-index:2}
-.board .card,.hero-cards .card{animation:deal .35s ease backwards}
-.board .card:nth-child(2){animation-delay:.08s}.board .card:nth-child(3){animation-delay:.16s}.board .card:nth-child(4){animation-delay:.24s}.board .card:nth-child(5){animation-delay:.32s}
+.board,.hero-cards{perspective:600px}
+.board .card,.hero-cards .card{animation:deal .42s cubic-bezier(.2,.8,.3,1.1) backwards}
+.board .card:nth-child(2){animation-delay:.1s}.board .card:nth-child(3){animation-delay:.2s}.board .card:nth-child(4){animation-delay:.3s}.board .card:nth-child(5){animation-delay:.4s}
+.hero-cards .card:nth-child(1){animation-delay:.34s}.hero-cards .card:nth-child(2){animation-delay:.44s}
+.bigcards{perspective:600px}
+.bigcards .card{animation:deal .45s cubic-bezier(.2,.8,.3,1.1) backwards}
+.bigcards .card:nth-child(2){animation-delay:.12s}
+/* fly chip + muck + results stagger */
+.flychip{position:absolute;left:50%;top:82%;width:18px;height:18px;border-radius:50%;z-index:6;
+  background:radial-gradient(circle at 35% 30%,#ffe89a,#e0a532);border:2px dashed #fff8;transform:translate(-50%,-50%);
+  transition:left .5s cubic-bezier(.4,0,.4,1),top .5s cubic-bezier(.4,0,.4,1),opacity .5s ease;box-shadow:0 3px 8px rgba(0,0,0,.4)}
+.hero-cards.muck{animation:muck .45s ease forwards}
+@keyframes muck{to{opacity:0;transform:translate(-50%,60px) rotate(12deg)}}
+.pot.pulse{animation:potpulse .45s ease}
+.po-chip{position:absolute;left:50%;bottom:120px;width:18px;height:18px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#ffe89a,#e0a532);border:2px dashed #fff8;transform:translateX(-50%);transition:bottom .45s cubic-bezier(.4,0,.4,1),opacity .45s ease;z-index:6}
+.res-row{animation:rowin .34s ease backwards}
+.res-row:nth-child(1){animation-delay:.04s}.res-row:nth-child(2){animation-delay:.1s}.res-row:nth-child(3){animation-delay:.16s}.res-row:nth-child(4){animation-delay:.22s}.res-row:nth-child(5){animation-delay:.28s}.res-row:nth-child(6){animation-delay:.34s}.res-row:nth-child(7){animation-delay:.4s}.res-row:nth-child(8){animation-delay:.46s}
+.abtn:disabled{transition:opacity .2s}
 .pot{position:absolute;top:30%;left:50%;transform:translateX(-50%);background:rgba(8,14,40,.7);padding:3px 12px;border-radius:12px;font-size:12px;font-weight:800;color:#ffe89a;z-index:2}
 .pot .lbl{color:var(--muted);font-weight:600;font-size:10px;margin-right:4px}
 .hero-cards{position:absolute;left:50%;bottom:6px;transform:translateX(-50%);display:flex;gap:4px;z-index:3}
@@ -980,8 +998,8 @@ function choose(key){
   session.results.push({sp,choice:key,correct:g.correct,delta});
   if(levelOf(profile.xp)>lvlBefore)queueModal({ic:'⭐',tag:'Новый уровень',name:'Уровень '+levelOf(profile.xp),desc:'Ты становишься сильнее. Так держать!'});
   checkAch();updateHUD();
-  if(session.livesMax>0&&session.lives<=0){showFeedback(sp,g,delta,true);return;}
-  showFeedback(sp,g,delta,false);
+  const bust=session.livesMax>0&&session.lives<=0;
+  playActionAnim(sp,key,function(){showFeedback(sp,g,delta,bust);});
 }
 function showFeedback(sp,g,delta,bust){
   const fb=$('fb');const last=session.idx>=session.n-1;
@@ -1124,6 +1142,16 @@ function fxLoop(){fxX.clearRect(0,0,fxC.width,fxC.height);fxP=fxP.filter(p=>p.li
   if(fxP.length)requestAnimationFrame(fxLoop);else{fxOn=false;fxX.clearRect(0,0,fxC.width,fxC.height);}}
 function fxFlash(cls){const f=$('flash');f.className=cls;setTimeout(()=>{f.className='';},170);}
 function floatPts(t){const st=$('stage');if(!st)return;const d=document.createElement('div');d.className='floatpts';d.textContent=t;st.appendChild(d);setTimeout(()=>d.remove(),1000);}
+function chipToPot(){const tw=document.querySelector('.table-wrap');if(!tw)return;const c=document.createElement('div');c.className='flychip';tw.appendChild(c);
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{c.style.top='30%';c.style.opacity='0.15';}));
+  const pot=tw.querySelector('.pot');setTimeout(()=>{if(pot){pot.classList.add('pulse');setTimeout(()=>pot.classList.remove('pulse'),460);}},420);
+  setTimeout(()=>c.remove(),660);}
+function muckHero(){const h=document.querySelector('.hero-cards');if(h)h.classList.add('muck');}
+function poChip(){const v=document.querySelector('.po-view');if(!v)return;const c=document.createElement('div');c.className='po-chip';v.appendChild(c);requestAnimationFrame(()=>requestAnimationFrame(()=>{c.style.bottom='320px';c.style.opacity='0';}));setTimeout(()=>c.remove(),520);}
+function playActionAnim(sp,key,cb){let delay=140;
+  if(sp.view==='table'){if(key==='fold'){muckHero();delay=420;}else{chipToPot();delay=470;}}
+  else if(sp.view==='potodds'){if(key==='call'){poChip();delay=420;}else delay=200;}
+  setTimeout(cb,delay);}
 function countUp(el,to){if(!el)return;to=Math.round(to);const from=parseInt((el.textContent||'').replace(/[^\d-]/g,''))||0;if(from===to){el.textContent=to;return;}const t0=performance.now();function s(t){const k=Math.min(1,(t-t0)/600);el.textContent=Math.round(from+(to-from)*(1-Math.pow(1-k,3)));if(k<1)requestAnimationFrame(s);}requestAnimationFrame(s);}
 
 /* ===== MODAL QUEUE ===== */
