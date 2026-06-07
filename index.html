@@ -216,6 +216,64 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;b
 .drawer .di{display:flex;align-items:center;gap:13px;padding:13px 20px;font-size:15px;font-weight:600;cursor:pointer}.drawer .di .ic{font-size:19px;width:24px;text-align:center}
 .toast{position:fixed;left:50%;bottom:90px;transform:translateX(-50%) translateY(20px);background:#1b2766;border:1px solid var(--line);color:#fff;padding:10px 18px;border-radius:30px;font-size:13px;z-index:99;opacity:0;transition:.3s;pointer-events:none;font-weight:600;text-align:center;max-width:90%}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* ===== JUICE ===== */
+#fx{position:absolute;inset:0;pointer-events:none;z-index:600}
+#flash{position:absolute;inset:0;pointer-events:none;z-index:90;opacity:0;transition:opacity .12s ease}
+#flash.g{background:radial-gradient(circle at 50% 60%,rgba(52,209,122,.34),transparent 70%);opacity:1}
+#flash.r{background:radial-gradient(circle at 50% 60%,rgba(255,91,110,.34),transparent 70%);opacity:1}
+@keyframes scalein{from{opacity:0;transform:scale(.7) translateY(20px)}to{opacity:1;transform:none}}
+@keyframes shine{0%{background-position:-180% 0}100%{background-position:180% 0}}
+@keyframes floatUp{0%{opacity:0;transform:transl(-50%,0) scale(.6)}20%{opacity:1}100%{opacity:0;transform:translateY(-70px) scale(1.1)}}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.18)}}
+@keyframes ring{0%{box-shadow:0 0 0 0 rgba(255,207,77,.6)}100%{box-shadow:0 0 0 16px rgba(255,207,77,0)}}
+.modal-mask{position:absolute;inset:0;background:rgba(4,7,18,.72);z-index:610;display:none;align-items:center;justify-content:center;padding:24px}
+.modal-mask.show{display:flex}
+.modalcard{width:100%;max-width:330px;border-radius:22px;padding:26px 22px;text-align:center;background:linear-gradient(180deg,#22307e,#141d4a);border:1px solid #3a4aa0;box-shadow:0 30px 70px rgba(0,0,0,.6);animation:scalein .35s cubic-bezier(.2,.9,.3,1.3);position:relative;overflow:hidden}
+.modalcard::before{content:"";position:absolute;inset:0;background:linear-gradient(110deg,transparent 35%,rgba(255,255,255,.13) 50%,transparent 65%);background-size:220% 100%;animation:shine 1.6s ease-in-out infinite}
+.modalcard .mic{font-size:60px;filter:drop-shadow(0 6px 16px rgba(0,0,0,.4));animation:pulse 1.4s ease-in-out infinite}
+.modalcard .mt{font-size:13px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);font-weight:800;margin-top:10px}
+.modalcard .mn{font-size:23px;font-weight:900;margin:4px 0 6px}
+.modalcard .md{font-size:13px;color:var(--muted);line-height:1.5}
+.modalcard .mrw{display:inline-block;margin-top:12px;background:#0e1640;border:1px solid var(--line);border-radius:20px;padding:7px 16px;font-weight:800;color:var(--gold)}
+.modalcard .mbtn{margin-top:18px;width:100%;border:none;border-radius:13px;padding:13px;font-weight:800;font-size:15px;color:#fff;background:linear-gradient(180deg,#4f8cff,#3567d6);cursor:pointer;position:relative;z-index:2}
+.combo{transition:transform .15s}
+.combo.bump{animation:pulse .4s}
+.abtn{position:relative;overflow:hidden}
+.abtn::after{content:"";position:absolute;inset:0;background:linear-gradient(110deg,transparent 40%,rgba(255,255,255,.25) 50%,transparent 60%);background-size:240% 100%;background-position:-140% 0;transition:none}
+.abtn:active::after{animation:shine .5s ease}
+.floatpts{position:absolute;left:50%;top:46%;transform:translateX(-50%);font-size:26px;font-weight:900;color:var(--gold);z-index:40;pointer-events:none;text-shadow:0 2px 10px rgba(0,0,0,.5);animation:floatUp 1s ease forwards}
+
+/* quests */
+.quests{margin:0 14px 6px;padding:13px 14px;border-radius:16px;background:linear-gradient(135deg,#1f2a72,#16204f);border:1px solid var(--line);cursor:pointer}
+.quests .qh{display:flex;justify-content:space-between;align-items:center;font-weight:800;font-size:14px}
+.quests .qh .badge{font-size:11px;background:var(--accent);color:#fff;border-radius:10px;padding:2px 9px;font-weight:800}
+.quests .qh .badge.done{background:var(--green)}
+.qlist{padding:6px 14px 22px}
+.qitem{background:linear-gradient(180deg,#1b2868,#16204f);border:1px solid var(--line);border-radius:14px;padding:14px;margin:9px 0}
+.qitem .top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.qitem .top .nm{font-weight:700;font-size:14px}.qitem .top .rw{font-size:12px;color:var(--gold);font-weight:800}
+.qitem .bar{height:9px;background:#0c1335;border-radius:5px;overflow:hidden;border:1px solid var(--line)}
+.qitem .bar i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:5px;transition:width .6s ease}
+.qitem .pr{font-size:11px;color:var(--muted);margin-top:5px;display:flex;justify-content:space-between;align-items:center}
+.qitem .claim{border:none;border-radius:9px;padding:6px 14px;font-weight:800;font-size:12px;color:#241a00;background:linear-gradient(180deg,#ffcf4d,#e0a532);cursor:pointer}
+.qitem .claim.done{background:#2f9d68;color:#fff}.qitem .claim:disabled{opacity:.5;filter:grayscale(.5)}
+
+/* division banner */
+.divbanner{margin:12px 14px 4px;padding:14px;border-radius:16px;text-align:center;position:relative;overflow:hidden;border:1px solid var(--line)}
+.divbanner .dlabel{font-size:11px;letter-spacing:2px;text-transform:uppercase;opacity:.85;font-weight:700}
+.divbanner .dname{font-size:22px;font-weight:900;margin:2px 0}
+.divbanner .dnote{font-size:12px;opacity:.9}
+.hof-row.promo{box-shadow:inset 3px 0 0 var(--green)}
+.hof-row.releg{box-shadow:inset 3px 0 0 var(--red)}
+.zoneline{display:flex;align-items:center;gap:8px;padding:6px 16px;font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--muted)}
+.zoneline.p{color:#7fe0a8}.zoneline.r{color:#ff97a4}
+.zoneline i{flex:1;height:1px;background:currentColor;opacity:.4}
+
+/* mastery in profile */
+.mastery .ma .lvl{font-size:10px;color:var(--gold);font-weight:800}
+.challengecard{display:flex;align-items:center;gap:12px;background:linear-gradient(135deg,#5a1f4a,#3a1430);border:1px solid #7a2d63;border-radius:14px;padding:13px;margin:9px 14px 0;cursor:pointer}
+.challengecard .ic{font-size:24px}.challengecard .tx{flex:1}.challengecard .tx .nm{font-weight:800;font-size:14px}.challengecard .tx .ds{font-size:11px;color:#e6b8d8;margin-top:2px}
 </style>
 </head>
 <body>
@@ -237,8 +295,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;b
         </div>
         <div class="bigcta" onclick="nav('career')"><div class="tag">🪜 КАРЬЕРА</div><h3 id="ctaStake">NL2 · Микролимит</h3><small id="ctaSub">Поднимайся по лимитам</small><div class="arrow">›</div></div>
         <div class="daily" onclick="startDaily()"><div class="tag">⚡ ЕЖЕДНЕВНЫЙ ВЫЗОВ</div><h3>Daily Fight</h3><small id="dailySub">8 спотов · бонус к рейтингу</small><div class="arrow">›</div></div>
+        <div class="quests" onclick="nav('quests')"><div class="qh"><span>🎯 Задания дня</span><span class="badge" id="qBadge">0/3</span></div><div id="qMini" style="margin-top:8px"></div></div>
         <div class="section-h">Свободная тренировка</div>
         <div class="modes" id="modeList"></div>
+        <div class="section-h">Испытания</div>
+        <div class="challengecard" onclick="startSurvival()"><div class="ic">💀</div><div class="tx"><div class="nm">Survival</div><div class="ds">Бесконечно, пока 3 ошибки. Сколько продержишься?</div></div><div class="go" style="color:#e6b8d8;font-size:18px">›</div></div>
       </div>
       <div class="bottomnav">
         <div class="nv active" onclick="nav('home',this)"><span class="ic">🏠</span>Home</div>
@@ -287,7 +348,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;b
     </div>
 
     <div class="screen" id="screen-hof">
-      <div class="body"><div class="tabs"><div class="tab" onclick="hofTab('friends',this)">Friends</div><div class="tab active" onclick="hofTab('global',this)">Global</div><div class="tab" onclick="hofTab('weekly',this)">Weekly</div></div><div id="hofList"></div></div>
+      <div class="body"><div class="divbanner" id="divBanner"></div><div class="tabs"><div class="tab" onclick="hofTab('friends',this)">Friends</div><div class="tab active" onclick="hofTab('global',this)">Global</div><div class="tab" onclick="hofTab('weekly',this)">Weekly</div></div><div id="hofList"></div></div>
       <div class="bottomnav"><div class="nv" onclick="nav('home',this)"><span class="ic">🏠</span>Home</div><div class="nv" onclick="nav('career',this)"><span class="ic">🪜</span>Карьера</div><div class="nv active"><span class="ic">🏅</span>Лиги</div><div class="nv" onclick="nav('profile',this)"><span class="ic">👤</span>Профиль</div></div>
     </div>
 
@@ -307,7 +368,15 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;b
       <div class="body"><div class="ach-grid" id="achGrid"></div></div>
     </div>
 
+    <div class="screen" id="screen-quests">
+      <div class="game-meta"><span class="hcount">Задания дня</span><span class="mid"></span><span class="x" onclick="nav('home')"><span class="ic">✕</span></span></div>
+      <div class="body"><div class="qlist" id="qList"></div></div>
+    </div>
+
   </main>
+  <div id="flash"></div>
+  <canvas id="fx"></canvas>
+  <div class="modal-mask" id="modalMask"><div class="modalcard" id="modalCard"></div></div>
   <div class="drawer-mask" id="drawerMask" onclick="closeDrawer()"></div>
   <div class="drawer" id="drawer">
     <div class="dh">POKER FIGHTER</div>
@@ -389,7 +458,7 @@ const VS_RAW=[
 const MODE_NAMES={rfi:'Preflop RFI',vsopen:'vs Open',postflop:'Postflop',potodds:'Pot Odds',memorize:'Range Trainer',mixed:'Микс'};
 let profile=loadProfile();
 function loadProfile(){let p={};try{p=JSON.parse(localStorage.getItem('pf_profile_v2'))||{};}catch(e){}
-  return Object.assign({rating:1000,xp:0,hands:0,correct:0,streak:0,bestStreak:0,byMode:{},byConcept:{},career:{stake:0,stars:{}},achievements:[],mistakes:[],lastDaily:null,dailyStreak:0},p);}
+  return Object.assign({rating:1000,xp:0,hands:0,correct:0,streak:0,bestStreak:0,byMode:{},byConcept:{},career:{stake:0,stars:{}},achievements:[],mistakes:[],lastDaily:null,dailyStreak:0,quests:null,surBest:0},p);}
 function saveProfile(){try{localStorage.setItem('pf_profile_v2',JSON.stringify(profile));}catch(e){}}
 function tierName(r){if(r>=2100)return 'Poseidon';if(r>=1900)return 'Jellyfish';if(r>=1750)return 'Junior Shark';if(r>=1600)return 'Squid';if(r>=1450)return 'Salmon';if(r>=1300)return 'Sea-Horse';if(r>=1150)return 'Nemo';if(r>=1000)return 'Goldfish';return 'Shrimp';}
 const levelOf=xp=>Math.floor(xp/600)+1;
@@ -423,7 +492,7 @@ const ACH=[
   {id:'math',ic:'🧮',nm:'Математик',ds:'30 верных Pot Odds',cond:p=>{const m=p.byMode.potodds;return m&&m.correct>=30;}},
   {id:'daily7',ic:'📅',nm:'Дисциплина',ds:'Daily-стрик 7',cond:p=>p.dailyStreak>=7}
 ];
-function checkAch(){ACH.forEach(a=>{if(!profile.achievements.includes(a.id)&&a.cond(profile)){profile.achievements.push(a.id);saveProfile();setTimeout(()=>toast('🏆 Достижение: '+a.nm),300);}});}
+function checkAch(){ACH.forEach(a=>{if(!profile.achievements.includes(a.id)&&a.cond(profile)){profile.achievements.push(a.id);saveProfile();queueModal({ic:a.ic,tag:'Достижение',name:a.nm,desc:a.ds,btn:'Забрать'});}});}
 
 /* ===== HOME ===== */
 const MODES_META=[
@@ -453,6 +522,7 @@ function renderHome(){
       (isReview?(mistakes?'<div class="badge">'+mistakes+'</div><div class="go">›</div>':'<div class="go">🔒</div>'):'<div class="acc">'+acc+'<small>точность</small></div><div class="go">›</div>');
     wrap.appendChild(el);
   });
+  renderQuestMini();
 }
 
 /* ===== NAV ===== */
@@ -462,6 +532,7 @@ function nav(s){
   else if(s==='hof'){show('hof');setTitle('Лиги');renderHof();}
   else if(s==='profile'){show('profile');setTitle('Профиль');renderProfile();}
   else if(s==='ach'){show('ach');setTitle('Достижения');renderAch();}
+  else if(s==='quests'){show('quests');setTitle('Задания');renderQuests();}
 }
 function quitGame(){if(confirm('Выйти из забега? Рейтинг по сыгранным рукам сохранится.'))nav('home');}
 
@@ -615,7 +686,34 @@ const ARCH=[
   {id:'combo_raise',concept:'Полублеф комбо-дро',diff:3,facing:true,best:'raise',handLabel:'Флеш-дро + стрит-дро',boardLabel:'очень мокрый',
    build(d){const suit=oneOf(['s','h','d','c']);const base=oneOf([10,9,8]);const h=[d.takeRC(RCHAR[base],suit),d.takeRC(RCHAR[base-1],suit)];
      const board=[d.takeRC(RCHAR[base-2],suit),d.takeRC(RCHAR[base+1],suit),d.takeOffSuit(suit,['2','3','4'])];return {hero:h,board,oop:true};},
-   coach:'Комбо-дро (флеш + стрит) — ~15 аутов, часто фаворит против одной пары. Рейзуй: максимум fold equity + огромное эквити.'}
+   coach:'Комбо-дро (флеш + стрит) — ~15 аутов, часто фаворит против одной пары. Рейзуй: максимум fold equity + огромное эквити.'},
+  {id:'trips_value',concept:'Велью трипсом',diff:2,facing:false,best:'raise',handLabel:'Трипс',boardLabel:'парный',
+   build(d){const X=oneOf(['Q','J','T','9','8']);const k=oneOf(RANKS.filter(r=>RVAL[r]>=9&&r!==X));const h=[d.takeRank(X),d.takeRank(k)];const low=oneOf(RANKS.filter(r=>RVAL[r]<RVAL[X]&&r!==k));const su=shuffle(['s','h','d','c']);const board=[d.takeRC(X,su[0]),d.takeRC(X,su[1]),d.takeRC(low,su[2])];return {hero:h,board,oop:false};},
+   coach:'Трипс на парном борде — сильное велью. Ставь: оплатят топ-пары и дро, рука почти всегда впереди.'},
+  {id:'flush_made',concept:'Велью флешем',diff:2,facing:true,best:'raise',handLabel:'Флеш',boardLabel:'три одной масти',
+   build(d){const su=oneOf(['s','h','d','c']);const h=[d.takeSuit(su,['A','K','Q']),d.takeSuit(su,['J','T','9','8'])];const board=[d.takeSuit(su,['7','6','5','4','3','2']),d.takeSuit(su,['7','6','5','4','3','2']),d.takeSuit(su,['9','8','7','6','5'])];return {hero:h,board,oop:true};},
+   coach:'Собранный флеш — почти натс. Рейзуй за велью: оплатят сеты, две пары и младшие флеши.'},
+  {id:'straight_made',concept:'Велью стритом',diff:2,facing:true,best:'raise',handLabel:'Стрит',boardLabel:'связанный',
+   build(d){const base=oneOf([9,10,11]);const h=[d.takeRank(RCHAR[base]),d.takeRank(RCHAR[base-1])];const su=shuffle(['s','h','d','c']);const board=[d.takeRC(RCHAR[base-2],su[0]),d.takeRC(RCHAR[base-3],su[1]),d.takeRC(RCHAR[base-4],su[2])];return {hero:h,board,oop:false};},
+   coach:'Готовый стрит на связанном борде. Велью-рейз: платят две пары, сеты и младшие дро.'},
+  {id:'bluffcatch_call',concept:'Колл блефкэтчером',diff:3,facing:true,best:'call',handLabel:'Топ-пара (блефкэтчер)',boardLabel:'ривер, страшный',
+   build(d){const top=oneOf(['K','Q','J']);const kick=oneOf(RANKS.filter(r=>RVAL[r]>=8&&r!==top));const h=[d.takeRank(top),d.takeRank(kick)];const board=topBoard(d,top);board.push(d.takeRank(oneOf(['2','3','4','5'])));board.push(d.takeRank(oneOf(['6','7','8'])));return {hero:h,board,oop:true};},
+   coach:'На ривере топ-пара — блефкэтчер. Оппонент поляризован: фолд отдаёт банк блефам, рейз — самоубийство. Колл.'},
+  {id:'river_fold',concept:'Фолд на ривере',diff:2,facing:true,best:'fold',handLabel:'Слабая пара',boardLabel:'ривер, крупная ставка',
+   build(d){const mid=oneOf(['8','7','6']);const k=oneOf(['Q','J','T']);const h=[d.takeRank(mid),d.takeRank(k)];const su=shuffle(['s','h','d','c']);const board=[d.takeRC('A',su[0]),d.takeRC(oneOf(['K','Q']),su[1]),d.takeRC(mid,su[2]),d.takeRank(oneOf(['2','3','4'])),d.takeRank(oneOf(['9','5']))];return {hero:h,board,oop:true};},
+   coach:'Слабая пара против крупной ставки на ривере. Блефов тут мало — дисциплинированный фолд.'},
+  {id:'checkraise',concept:'Чек-рейз велью',diff:3,facing:true,best:'raise',handLabel:'Две пары (OOP)',boardLabel:'мокрый',
+   build(d){const r1=oneOf(['K','Q','J','T']),r2=oneOf(RANKS.filter(r=>RVAL[r]<RVAL[r1]&&RVAL[r]>=6));const h=[d.takeRank(r1),d.takeRank(r2)];const low=oneOf(RANKS.filter(r=>r!==r1&&r!==r2&&RVAL[r]<RVAL[r2]));const su=shuffle(['s','h','d','c']);const board=[d.takeRC(r1,su[0]),d.takeRC(r2,su[1]),d.takeRC(low,su[2])];return {hero:h,board,oop:true};},
+   coach:'Две пары вне позиции на мокром борде. Чек-рейз: набиваешь банк и защищаешься от дро.'},
+  {id:'turn_barrel',concept:'Второй ствол на тёрне',diff:2,facing:false,best:'raise',handLabel:'Топ-пара',boardLabel:'тёрн, безопасный',
+   build(d){const top=oneOf(['A','K','Q']);const kick=oneOf(RANKS.filter(r=>RVAL[r]>=9&&r!==top));const h=[d.takeRank(top),d.takeRank(kick)];const board=topBoard(d,top);board.push(d.takeRank(oneOf(['2','3','4','5'])));return {hero:h,board,oop:false};},
+   coach:'Топ-пара, тёрн не изменил борд. Второй ствол за велью: у оппонента куча худших пар и дро.'},
+  {id:'gutshot_fold',concept:'Фолд гатшота',diff:1,facing:true,best:'fold',handLabel:'Гатшот, без пары',boardLabel:'против крупной ставки',
+   build(d){const h=[d.takeRank(oneOf(['K','Q'])),d.takeRank(oneOf(['J','T']))];const su=shuffle(['s','h','d','c']);const board=[d.takeRC('A',su[0]),d.takeRC(oneOf(['9','8']),su[1]),d.takeRC(oneOf(['5','4','3']),su[2])];return {hero:h,board,oop:true};},
+   coach:'Голый гатшот (4 аута) против крупной ставки не получает шансов банка. Без имплайда — фолд.'},
+  {id:'set_river',concept:'Велью сетом на ривере',diff:2,facing:false,best:'raise',handLabel:'Сет',boardLabel:'ривер',
+   build(d){const pr=oneOf(['66','77','88','99','TT']);const h=[d.takeRank(pr[0]),d.takeRank(pr[0])];const board=dryLowBoard(d,RVAL[pr[0]]);board[2]=d.takeRank(pr[0]);board.push(d.takeRank(oneOf(['A','K'])));board.push(d.takeRank(oneOf(['2','3','4'])));return {hero:h,board,oop:false};},
+   coach:'Сет на ривере — почти всегда лучшая рука. Ставь за велью: чек упустит ценность от топ-пар и две пары.'}
 ];
 function genPostflop(diffCap){
   diffCap=diffCap||3;const cand=ARCH.filter(a=>a.diff<=diffCap);const a=oneOf(cand);const d=newDeck();
@@ -717,22 +815,27 @@ function choose(key){
   document.querySelectorAll('#actionbar .abtn').forEach(b=>{if(!b.classList.contains('ghost'))b.disabled=true;});
   const sp=curSpot;const g=sp.grade(key);
   const isBoss=session.type==='career'&&session.idx===session.n-1;
+  const lvlBefore=levelOf(profile.xp);
   const delta=applyResult(sp.mode||session.modeKey,g.correct,(sp.oppR||1050)+(isBoss?120:0),sp.concept);
-  $('tbRating').textContent=profile.rating;
-  // combo + score
-  if(g.correct){session.combo++;session.maxCombo=Math.max(session.maxCombo,session.combo);session.score+=100*Math.min(session.combo,5)*(isBoss?2:1);}
-  else{session.combo=0;
-    // life loss in career
-    if(session.type==='career'){session.lives--;session.mistakes++;$('stage').classList.add('shake');}
-    // queue mistake for review
+  countUp($('tbRating'),profile.rating);
+  fxFlash(g.correct?'g':'r');
+  if(g.correct){
+    session.combo++;session.maxCombo=Math.max(session.maxCombo,session.combo);
+    const pts=100*Math.min(session.combo,5)*(isBoss?2:1);session.score+=pts;
+    if(session.type==='survival')session.survived++;
+    fxBurst(false);floatPts('+'+pts);
+    const cb=$('gCombo');cb.classList.remove('bump');void cb.offsetWidth;cb.classList.add('bump');
+  } else {
+    session.combo=0;
+    if(session.livesMax>0){session.lives--;session.mistakes=(session.mistakes||0)+1;$('stage').classList.add('shake');}
     if(['rfi','vsopen','postflop','potodds'].includes(sp.mode)){profile.mistakes.unshift({mode:sp.mode,archId:sp.archId||null,concept:sp.concept});profile.mistakes=profile.mistakes.slice(0,30);saveProfile();}
   }
-  // if review and correct, drop from queue
   if(session.type==='review'&&g.correct&&profile.mistakes.length){profile.mistakes.shift();saveProfile();}
+  trackQuest('hands',1);if(g.correct)trackQuest('mode_correct',1,sp.mode||session.modeKey);trackQuest('streak',profile.streak);if(session.combo>=5)trackQuest('combo5',1);
   session.results.push({sp,choice:key,correct:g.correct,delta});
+  if(levelOf(profile.xp)>lvlBefore)queueModal({ic:'⭐',tag:'Новый уровень',name:'Уровень '+levelOf(profile.xp),desc:'Ты становишься сильнее. Так держать!'});
   checkAch();updateHUD();
-  // career bust check
-  if(session.type==='career'&&session.lives<=0){showFeedback(sp,g,delta,true);return;}
+  if(session.livesMax>0&&session.lives<=0){showFeedback(sp,g,delta,true);return;}
   showFeedback(sp,g,delta,false);
 }
 function showFeedback(sp,g,delta,bust){
@@ -779,7 +882,13 @@ function endSession(bust){
   const totalDelta=r.reduce((s,x)=>s+x.delta,0);
   const T=$('resTitle'),ST=$('resStars'),SUB=$('resSub'),ACT=$('resActions');
   ST.textContent='';
-  if(session.type==='career'){
+  if(session.type==='survival'){
+    const survived=session.survived||ok;const rec=survived>(profile.surBest||0);profile.surBest=Math.max(profile.surBest||0,survived);saveProfile();
+    T.textContent='💀 SURVIVAL';T.className='mid';
+    SUB.innerHTML='Продержался <b>'+survived+'</b> верных подряд'+(rec&&survived>0?' · 🏆 новый рекорд!':' · рекорд '+(profile.surBest||0));
+    if(survived>=8)fxBurst(true);
+    ACT.innerHTML='<button class="again" onclick="startSurvival()">Ещё раз</button><button class="home" onclick="nav(\'home\')">В меню</button>';
+  } else if(session.type==='career'){
     const st=STAKES[session.stakeIdx];
     if(bust){T.textContent='ВЫЛЕТ 💥';T.className='bad';SUB.innerHTML='Закончились жизни на '+st.nm+'. Попробуй ещё раз.';ACT.innerHTML='<button class="again" onclick="startCareer('+session.stakeIdx+')">Реванш</button><button class="home" onclick="nav(\'career\')">К карте</button>';}
     else{
@@ -792,7 +901,9 @@ function endSession(bust){
         profile.career.stars[session.stakeIdx]=Math.max(profile.career.stars[session.stakeIdx]||0,stars);
         if(session.stakeIdx===profile.career.stake&&session.stakeIdx<STAKES.length-1)profile.career.stake++;
         if(session.mistakes===0)_flawlessFlag=true;
-        profile.rating+=15;saveProfile();checkAch();_flawlessFlag=false;
+        profile.rating+=15;saveProfile();trackQuest('career_pass',1);fxBurst(true);
+        queueModal({ic:stars===3?'🏆':'🪜',tag:'Лимит пройден',name:st.nm+' ✓',desc:'Получено '+stars+'★. '+(profile.career.stake<STAKES.length?'Открыт новый лимит!':'Все лимиты пройдены!'),reward:'+15 рейтинга'});
+        checkAch();_flawlessFlag=false;
         ACT.innerHTML=(profile.career.stake<STAKES.length?'<button class="next" onclick="startCareer('+Math.min(session.stakeIdx+1,STAKES.length-1)+')">Следующий лимит ›</button>':'')+'<button class="home" onclick="nav(\'career\')">К карте</button>';
       }else{
         SUB.innerHTML+=' · нужно ≥60%';ACT.innerHTML='<button class="again" onclick="startCareer('+session.stakeIdx+')">Ещё раз</button><button class="home" onclick="nav(\'career\')">К карте</button>';
@@ -802,6 +913,8 @@ function endSession(bust){
     T.textContent=acc>=70?'GREAT SUCCESS!':'GOOD FIGHT!';T.className=acc>=70?'':'mid';
     SUB.innerHTML='Точность <b>'+acc+'%</b> · макс. комбо x'+Math.min(session.maxCombo||1,9);
     ACT.innerHTML='<button class="again" onclick="replaySession()">Ещё раз</button><button class="home" onclick="nav(\'home\')">В меню</button>';
+    if(acc>=80)trackQuest('session80',1);
+    if(acc>=70)fxBurst(true);
     if(session.type==='daily')handleDaily();
   }
   $('resStats').innerHTML='<div class="s"><div class="v g">'+ok+'/'+r.length+'</div><div class="l">Верно</div></div><div class="s"><div class="v gold">'+(totalDelta>=0?'+':'')+totalDelta+'</div><div class="l">Рейтинг</div></div><div class="s"><div class="v">'+profile.rating+'</div><div class="l">Итог</div></div>';
@@ -814,7 +927,7 @@ function endSession(bust){
     list.appendChild(row);});
   renderHome();
 }
-function replaySession(){if(!session)return;if(session.type==='drill')startDrill(session.modeKey);else if(session.type==='daily')startDaily();else if(session.type==='review')startReview();}
+function replaySession(){if(!session)return;if(session.type==='drill')startDrill(session.modeKey);else if(session.type==='daily')startDaily();else if(session.type==='review')startReview();else if(session.type==='survival')startSurvival();}
 function handleDaily(){const today=new Date().toISOString().slice(0,10);if(profile.lastDaily!==today){const y=new Date(Date.now()-86400000).toISOString().slice(0,10);profile.dailyStreak=(profile.lastDaily===y)?(profile.dailyStreak||0)+1:1;profile.lastDaily=today;profile.rating+=10;saveProfile();checkAch();setTimeout(()=>toast('Daily +10 · стрик '+profile.dailyStreak+' 🔥'),400);}}
 
 /* ===== MEMORIZE ===== */
@@ -837,8 +950,13 @@ function memCheck(){const gto=RFI[memPos];let hit=0,miss=0,extra=0;gto.forEach(h
 
 /* ===== HOF ===== */
 const BOTS=[{n:'CharlieChan',r:2180},{n:'ze tov',r:2040},{n:'frogg',r:1960},{n:'Skitmo',r:1880},{n:'KingAko',r:1790},{n:'kate_b03',r:1680},{n:'Pit',r:1610},{n:'Lenylson',r:1540},{n:'Ori Levin',r:1470},{n:'donk_slayer',r:1390},{n:'fish_chips',r:1320},{n:'nitreg',r:1240},{n:'callstation',r:1150},{n:'newbie_joe',r:1020}];
-function renderHof(){const arr=BOTS.map(b=>({...b})).concat([{n:'ТЫ',r:profile.rating,me:true}]).sort((a,b)=>b.r-a.r);const w=$('hofList');w.innerHTML='';
-  arr.forEach((x,i)=>{const row=document.createElement('div');row.className='hof-row'+(x.me?' me':'');row.innerHTML='<div class="rk">#'+(i+1)+'</div><div class="av">'+(x.me?'🦈':'🐟')+'</div><div class="nm">'+x.n+'</div><div class="pts">'+x.r+'</div><div class="rank">'+tierName(x.r)+'</div>';w.appendChild(row);});}
+function renderHof(){renderDivBanner();const arr=BOTS.map(b=>({...b})).concat([{n:'ТЫ',r:profile.rating,me:true}]).sort((a,b)=>b.r-a.r);const w=$('hofList');w.innerHTML='';
+  const promoN=3,relegN=3;
+  arr.forEach((x,i)=>{
+    if(i===0){const z=document.createElement('div');z.className='zoneline p';z.innerHTML='<i></i>зона повышения<i></i>';w.appendChild(z);}
+    if(i===arr.length-relegN){const z=document.createElement('div');z.className='zoneline r';z.innerHTML='<i></i>зона понижения<i></i>';w.appendChild(z);}
+    const row=document.createElement('div');row.className='hof-row'+(x.me?' me':'')+(i<promoN?' promo':'')+(i>=arr.length-relegN?' releg':'');
+    row.innerHTML='<div class="rk">#'+(i+1)+'</div><div class="av">'+(x.me?'🦈':'🐟')+'</div><div class="nm">'+x.n+'</div><div class="pts">'+x.r+'</div><div class="rank">'+tierName(x.r)+'</div>';w.appendChild(row);});}
 function hofTab(t,el){document.querySelectorAll('.tabs .tab').forEach(x=>x.classList.remove('active'));el.classList.add('active');renderHof();if(t!=='global')toast(t==='friends'?'Друзья (макет)':'Недельный (макет)');}
 
 /* ===== PROFILE / ACH ===== */
@@ -848,8 +966,61 @@ function renderProfile(){$('pRating').textContent=profile.rating;$('pTier').text
   const w=$('modeAcc');w.innerHTML='';['rfi','vsopen','postflop','potodds','memorize'].forEach(k=>{const bm=profile.byMode[k];const acc=bm&&bm.played?Math.round(bm.correct/bm.played*100):0;const pl=bm?bm.played:0;const el=document.createElement('div');el.className='ma';el.innerHTML='<div class="top"><span>'+MODE_NAMES[k]+'</span><span style="color:var(--muted)">'+(pl?acc+'% · '+pl:'—')+'</span></div><div class="bar"><i style="width:'+acc+'%"></i></div>';w.appendChild(el);});}
 function renderAch(){const w=$('achGrid');w.innerHTML='';ACH.forEach(a=>{const un=profile.achievements.includes(a.id);const el=document.createElement('div');el.className='ach'+(un?'':' locked');el.innerHTML='<div class="ic">'+(un?a.ic:'🔒')+'</div><div class="nm">'+a.nm+'</div><div class="ds">'+a.ds+'</div>';w.appendChild(el);});}
 
+/* ===== JUICE: confetti / flash / count-up / float ===== */
+const fxC=$('fx'),fxX=fxC.getContext('2d');let fxP=[],fxOn=false;
+function fxSize(){const a=$('app');fxC.width=a.clientWidth;fxC.height=a.clientHeight;}
+function fxBurst(big,cx,cy){fxSize();cx=cx==null?fxC.width/2:cx;cy=cy==null?fxC.height*0.4:cy;const n=big?120:42;const cols=['#ffcf4d','#34d17a','#4f8cff','#d05cff','#ff5b6e','#ffffff'];
+  for(let i=0;i<n;i++){const a=Math.random()*Math.PI*2,sp=2+Math.random()*(big?9:6);fxP.push({x:cx,y:cy,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp-3,g:.18,life:1,col:cols[rnd(cols.length)],sz:3+Math.random()*4,rot:Math.random()*6,vr:.2-Math.random()*.4});}
+  if(!fxOn){fxOn=true;requestAnimationFrame(fxLoop);}}
+function fxLoop(){fxX.clearRect(0,0,fxC.width,fxC.height);fxP=fxP.filter(p=>p.life>0);
+  fxP.forEach(p=>{p.vy+=p.g;p.x+=p.vx;p.y+=p.vy;p.life-=.014;p.rot+=p.vr;fxX.save();fxX.globalAlpha=Math.max(0,p.life);fxX.translate(p.x,p.y);fxX.rotate(p.rot);fxX.fillStyle=p.col;fxX.fillRect(-p.sz/2,-p.sz/2,p.sz,p.sz*1.6);fxX.restore();});
+  if(fxP.length)requestAnimationFrame(fxLoop);else{fxOn=false;fxX.clearRect(0,0,fxC.width,fxC.height);}}
+function fxFlash(cls){const f=$('flash');f.className=cls;setTimeout(()=>{f.className='';},170);}
+function floatPts(t){const st=$('stage');if(!st)return;const d=document.createElement('div');d.className='floatpts';d.textContent=t;st.appendChild(d);setTimeout(()=>d.remove(),1000);}
+function countUp(el,to){if(!el)return;to=Math.round(to);const from=parseInt((el.textContent||'').replace(/[^\d-]/g,''))||0;if(from===to){el.textContent=to;return;}const t0=performance.now();function s(t){const k=Math.min(1,(t-t0)/600);el.textContent=Math.round(from+(to-from)*(1-Math.pow(1-k,3)));if(k<1)requestAnimationFrame(s);}requestAnimationFrame(s);}
+
+/* ===== MODAL QUEUE ===== */
+let modalQ=[],modalOpen=false;
+function queueModal(m){modalQ.push(m);if(!modalOpen)showNextModal();}
+function showNextModal(){if(!modalQ.length){modalOpen=false;$('modalMask').classList.remove('show');return;}modalOpen=true;const m=modalQ.shift();
+  $('modalCard').innerHTML='<div class="mic">'+m.ic+'</div><div class="mt">'+m.tag+'</div><div class="mn">'+m.name+'</div><div class="md">'+m.desc+'</div>'+(m.reward?'<div class="mrw">'+m.reward+'</div>':'')+'<button class="mbtn" onclick="closeModal()">'+(m.btn||'Класс!')+'</button>';
+  $('modalMask').classList.add('show');fxBurst(true);}
+function closeModal(){$('modalMask').classList.remove('show');setTimeout(showNextModal,160);}
+
+/* ===== QUESTS ===== */
+const QUEST_POOL=[
+  {id:'play20',t:'Сыграй 20 рук',goal:20,track:'hands',rwt:'+60 XP',rw:{xp:60}},
+  {id:'streak7',t:'Серия из 7 верных',goal:7,track:'streak',set:true,rwt:'+10 рейтинга',rw:{rating:10}},
+  {id:'rfi10',t:'10 верных в Preflop RFI',goal:10,track:'mode_correct',mode:'rfi',rwt:'+60 XP',rw:{xp:60}},
+  {id:'post8',t:'8 верных в Postflop',goal:8,track:'mode_correct',mode:'postflop',rwt:'+60 XP',rw:{xp:60}},
+  {id:'pot8',t:'8 верных в Pot Odds',goal:8,track:'mode_correct',mode:'potodds',rwt:'+60 XP',rw:{xp:60}},
+  {id:'vs8',t:'8 верных в vs Open',goal:8,track:'mode_correct',mode:'vsopen',rwt:'+60 XP',rw:{xp:60}},
+  {id:'career1',t:'Пройди лимит карьеры',goal:1,track:'career_pass',rwt:'+14 рейтинга',rw:{rating:14}},
+  {id:'acc80',t:'Заверши сессию с 80%+',goal:1,track:'session80',rwt:'+80 XP',rw:{xp:80}},
+  {id:'combo5',t:'Достигни комбо x5',goal:1,track:'combo5',rwt:'+8 рейтинга',rw:{rating:8}}
+];
+const questDef=id=>QUEST_POOL.find(q=>q.id===id);
+function ensureQuests(){const today=new Date().toISOString().slice(0,10);if(!profile.quests||profile.quests.date!==today){profile.quests={date:today,list:shuffle(QUEST_POOL.slice()).slice(0,3).map(q=>({id:q.id,prog:0,claimed:false}))};saveProfile();}}
+function trackQuest(track,val,mode){if(!profile.quests)return;let ch=false;profile.quests.list.forEach(q=>{const d=questDef(q.id);if(!d||q.claimed||d.track!==track)return;if(d.track==='mode_correct'&&d.mode!==mode)return;const nv=d.set?Math.max(q.prog,val):Math.min(d.goal,q.prog+val);if(nv!==q.prog){q.prog=nv;ch=true;}});if(ch)saveProfile();}
+function claimQuest(id){const q=profile.quests.list.find(x=>x.id===id),d=questDef(id);if(!q||q.claimed||q.prog<d.goal)return;q.claimed=true;if(d.rw.xp)profile.xp+=d.rw.xp;if(d.rw.rating)profile.rating+=d.rw.rating;saveProfile();fxBurst(true);toast('Награда: '+d.rwt);renderQuests();renderHome();checkAch();}
+function renderQuests(){ensureQuests();const w=$('qList');w.innerHTML='';profile.quests.list.forEach(q=>{const d=questDef(q.id);const done=q.prog>=d.goal;const el=document.createElement('div');el.className='qitem';
+  el.innerHTML='<div class="top"><span class="nm">'+d.t+'</span><span class="rw">'+d.rwt+'</span></div><div class="bar"><i style="width:'+Math.min(100,q.prog/d.goal*100)+'%"></i></div><div class="pr"><span>'+Math.min(q.prog,d.goal)+' / '+d.goal+'</span><button class="claim'+(q.claimed?' done':'')+'" '+((!done||q.claimed)?'disabled':'')+' onclick="claimQuest(\''+q.id+'\')">'+(q.claimed?'Получено ✓':'Забрать')+'</button></div>';w.appendChild(el);});}
+function renderQuestMini(){ensureQuests();const claimed=profile.quests.list.filter(q=>q.claimed).length;const b=$('qBadge');if(b){b.textContent=claimed+'/3';b.className='badge'+(claimed===3?' done':'');}
+  const m=$('qMini');if(!m)return;m.innerHTML='';profile.quests.list.forEach(q=>{const d=questDef(q.id);const pct=Math.min(100,q.prog/d.goal*100);const col=q.claimed?'#2f9d68,#1f7a4d':(q.prog>=d.goal?'#ffcf4d,#e0a532':'#4f8cff,#7b5cff');
+    m.innerHTML+='<div style="font-size:11px;color:var(--muted);margin:4px 0 2px;display:flex;justify-content:space-between"><span>'+d.t+'</span><span>'+Math.min(q.prog,d.goal)+'/'+d.goal+(q.claimed?' ✓':'')+'</span></div><div style="height:6px;background:#0c1335;border-radius:4px;overflow:hidden"><i style="display:block;height:100%;width:'+pct+'%;background:linear-gradient(90deg,'+col+')"></i></div>';});}
+
+/* ===== DIVISIONS ===== */
+const DIVS=[{n:'Bronze',min:0,c:'#cd7f32'},{n:'Silver',min:1150,c:'#aab8cc'},{n:'Gold',min:1300,c:'#ffcf4d'},{n:'Platinum',min:1500,c:'#5fe0d0'},{n:'Diamond',min:1700,c:'#7db8ff'},{n:'Master',min:1900,c:'#d05cff'}];
+function divisionOf(r){let d=DIVS[0];DIVS.forEach(x=>{if(r>=x.min)d=x;});return d;}
+function renderDivBanner(){const b=$('divBanner');if(!b)return;const d=divisionOf(profile.rating),i=DIVS.indexOf(d),nx=DIVS[i+1];
+  b.style.background='linear-gradient(135deg,'+d.c+'2e,#16204f)';b.style.borderColor=d.c;
+  b.innerHTML='<div class="dlabel">Твой дивизион</div><div class="dname" style="color:'+d.c+'">'+d.n+'</div><div class="dnote">'+(nx?'До '+nx.n+': +'+(nx.min-profile.rating)+' рейтинга':'Высший дивизион! 👑')+'</div>';}
+
+/* ===== SURVIVAL ===== */
+function startSurvival(){session={type:'survival',modeKey:'mixed',gen:()=>genMixed(3),n:999,idx:0,results:[],combo:0,maxCombo:0,lives:3,livesMax:3,score:0,survived:0};beginSession('💀 Survival');}
+
 /* ===== INIT ===== */
-renderHome();
+ensureQuests();renderHome();fxSize();window.addEventListener('resize',fxSize);
 setTimeout(()=>{const s=$('splash');if(s){s.style.opacity='0';setTimeout(()=>s.remove(),520);}},1100);
 </script>
 </body>
