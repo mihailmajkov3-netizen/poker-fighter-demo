@@ -420,6 +420,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;b
 .pseat .pinfo{background:rgba(8,14,40,.82);border-radius:9px;padding:2px 8px;text-align:center;line-height:1.2}
 .pseat .ppos{font-size:11px;font-weight:800}.pseat .pstk{font-size:9px;color:var(--gold)}
 .pseat.hero .ppos{color:#7fe0a8}.pseat.aggr .ppos{color:#ff97a4}
+.pseat.folded{opacity:.5}
+.pseat.folded .pav{filter:grayscale(.85) brightness(.62);border-color:#3a4360;box-shadow:none}
+.pseat.folded .cardback{background:repeating-linear-gradient(45deg,#6a5538,#6a5538 3px,#473826 3px,#473826 6px);border-color:#7a6848;opacity:.7}
+.pseat.folded .pstk{color:#8a93b5}
 .praisetag{position:absolute;top:-13px;background:#c2364a;color:#fff;font-size:9px;font-weight:800;padding:2px 8px;border-radius:6px;white-space:nowrap;animation:pop .3s ease backwards}
 .pdealer{position:absolute;transform:translate(-50%,-50%);width:18px;height:18px;border-radius:50%;background:#fff;color:#1a2350;font-size:11px;font-weight:900;display:flex;align-items:center;justify-content:center;z-index:3;box-shadow:0 2px 4px rgba(0,0,0,.5)}
 .pchip{position:absolute;transform:translate(-50%,-50%);display:flex;align-items:center;gap:3px;background:rgba(8,14,40,.8);padding:2px 7px;border-radius:10px;font-size:9px;font-weight:700;color:#ffe89a;z-index:2;animation:chipDrop .4s ease backwards}
@@ -751,11 +755,13 @@ VIEW.preflop=function(sp,stage){
   const ORDER=['BTN','SB','BB','UTG','HJ','CO'];
   const SLOT=[[50,80],[14,62],[14,24],[50,13],[86,24],[86,62]];
   const heroIdx=ORDER.indexOf(sp.pos);
+  const ACT=['UTG','HJ','CO','BTN','SB','BB'];const heroAct=ACT.indexOf(sp.pos);
   const seatByPos={};for(let i=0;i<6;i++){seatByPos[ORDER[(heroIdx+i+6)%6]]=SLOT[i];}
   ORDER.forEach(pos=>{
     const isHero=pos===sp.pos,isAggr=pos===sp.opener;const xy=seatByPos[pos],x=xy[0],y=xy[1];
+    const folded=!isHero&&!isAggr&&ACT.indexOf(pos)<heroAct;
     const ord=(ORDER.indexOf(pos)-heroIdx+6)%6;
-    const seat=document.createElement('div');seat.className='pseat'+(isHero?' hero':'')+(isAggr?' aggr':'');
+    const seat=document.createElement('div');seat.className='pseat'+(isHero?' hero':'')+(isAggr?' aggr':'')+(folded?' folded':'');
     seat.style.left=x+'%';seat.style.top=y+'%';seat.style.animationDelay=(ord*0.07)+'s';
     seat.innerHTML=(isAggr?'<div class="praisetag" style="animation-delay:.95s">RAISE</div>':'')+'<div class="pav">'+(isHero?profile.avatar:oneOf(BOTAV))+'</div><div class="pinfo"><div class="ppos">'+pos+'</div><div class="pstk">100bb</div></div>';
     if(isHero){const hc=document.createElement('div');hc.style.cssText='display:flex;gap:3px;margin-top:2px';hc.appendChild(cardEl(sp.hand.c1,'sm'));hc.appendChild(cardEl(sp.hand.c2,'sm'));[...hc.children].forEach((c,ci)=>c.style.animationDelay=(1.0+ci*0.1)+'s');seat.appendChild(hc);}
