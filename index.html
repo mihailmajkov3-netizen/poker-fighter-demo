@@ -744,7 +744,7 @@ VIEW.preflop=function(sp,stage){
   const tw=document.createElement('div');tw.className='table-wrap pf-oval';
   const tc=themeColors(profile.theme);tw.style.background='radial-gradient(120% 90% at 50% 42%,'+tc[0]+' 0%,'+tc[1]+' 45%,'+tc[2]+' 100%)';
   const ORDER=['BTN','SB','BB','UTG','HJ','CO'];
-  const SLOT=[[50,80],[86,62],[86,24],[50,13],[14,24],[14,62]];
+  const SLOT=[[50,80],[14,62],[14,24],[50,13],[86,24],[86,62]];
   const heroIdx=ORDER.indexOf(sp.pos);
   const seatByPos={};for(let i=0;i<6;i++){seatByPos[ORDER[(heroIdx+i+6)%6]]=SLOT[i];}
   ORDER.forEach(pos=>{
