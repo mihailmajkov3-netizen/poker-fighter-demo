@@ -274,6 +274,59 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;b
 .mastery .ma .lvl{font-size:10px;color:var(--gold);font-weight:800}
 .challengecard{display:flex;align-items:center;gap:12px;background:linear-gradient(135deg,#5a1f4a,#3a1430);border:1px solid #7a2d63;border-radius:14px;padding:13px;margin:9px 14px 0;cursor:pointer}
 .challengecard .ic{font-size:24px}.challengecard .tx{flex:1}.challengecard .tx .nm{font-weight:800;font-size:14px}.challengecard .tx .ds{font-size:11px;color:#e6b8d8;margin-top:2px}
+
+/* coin pill */
+.coinpill{display:flex;align-items:center;gap:4px;font-weight:800;color:#ffd98a;font-size:13px;background:#0e1640;border:1px solid var(--line);border-radius:20px;padding:4px 10px;cursor:pointer}
+.topbar .right2{display:flex;align-items:center;gap:8px}
+
+/* onboarding */
+#onb{position:absolute;inset:0;z-index:700;background:radial-gradient(120% 80% at 50% 28%,#26318a,#0a1230 70%);display:none;flex-direction:column;align-items:center;justify-content:center;padding:30px;text-align:center}
+#onb.show{display:flex}
+#onb .oic{font-size:66px;animation:pulse 1.8s ease-in-out infinite}
+#onb h2{font-size:25px;font-weight:900;margin:14px 0 8px;line-height:1.2}
+#onb p{color:var(--muted);font-size:15px;line-height:1.6;max-width:320px}
+#onb .dots{display:flex;gap:7px;margin:22px 0 6px}
+#onb .dots i{width:8px;height:8px;border-radius:50%;background:#2c3a7d;transition:.3s}
+#onb .dots i.on{background:var(--gold);width:22px;border-radius:5px}
+#onb .nameinp{margin-top:14px;width:100%;max-width:300px;padding:14px;border-radius:12px;border:1px solid var(--line);background:#0e1640;color:#fff;font-size:16px;text-align:center;outline:none}
+#onb .nameinp:focus{border-color:var(--accent)}
+#onb .obtn{margin-top:22px;width:100%;max-width:300px;border:none;border-radius:14px;padding:15px;font-weight:800;font-size:16px;color:#fff;background:linear-gradient(180deg,#4f8cff,#3567d6);cursor:pointer}
+#onb .skip{margin-top:12px;color:var(--muted);font-size:13px;cursor:pointer}
+#onb .avrow{display:flex;gap:9px;flex-wrap:wrap;justify-content:center;margin-top:14px;max-width:310px}
+#onb .avopt{width:50px;height:50px;border-radius:50%;background:#1a2350;border:2px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:25px;cursor:pointer}
+#onb .avopt.sel{border-color:var(--gold);background:#3a2e6e;transform:scale(1.08)}
+
+/* lessons */
+.learn-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:10px 14px 24px}
+.lcard{background:linear-gradient(180deg,#1b2868,#16204f);border:1px solid var(--line);border-radius:14px;padding:15px;cursor:pointer;position:relative;min-height:108px;display:flex;flex-direction:column;justify-content:space-between}
+.lcard:active{transform:scale(.97)}.lcard .lic{font-size:28px}.lcard .lt{font-weight:800;font-size:14px;margin-top:8px;line-height:1.2}
+.lcard .done{position:absolute;top:10px;right:12px;color:var(--green);font-size:15px}
+.reader{flex:1;display:flex;flex-direction:column;padding:18px 18px 0}
+.reader .rdots{display:flex;gap:6px;justify-content:center;margin-bottom:18px}
+.reader .rdots i{width:7px;height:7px;border-radius:50%;background:#2c3a7d}.reader .rdots i.on{background:var(--gold);width:18px;border-radius:4px}
+.reader .ric{font-size:48px;text-align:center}
+.reader h3{font-size:21px;font-weight:900;text-align:center;margin:12px 0 14px}
+.reader .rtext{font-size:15px;line-height:1.7;color:#d8e0fb;background:#0e1640;border-radius:14px;padding:18px;border:1px solid var(--line)}
+.reader-act{display:flex;gap:8px;padding:16px 16px calc(16px + env(safe-area-inset-bottom))}
+.reader-act button{flex:1;border:none;border-radius:13px;padding:14px;font-weight:800;font-size:15px;color:#fff;cursor:pointer}
+.reader-act .prev{background:linear-gradient(180deg,#5a6488,#434c70);flex:0 0 90px}.reader-act .next{background:linear-gradient(180deg,#4f8cff,#3567d6)}
+
+/* shop */
+.shopbal{margin:14px;padding:16px;border-radius:16px;text-align:center;background:linear-gradient(135deg,#2a2440,#171f50);border:1px solid var(--line)}
+.shopbal .v{font-size:30px;font-weight:900;color:#ffd98a}.shopbal .l{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px}
+.shop-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:6px 14px}
+.sitem{background:linear-gradient(180deg,#1b2868,#16204f);border:1px solid var(--line);border-radius:14px;padding:12px 6px;text-align:center;cursor:pointer;position:relative}
+.sitem.equipped{border-color:var(--gold);box-shadow:0 0 0 1px var(--gold)}
+.sitem .se{font-size:30px}.sitem .sp{font-size:11px;font-weight:800;margin-top:6px;color:#ffd98a}.sitem .sp.free{color:var(--green)}.sitem .sp.eq{color:var(--gold)}
+.theme-prev{height:34px;border-radius:8px;margin-bottom:6px}
+.sname{font-size:11px;font-weight:700}
+
+/* settings */
+.setrow{display:flex;justify-content:space-between;align-items:center;margin:8px 14px;padding:14px 16px;border-radius:12px;background:#16204f;border:1px solid var(--line);font-weight:600;cursor:pointer}
+.toggle{width:46px;height:26px;border-radius:14px;background:#2c3a7d;position:relative;transition:.2s;flex:0 0 auto}
+.toggle.on{background:var(--green)}
+.toggle i{position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:.2s}
+.toggle.on i{left:23px}
 </style>
 </head>
 <body>
@@ -282,14 +335,14 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;b
   <div class="topbar">
     <div class="burger" onclick="openDrawer()"><span></span><span></span><span></span></div>
     <div class="tb-title" id="tbTitle">Poker Fighter</div>
-    <div class="tb-rating" onclick="nav('profile')"><span>📊</span><span id="tbRating">1000</span></div>
+    <div class="right2"><span class="coinpill" id="coinPill" onclick="nav('shop')">🪙 0</span><div class="tb-rating" onclick="nav('profile')"><span>📊</span><span id="tbRating">1000</span></div></div>
   </div>
   <main id="screens">
 
     <div class="screen active" id="screen-home">
       <div class="body">
         <div class="phead">
-          <div class="row1"><div class="ava">🦈</div><div class="who"><div class="nm">Ты</div><div class="tier" id="hTier">Goldfish</div></div><div class="rt"><div class="v" id="hRating">1000</div><div class="l">Rating</div></div></div>
+          <div class="row1"><div class="ava" id="hAva">🦈</div><div class="who"><div class="nm" id="hName">Ты</div><div class="tier" id="hTier">Goldfish</div></div><div class="rt"><div class="v" id="hRating">1000</div><div class="l">Rating</div></div></div>
           <div class="xpwrap"><div class="xprow"><span id="hLevel">Уровень 1</span><span id="hXp">0 / 600 XP</span></div><div class="xp"><i id="hXpFill" style="width:0%"></i></div></div>
           <div class="chips"><div class="chip"><div class="v" id="hHands">0</div><div class="l">Рук</div></div><div class="chip"><div class="v" id="hAcc">—</div><div class="l">Точность</div></div><div class="chip"><div class="v" id="hStreak">0🔥</div><div class="l">Рекорд</div></div></div>
         </div>
@@ -300,6 +353,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;b
         <div class="modes" id="modeList"></div>
         <div class="section-h">Испытания</div>
         <div class="challengecard" onclick="startSurvival()"><div class="ic">💀</div><div class="tx"><div class="nm">Survival</div><div class="ds">Бесконечно, пока 3 ошибки. Сколько продержишься?</div></div><div class="go" style="color:#e6b8d8;font-size:18px">›</div></div>
+        <div class="section-h">Обучение</div>
+        <div class="mode" onclick="nav('learn')"><div class="ic">📚</div><div class="tx"><div class="nm">Теория покера</div><div class="ds">Короткие уроки: позиции, диапазоны, EV, оддсы</div></div><div class="acc" id="learnProg">0/6</div><div class="go">›</div></div>
       </div>
       <div class="bottomnav">
         <div class="nv active" onclick="nav('home',this)"><span class="ic">🏠</span>Home</div>
@@ -354,11 +409,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;b
 
     <div class="screen" id="screen-profile">
       <div class="body">
-        <div class="pf-card"><div class="ava">🦈</div><div class="rt" id="pRating">1000</div><div class="tier" id="pTier">Goldfish · Уровень 1</div></div>
+        <div class="pf-card"><div class="ava" id="pAva">🦈</div><div style="font-weight:800;font-size:18px;margin-bottom:6px" id="pName">Игрок</div><div class="rt" id="pRating">1000</div><div class="tier" id="pTier">Goldfish · Уровень 1</div></div>
         <div class="statgrid"><div class="s"><div class="v" id="pHands">0</div><div class="l">Сыграно рук</div></div><div class="s"><div class="v gold" id="pAcc">—</div><div class="l">Точность</div></div><div class="s"><div class="v" id="pStreak">0</div><div class="l">Лучший стрик</div></div><div class="s"><div class="v" id="pXp">0</div><div class="l">Всего XP</div></div></div>
         <div class="linkrow" onclick="nav('ach')"><span>🏆 Достижения</span><span id="achCount" style="color:var(--muted)">0/12</span></div>
+        <div class="linkrow" onclick="nav('shop')"><span>🛒 Магазин</span><span style="color:#ffd98a" id="pCoins">🪙 0</span></div>
+        <div class="linkrow" onclick="nav('settings')"><span>⚙️ Настройки</span><span style="color:var(--muted)">›</span></div>
         <div class="section-h">Точность по режимам</div><div class="modeacc" id="modeAcc"></div>
-        <div class="resetbtn" onclick="resetProfile()">Сбросить прогресс</div>
       </div>
       <div class="bottomnav"><div class="nv" onclick="nav('home',this)"><span class="ic">🏠</span>Home</div><div class="nv" onclick="nav('career',this)"><span class="ic">🪜</span>Карьера</div><div class="nv" onclick="nav('hof',this)"><span class="ic">🏅</span>Лиги</div><div class="nv active"><span class="ic">👤</span>Профиль</div></div>
     </div>
@@ -373,7 +429,40 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;b
       <div class="body"><div class="qlist" id="qList"></div></div>
     </div>
 
+    <div class="screen" id="screen-learn">
+      <div class="game-meta"><span class="hcount">Теория</span><span class="mid">Уроки покера</span><span class="x" onclick="nav('home')"><span class="ic">✕</span></span></div>
+      <div class="body"><div class="learn-grid" id="learnGrid"></div></div>
+    </div>
+
+    <div class="screen" id="screen-lesson">
+      <div class="game-meta"><span class="hcount" id="lsTitle">Урок</span><span class="mid"></span><span class="x" onclick="nav('learn')"><span class="ic">✕</span></span></div>
+      <div class="reader" id="lsReader"></div>
+      <div class="reader-act"><button class="prev" id="lsPrev" onclick="lessonPrev()">‹</button><button class="next" id="lsNext" onclick="lessonNext()">Дальше ›</button></div>
+    </div>
+
+    <div class="screen" id="screen-shop">
+      <div class="game-meta"><span class="hcount">Магазин</span><span class="mid">Аватары и темы</span><span class="x" onclick="nav('home')"><span class="ic">✕</span></span></div>
+      <div class="body">
+        <div class="shopbal"><div class="v" id="shopCoins">🪙 0</div><div class="l">Монеты · зарабатывай за верные решения</div></div>
+        <div class="section-h">Аватары</div><div class="shop-grid" id="shopAv"></div>
+        <div class="section-h">Темы стола</div><div class="shop-grid" id="shopTh"></div>
+        <div style="height:24px"></div>
+      </div>
+    </div>
+
+    <div class="screen" id="screen-settings">
+      <div class="game-meta"><span class="hcount">Настройки</span><span class="mid"></span><span class="x" onclick="nav('profile')"><span class="ic">✕</span></span></div>
+      <div class="body">
+        <div class="setrow" onclick="toggleSnd('soundOn',this)"><span>🔊 Звук</span><div class="toggle" id="tgSound"><i></i></div></div>
+        <div class="setrow" onclick="toggleSnd('hapticsOn',this)"><span>📳 Вибрация</span><div class="toggle" id="tgHap"><i></i></div></div>
+        <div class="setrow" onclick="editName()"><span>✏️ Изменить имя</span><span style="color:var(--muted)" id="setName">Игрок</span></div>
+        <div class="setrow" onclick="replayTutorial()"><span>🎓 Пройти обучение заново</span><span style="color:var(--muted)">›</span></div>
+        <div class="resetbtn" onclick="resetProfile()">Сбросить прогресс</div>
+      </div>
+    </div>
+
   </main>
+  <div id="onb"></div>
   <div id="flash"></div>
   <canvas id="fx"></canvas>
   <div class="modal-mask" id="modalMask"><div class="modalcard" id="modalCard"></div></div>
@@ -385,6 +474,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;b
     <div class="di" onclick="nav('hof');closeDrawer()"><span class="ic">🏅</span>Лиги</div>
     <div class="di" onclick="nav('ach');closeDrawer()"><span class="ic">🏆</span>Достижения</div>
     <div class="di" onclick="startDaily();closeDrawer()"><span class="ic">⚡</span>Daily Fight</div>
+    <div class="di" onclick="nav('learn');closeDrawer()"><span class="ic">📚</span>Теория</div>
+    <div class="di" onclick="nav('shop');closeDrawer()"><span class="ic">🛒</span>Магазин</div>
+    <div class="di" onclick="nav('settings');closeDrawer()"><span class="ic">⚙️</span>Настройки</div>
     <div class="di" onclick="toast('Pro: солвер-споты, поляризованные диапазоны');closeDrawer()"><span class="ic">⭐</span>Upgrade to Pro</div>
   </div>
   <div class="toast" id="toast"></div>
@@ -458,7 +550,7 @@ const VS_RAW=[
 const MODE_NAMES={rfi:'Preflop RFI',vsopen:'vs Open',postflop:'Postflop',potodds:'Pot Odds',memorize:'Range Trainer',mixed:'Микс'};
 let profile=loadProfile();
 function loadProfile(){let p={};try{p=JSON.parse(localStorage.getItem('pf_profile_v2'))||{};}catch(e){}
-  return Object.assign({rating:1000,xp:0,hands:0,correct:0,streak:0,bestStreak:0,byMode:{},byConcept:{},career:{stake:0,stars:{}},achievements:[],mistakes:[],lastDaily:null,dailyStreak:0,quests:null,surBest:0},p);}
+  return Object.assign({rating:1000,xp:0,hands:0,correct:0,streak:0,bestStreak:0,byMode:{},byConcept:{},career:{stake:0,stars:{}},achievements:[],mistakes:[],lastDaily:null,dailyStreak:0,quests:null,surBest:0,name:'Игрок',avatar:'🦈',onboarded:false,coins:0,owned:['🦈'],ownedThemes:['green'],theme:'green',soundOn:true,hapticsOn:true,lessonsRead:[]},p);}
 function saveProfile(){try{localStorage.setItem('pf_profile_v2',JSON.stringify(profile));}catch(e){}}
 function tierName(r){if(r>=2100)return 'Poseidon';if(r>=1900)return 'Jellyfish';if(r>=1750)return 'Junior Shark';if(r>=1600)return 'Squid';if(r>=1450)return 'Salmon';if(r>=1300)return 'Sea-Horse';if(r>=1150)return 'Nemo';if(r>=1000)return 'Goldfish';return 'Shrimp';}
 const levelOf=xp=>Math.floor(xp/600)+1;
@@ -522,7 +614,8 @@ function renderHome(){
       (isReview?(mistakes?'<div class="badge">'+mistakes+'</div><div class="go">›</div>':'<div class="go">🔒</div>'):'<div class="acc">'+acc+'<small>точность</small></div><div class="go">›</div>');
     wrap.appendChild(el);
   });
-  renderQuestMini();
+  renderQuestMini();applyIdentityUI();updateCoins();
+  const lp=$('learnProg');if(lp)lp.textContent=profile.lessonsRead.length+'/'+LESSONS.length;
 }
 
 /* ===== NAV ===== */
@@ -533,6 +626,9 @@ function nav(s){
   else if(s==='profile'){show('profile');setTitle('Профиль');renderProfile();}
   else if(s==='ach'){show('ach');setTitle('Достижения');renderAch();}
   else if(s==='quests'){show('quests');setTitle('Задания');renderQuests();}
+  else if(s==='learn'){show('learn');setTitle('Теория');renderLearn();}
+  else if(s==='shop'){show('shop');setTitle('Магазин');renderShop();}
+  else if(s==='settings'){show('settings');setTitle('Настройки');renderSettings();}
 }
 function quitGame(){if(confirm('Выйти из забега? Рейтинг по сыгранным рукам сохранится.'))nav('home');}
 
@@ -560,6 +656,7 @@ VIEW.potodds=function(sp,stage){
 };
 VIEW.table=function(sp,stage){
   const tw=document.createElement('div');tw.className='table-wrap';
+  const tc=themeColors(profile.theme);tw.style.background='radial-gradient(120% 90% at 50% 42%,'+tc[0]+' 0%,'+tc[1]+' 45%,'+tc[2]+' 100%)';
   tw.innerHTML='<div class="pot"><span class="lbl">POT</span>$'+sp.pot+'</div><div class="board" id="tb"></div><div class="hero-cards" id="th"></div>';
   stage.appendChild(tw);
   const b=tw.querySelector('#tb');sp.board.forEach(c=>b.appendChild(cardEl(c,'tbl')));
@@ -568,7 +665,7 @@ VIEW.table=function(sp,stage){
   function seat(name,label,stack,isHero){
     const p=POS[isHero?'Hero':name]||[50,50];const s=document.createElement('div');s.className='seat'+(isHero?' hero':'');s.style.left=p[0]+'%';s.style.top=p[1]+'%';
     const la=!isHero&&sp.lastacts&&sp.lastacts[label];
-    s.innerHTML=(la?'<div class="lastact la-'+la+'">'+la.toUpperCase()+'</div>':'')+'<div class="av">'+(isHero?'🦈':label.slice(0,2).toUpperCase())+'</div><div class="info"><div class="pos">'+label+'</div><div class="stk">$'+(stack!=null?stack:sp.heroStack)+'</div></div>';
+    s.innerHTML=(la?'<div class="lastact la-'+la+'">'+la.toUpperCase()+'</div>':'')+'<div class="av">'+(isHero?profile.avatar:label.slice(0,2).toUpperCase())+'</div><div class="info"><div class="pos">'+label+'</div><div class="stk">$'+(stack!=null?stack:sp.heroStack)+'</div></div>';
     tw.appendChild(s);
     if(!isHero&&sp.dealer===label){const d=document.createElement('div');d.className='dealerbtn';d.textContent='D';d.style.left=(p[0]+(p[0]>50?-13:13))+'%';d.style.top=(p[1]-6)+'%';tw.appendChild(d);}
     const bet=!isHero&&sp.bets&&sp.bets[label];
@@ -805,13 +902,15 @@ function renderCurrent(){
   s._cur=curSpot;updateHUD();
   const stage=$('stage');stage.innerHTML='';stage.classList.remove('shake');
   const fb=document.createElement('div');fb.className='fb';fb.id='fb';stage.appendChild(fb);
-  VIEW[curSpot.view](curSpot,stage);
+  VIEW[curSpot.view](curSpot,stage);SND.deal();
+  if(s.type==='tutorial'&&curSpot.tutHint)setTimeout(()=>toast(curSpot.tutHint),250);
   const bar=$('actionbar');bar.innerHTML='';
   if(curSpot.baseCoach||curSpot.coach){const g=document.createElement('button');g.className='abtn ghost';g.innerHTML='💡<br>ПОДСКАЗКА';g.onclick=()=>hint(curSpot);bar.appendChild(g);}
   curSpot.actions.forEach(a=>{const b=document.createElement('button');b.className='abtn '+a.cls;b.innerHTML=a.label+(a.sub?'<small>'+a.sub+'</small>':'');b.onclick=()=>choose(a.key);bar.appendChild(b);});
 }
 function hint(sp){toast('💡 '+(sp.baseCoach||sp.coach||'').split('.')[0]+'.');}
 function choose(key){
+  SND.tick();
   document.querySelectorAll('#actionbar .abtn').forEach(b=>{if(!b.classList.contains('ghost'))b.disabled=true;});
   const sp=curSpot;const g=sp.grade(key);
   const isBoss=session.type==='career'&&session.idx===session.n-1;
@@ -823,10 +922,11 @@ function choose(key){
     session.combo++;session.maxCombo=Math.max(session.maxCombo,session.combo);
     const pts=100*Math.min(session.combo,5)*(isBoss?2:1);session.score+=pts;
     if(session.type==='survival')session.survived++;
+    SND.correct();vibe(15);addCoins(3,true);
     fxBurst(false);floatPts('+'+pts);
     const cb=$('gCombo');cb.classList.remove('bump');void cb.offsetWidth;cb.classList.add('bump');
   } else {
-    session.combo=0;
+    session.combo=0;SND.wrong();vibe([35,25,35]);
     if(session.livesMax>0){session.lives--;session.mistakes=(session.mistakes||0)+1;$('stage').classList.add('shake');}
     if(['rfi','vsopen','postflop','potodds'].includes(sp.mode)){profile.mistakes.unshift({mode:sp.mode,archId:sp.archId||null,concept:sp.concept});profile.mistakes=profile.mistakes.slice(0,30);saveProfile();}
   }
@@ -877,6 +977,7 @@ function renderLadder(){
 
 /* ===== RESULTS ===== */
 function endSession(bust){
+  if(session.type==='tutorial'){nav('home');setTimeout(()=>queueModal({ic:'🎉',tag:'Готово',name:'Ты освоился!',desc:'Играй Карьеру, забирай задания и поднимайся в лигах. Удачи за столами!',btn:'Начать'}),250);return;}
   show('results');setTitle('Итоги');
   const r=session.results;const ok=r.filter(x=>x.correct).length;const acc=r.length?Math.round(ok/r.length*100):0;
   const totalDelta=r.reduce((s,x)=>s+x.delta,0);
@@ -901,7 +1002,7 @@ function endSession(bust){
         profile.career.stars[session.stakeIdx]=Math.max(profile.career.stars[session.stakeIdx]||0,stars);
         if(session.stakeIdx===profile.career.stake&&session.stakeIdx<STAKES.length-1)profile.career.stake++;
         if(session.mistakes===0)_flawlessFlag=true;
-        profile.rating+=15;saveProfile();trackQuest('career_pass',1);fxBurst(true);
+        profile.rating+=15;saveProfile();trackQuest('career_pass',1);addCoins(50,true);fxBurst(true);
         queueModal({ic:stars===3?'🏆':'🪜',tag:'Лимит пройден',name:st.nm+' ✓',desc:'Получено '+stars+'★. '+(profile.career.stake<STAKES.length?'Открыт новый лимит!':'Все лимиты пройдены!'),reward:'+15 рейтинга'});
         checkAch();_flawlessFlag=false;
         ACT.innerHTML=(profile.career.stake<STAKES.length?'<button class="next" onclick="startCareer('+Math.min(session.stakeIdx+1,STAKES.length-1)+')">Следующий лимит ›</button>':'')+'<button class="home" onclick="nav(\'career\')">К карте</button>';
@@ -956,11 +1057,12 @@ function renderHof(){renderDivBanner();const arr=BOTS.map(b=>({...b})).concat([{
     if(i===0){const z=document.createElement('div');z.className='zoneline p';z.innerHTML='<i></i>зона повышения<i></i>';w.appendChild(z);}
     if(i===arr.length-relegN){const z=document.createElement('div');z.className='zoneline r';z.innerHTML='<i></i>зона понижения<i></i>';w.appendChild(z);}
     const row=document.createElement('div');row.className='hof-row'+(x.me?' me':'')+(i<promoN?' promo':'')+(i>=arr.length-relegN?' releg':'');
-    row.innerHTML='<div class="rk">#'+(i+1)+'</div><div class="av">'+(x.me?'🦈':'🐟')+'</div><div class="nm">'+x.n+'</div><div class="pts">'+x.r+'</div><div class="rank">'+tierName(x.r)+'</div>';w.appendChild(row);});}
+    row.innerHTML='<div class="rk">#'+(i+1)+'</div><div class="av">'+(x.me?profile.avatar:'🐟')+'</div><div class="nm">'+(x.me?profile.name:x.n)+'</div><div class="pts">'+x.r+'</div><div class="rank">'+tierName(x.r)+'</div>';w.appendChild(row);});}
 function hofTab(t,el){document.querySelectorAll('.tabs .tab').forEach(x=>x.classList.remove('active'));el.classList.add('active');renderHof();if(t!=='global')toast(t==='friends'?'Друзья (макет)':'Недельный (макет)');}
 
 /* ===== PROFILE / ACH ===== */
 function renderProfile(){$('pRating').textContent=profile.rating;$('pTier').textContent=tierName(profile.rating)+' · Уровень '+levelOf(profile.xp);
+  $('pAva').textContent=profile.avatar;$('pName').textContent=profile.name;$('pCoins').textContent='🪙 '+(profile.coins||0);
   $('pHands').textContent=profile.hands;$('pAcc').textContent=profile.hands?Math.round(profile.correct/profile.hands*100)+'%':'—';$('pStreak').textContent=profile.bestStreak;$('pXp').textContent=profile.xp;
   $('achCount').textContent=profile.achievements.length+'/'+ACH.length;
   const w=$('modeAcc');w.innerHTML='';['rfi','vsopen','postflop','potodds','memorize'].forEach(k=>{const bm=profile.byMode[k];const acc=bm&&bm.played?Math.round(bm.correct/bm.played*100):0;const pl=bm?bm.played:0;const el=document.createElement('div');el.className='ma';el.innerHTML='<div class="top"><span>'+MODE_NAMES[k]+'</span><span style="color:var(--muted)">'+(pl?acc+'% · '+pl:'—')+'</span></div><div class="bar"><i style="width:'+acc+'%"></i></div>';w.appendChild(el);});}
@@ -984,8 +1086,8 @@ let modalQ=[],modalOpen=false;
 function queueModal(m){modalQ.push(m);if(!modalOpen)showNextModal();}
 function showNextModal(){if(!modalQ.length){modalOpen=false;$('modalMask').classList.remove('show');return;}modalOpen=true;const m=modalQ.shift();
   $('modalCard').innerHTML='<div class="mic">'+m.ic+'</div><div class="mt">'+m.tag+'</div><div class="mn">'+m.name+'</div><div class="md">'+m.desc+'</div>'+(m.reward?'<div class="mrw">'+m.reward+'</div>':'')+'<button class="mbtn" onclick="closeModal()">'+(m.btn||'Класс!')+'</button>';
-  $('modalMask').classList.add('show');fxBurst(true);}
-function closeModal(){$('modalMask').classList.remove('show');setTimeout(showNextModal,160);}
+  $('modalMask').classList.add('show');fxBurst(true);SND.win();}
+function closeModal(){SND.tick();$('modalMask').classList.remove('show');setTimeout(showNextModal,160);}
 
 /* ===== QUESTS ===== */
 const QUEST_POOL=[
@@ -1002,7 +1104,7 @@ const QUEST_POOL=[
 const questDef=id=>QUEST_POOL.find(q=>q.id===id);
 function ensureQuests(){const today=new Date().toISOString().slice(0,10);if(!profile.quests||profile.quests.date!==today){profile.quests={date:today,list:shuffle(QUEST_POOL.slice()).slice(0,3).map(q=>({id:q.id,prog:0,claimed:false}))};saveProfile();}}
 function trackQuest(track,val,mode){if(!profile.quests)return;let ch=false;profile.quests.list.forEach(q=>{const d=questDef(q.id);if(!d||q.claimed||d.track!==track)return;if(d.track==='mode_correct'&&d.mode!==mode)return;const nv=d.set?Math.max(q.prog,val):Math.min(d.goal,q.prog+val);if(nv!==q.prog){q.prog=nv;ch=true;}});if(ch)saveProfile();}
-function claimQuest(id){const q=profile.quests.list.find(x=>x.id===id),d=questDef(id);if(!q||q.claimed||q.prog<d.goal)return;q.claimed=true;if(d.rw.xp)profile.xp+=d.rw.xp;if(d.rw.rating)profile.rating+=d.rw.rating;saveProfile();fxBurst(true);toast('Награда: '+d.rwt);renderQuests();renderHome();checkAch();}
+function claimQuest(id){const q=profile.quests.list.find(x=>x.id===id),d=questDef(id);if(!q||q.claimed||q.prog<d.goal)return;q.claimed=true;if(d.rw.xp)profile.xp+=d.rw.xp;if(d.rw.rating)profile.rating+=d.rw.rating;addCoins(20,true);saveProfile();fxBurst(true);SND.coin();toast('Награда: '+d.rwt+' +20 🪙');renderQuests();renderHome();checkAch();}
 function renderQuests(){ensureQuests();const w=$('qList');w.innerHTML='';profile.quests.list.forEach(q=>{const d=questDef(q.id);const done=q.prog>=d.goal;const el=document.createElement('div');el.className='qitem';
   el.innerHTML='<div class="top"><span class="nm">'+d.t+'</span><span class="rw">'+d.rwt+'</span></div><div class="bar"><i style="width:'+Math.min(100,q.prog/d.goal*100)+'%"></i></div><div class="pr"><span>'+Math.min(q.prog,d.goal)+' / '+d.goal+'</span><button class="claim'+(q.claimed?' done':'')+'" '+((!done||q.claimed)?'disabled':'')+' onclick="claimQuest(\''+q.id+'\')">'+(q.claimed?'Получено ✓':'Забрать')+'</button></div>';w.appendChild(el);});}
 function renderQuestMini(){ensureQuests();const claimed=profile.quests.list.filter(q=>q.claimed).length;const b=$('qBadge');if(b){b.textContent=claimed+'/3';b.className='badge'+(claimed===3?' done':'');}
@@ -1019,9 +1121,120 @@ function renderDivBanner(){const b=$('divBanner');if(!b)return;const d=divisionO
 /* ===== SURVIVAL ===== */
 function startSurvival(){session={type:'survival',modeKey:'mixed',gen:()=>genMixed(3),n:999,idx:0,results:[],combo:0,maxCombo:0,lives:3,livesMax:3,score:0,survived:0};beginSession('💀 Survival');}
 
+/* ===== SOUND / HAPTICS ===== */
+let AC=null;
+function ac(){if(!AC){try{AC=new (window.AudioContext||window.webkitAudioContext)();}catch(e){}}if(AC&&AC.state==='suspended')AC.resume();return AC;}
+function tone(f,dur,type,vol,when){if(!profile.soundOn)return;const a=ac();if(!a)return;const o=a.createOscillator(),g=a.createGain();o.type=type||'sine';o.frequency.value=f;const t=a.currentTime+(when||0);g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(vol||.14,t+.012);g.gain.exponentialRampToValueAtTime(.0001,t+dur);o.connect(g);g.connect(a.destination);o.start(t);o.stop(t+dur+.03);}
+const SND={
+  tick(){tone(420,.05,'square',.05);},
+  deal(){tone(190,.06,'triangle',.07);},
+  correct(){tone(660,.12,'sine',.16);tone(880,.16,'sine',.13,.08);},
+  wrong(){tone(150,.28,'sawtooth',.11);},
+  win(){[523,659,784,1047].forEach((f,i)=>tone(f,.2,'sine',.13,i*.07));},
+  level(){[440,554,659,880].forEach((f,i)=>tone(f,.22,'triangle',.12,i*.08));},
+  coin(){tone(1180,.06,'square',.07);tone(1580,.08,'square',.06,.05);}
+};
+function vibe(p){if(profile.hapticsOn&&navigator.vibrate){try{navigator.vibrate(p);}catch(e){}}}
+
+/* ===== COINS / IDENTITY ===== */
+function addCoins(n,silent){profile.coins=(profile.coins||0)+n;saveProfile();updateCoins();if(!silent)SND.coin();}
+function updateCoins(){const t=$('coinPill');if(t)t.textContent='🪙 '+(profile.coins||0);const s=$('shopCoins');if(s)s.textContent='🪙 '+(profile.coins||0);}
+function applyIdentityUI(){const hn=$('hName');if(hn)hn.textContent=profile.name;const ha=$('hAva');if(ha)ha.textContent=profile.avatar;}
+
+/* ===== THEMES ===== */
+const SHOP_THEME=[{id:'green',n:'Классика',p:0,c:['#2a9e63','#1f7a4d','#0f4d30']},{id:'blue',n:'Океан',p:200,c:['#2f7fd0','#1f5aa0','#103a6e']},{id:'purple',n:'Аметист',p:250,c:['#7d4fd0','#5a2fa0','#3a1a6e']},{id:'crimson',n:'Багровый',p:250,c:['#c0392b','#8e2820','#5a140f']},{id:'night',n:'Полночь',p:300,c:['#2a3550','#1a2335','#0d1320']}];
+function themeColors(id){return (SHOP_THEME.find(t=>t.id===id)||SHOP_THEME[0]).c;}
+
+/* ===== LESSONS ===== */
+const LESSONS=[
+  {id:'pos',ic:'🪑',t:'Позиция решает',pages:[
+    {h:'Что такое позиция',x:'Позиция — это порядок хода. Кто действует последним на постфлопе — тот «в позиции» (IP) и видит решение соперника перед своим. Это огромное преимущество.'},
+    {h:'Почему это деньги',x:'В позиции ты контролируешь размер банка, ловишь больше блефов и реже попадаешь в трудные споты. Поэтому из поздних позиций открываемся намного шире.'},
+    {h:'Запомни',x:'Чем позже позиция — тем шире диапазон. UTG ≈ 15% рук, BTN ≈ 45%. Это фундамент префлопа.'}]},
+  {id:'ranges',ic:'🎯',t:'Диапазоны рук',pages:[
+    {h:'Не рука, а диапазон',x:'Сильные игроки думают не «что у меня», а «какой диапазон рук я бы так сыграл». Диапазон — все руки, с которыми ты делаешь данное действие.'},
+    {h:'Сетка 13×13',x:'169 стартовых комбинаций: пары по диагонали, одномастные сверху, разномастные снизу. На ней закрашивается диапазон открытия.'},
+    {h:'Учи края',x:'Главное — границы: какие руки ещё открываем, а какие уже фолд. Тренируй это в режиме Range Trainer.'}]},
+  {id:'odds',ic:'🧮',t:'Пот-оддсы',pages:[
+    {h:'Шансы банка',x:'Это отношение твоего колла к итоговому банку. В банке $10, коллить $5: вкладываешь $5, чтобы выиграть $15 → нужно ≥33% эквити.'},
+    {h:'Формула',x:'Требуемое эквити = колл ÷ (банк + колл). Если твой шанс выиграть выше — колл прибыльный. Ниже — фолд.'}]},
+  {id:'outs',ic:'🎲',t:'Ауты и эквити',pages:[
+    {h:'Ауты',x:'Аут — карта, делающая твою руку выигрышной. Флеш-дро = 9 аутов, двусторонний стрит = 8, гатшот = 4.'},
+    {h:'Правило 2 и 4',x:'Эквити ≈ ауты × 2 (одна карта) или × 4 (две карты до вскрытия). 9 аутов × 4 ≈ 36% собрать флеш к риверу.'}]},
+  {id:'ev',ic:'➕',t:'EV — ценность решения',pages:[
+    {h:'Что такое EV',x:'EV — сколько в среднем приносит решение на дистанции. +EV зарабатывает, −EV теряет. Цель — всегда выбирать вариант с максимальным EV.'},
+    {h:'Решение ≠ результат',x:'Можно принять верное +EV решение и проиграть раздачу — это нормально. Покер про дистанцию: важны решения, а не один результат.'}]},
+  {id:'texture',ic:'🌊',t:'Текстура борда',pages:[
+    {h:'Сухой и мокрый',x:'Сухой борд (K-7-2 разномастный) почти не даёт дро. Мокрый (J-T-9 одной масти) — куча стрит- и флеш-дро.'},
+    {h:'Как играть',x:'На сухих бордах ставим тоньше за велью и чаще блефуем. На мокрых — защищаем сильные руки крупным бетом, осторожнее со средними.'}]}
+];
+function renderLearn(){const w=$('learnGrid');w.innerHTML='';$('learnProg').textContent=profile.lessonsRead.length+'/'+LESSONS.length;
+  LESSONS.forEach(l=>{const read=profile.lessonsRead.includes(l.id);const el=document.createElement('div');el.className='lcard';el.onclick=()=>openLesson(l.id);
+    el.innerHTML=(read?'<div class="done">✓</div>':'')+'<div class="lic">'+l.ic+'</div><div class="lt">'+l.t+'</div>';w.appendChild(el);});}
+let lsCur=null,lsPage=0;
+function openLesson(id){lsCur=LESSONS.find(l=>l.id===id);lsPage=0;show('lesson');setTitle('Урок');renderLesson();}
+function renderLesson(){const l=lsCur,p=l.pages[lsPage];$('lsTitle').textContent=l.t;
+  $('lsReader').innerHTML='<div class="rdots">'+l.pages.map((_,i)=>'<i class="'+(i===lsPage?'on':'')+'"></i>').join('')+'</div><div class="ric">'+l.ic+'</div><h3>'+p.h+'</h3><div class="rtext">'+p.x+'</div>';
+  $('lsPrev').style.visibility=lsPage===0?'hidden':'visible';
+  $('lsNext').textContent=lsPage===l.pages.length-1?'Завершить ✓':'Дальше ›';}
+function lessonPrev(){SND.tick();if(lsPage>0){lsPage--;renderLesson();}}
+function lessonNext(){SND.tick();if(lsPage<lsCur.pages.length-1){lsPage++;renderLesson();}else{
+  if(!profile.lessonsRead.includes(lsCur.id)){profile.lessonsRead.push(lsCur.id);profile.xp+=40;addCoins(25,true);saveProfile();fxBurst(true);SND.win();toast('Урок пройден! +40 XP, +25 🪙');}
+  nav('learn');}}
+
+/* ===== SHOP ===== */
+const SHOP_AV=[{e:'🦈',p:0},{e:'🐠',p:100},{e:'🐡',p:120},{e:'🐢',p:120},{e:'🐙',p:150},{e:'🦑',p:180},{e:'🦞',p:200},{e:'🐬',p:220},{e:'🐳',p:300}];
+function renderShop(){updateCoins();
+  const a=$('shopAv');a.innerHTML='';SHOP_AV.forEach(it=>{const owned=profile.owned.includes(it.e);const eq=profile.avatar===it.e;const el=document.createElement('div');el.className='sitem'+(eq?' equipped':'');el.onclick=()=>buyAvatar(it.e,it.p);
+    el.innerHTML='<div class="se">'+it.e+'</div><div class="sp '+(eq?'eq':owned?'eq':it.p===0?'free':'')+'">'+(eq?'Надет':owned?'Выбрать':it.p===0?'Бесплатно':'🪙 '+it.p)+'</div>';a.appendChild(el);});
+  const t=$('shopTh');t.innerHTML='';SHOP_THEME.forEach(it=>{const owned=profile.ownedThemes.includes(it.id);const eq=profile.theme===it.id;const el=document.createElement('div');el.className='sitem'+(eq?' equipped':'');el.onclick=()=>buyTheme(it.id,it.p);
+    el.innerHTML='<div class="theme-prev" style="background:linear-gradient(135deg,'+it.c[0]+','+it.c[2]+')"></div><div class="sname">'+it.n+'</div><div class="sp '+(eq?'eq':owned?'eq':it.p===0?'free':'')+'">'+(eq?'Активна':owned?'Выбрать':it.p===0?'Бесплатно':'🪙 '+it.p)+'</div>';t.appendChild(el);});}
+function buyAvatar(e,p){if(profile.owned.includes(e)){profile.avatar=e;saveProfile();SND.tick();applyIdentityUI();renderShop();toast('Аватар выбран');return;}
+  if((profile.coins||0)<p){SND.wrong();toast('Не хватает монет: нужно '+p+' 🪙');return;}
+  profile.coins-=p;profile.owned.push(e);profile.avatar=e;saveProfile();SND.coin();fxBurst(true);updateCoins();applyIdentityUI();renderShop();toast('Куплено! Аватар '+e);}
+function buyTheme(id,p){if(profile.ownedThemes.includes(id)){profile.theme=id;saveProfile();SND.tick();renderShop();toast('Тема активна');return;}
+  if((profile.coins||0)<p){SND.wrong();toast('Не хватает монет: нужно '+p+' 🪙');return;}
+  profile.coins-=p;profile.ownedThemes.push(id);profile.theme=id;saveProfile();SND.coin();fxBurst(true);updateCoins();renderShop();toast('Куплено! Тема '+id);}
+
+/* ===== SETTINGS ===== */
+function renderSettings(){$('tgSound').className='toggle'+(profile.soundOn?' on':'');$('tgHap').className='toggle'+(profile.hapticsOn?' on':'');$('setName').textContent=profile.name;}
+function toggleSnd(k,el){profile[k]=!profile[k];saveProfile();el.querySelector('.toggle').className='toggle'+(profile[k]?' on':'');if(profile[k]){SND.tick();vibe(20);}}
+function editName(){const n=prompt('Твоё имя:',profile.name);if(n!=null){profile.name=(n.trim()||'Игрок').slice(0,14);saveProfile();applyIdentityUI();renderSettings();}}
+function replayTutorial(){startTutorial();}
+
+/* ===== ONBOARDING ===== */
+const ONB_SLIDES=[
+  {ic:'🃏',h:'Добро пожаловать в Poker Fighter',p:'Учись покеру через игру: решай реальные ситуации и сразу получай разбор.'},
+  {ic:'🎯',h:'Решай ситуации',p:'Тебе раздают руку и позицию. Выбираешь fold, call или raise — как за реальным столом.'},
+  {ic:'💡',h:'Получай разбор',p:'После каждого решения — почему так правильно, EV, диапазоны на сетке. Рейтинг растёт с каждой верной рукой.'},
+  {ic:'🪜',h:'От новичка до акулы',p:'Карьера по лимитам, ежедневные задания, лиги и достижения. Возвращайся каждый день и прокачивайся.'},
+  {type:'profile',ic:'🦈',h:'Создай профиль',p:'Как тебя зовут и кто твой аватар?'}
+];
+let onbIdx=0,onbAvatar='🦈',onbNameVal='';
+function startOnboarding(){onbIdx=0;onbAvatar=profile.avatar||'🦈';onbNameVal=(profile.name&&profile.name!=='Игрок')?profile.name:'';$('onb').classList.add('show');renderOnb();}
+function renderOnb(){const s=ONB_SLIDES[onbIdx],o=$('onb');
+  const dots='<div class="dots">'+ONB_SLIDES.map((_,i)=>'<i class="'+(i===onbIdx?'on':'')+'"></i>').join('')+'</div>';
+  if(s.type==='profile'){const avs=['🦈','🐠','🐡','🐢','🐙','🦑','🐬','🐳'];
+    o.innerHTML='<div class="oic">'+onbAvatar+'</div><h2>'+s.h+'</h2><p>'+s.p+'</p><input class="nameinp" id="onbName" maxlength="14" placeholder="Твоё имя" value="'+onbNameVal.replace(/"/g,'')+'" oninput="onbNameVal=this.value"><div class="avrow">'+avs.map(a=>'<div class="avopt'+(a===onbAvatar?' sel':'')+'" onclick="onbPickAv(\''+a+'\')">'+a+'</div>').join('')+'</div>'+dots+'<button class="obtn" onclick="finishOnboarding()">Поехали! 🚀</button>';
+  }else{o.innerHTML='<div class="oic">'+s.ic+'</div><h2>'+s.h+'</h2><p>'+s.p+'</p>'+dots+'<button class="obtn" onclick="onbNext()">'+(onbIdx===0?'Начать':'Дальше')+' ›</button>'+(onbIdx===0?'<div class="skip" onclick="skipOnboarding()">Пропустить</div>':'');}
+}
+function onbNext(){SND.tick();onbIdx++;renderOnb();}
+function onbPickAv(a){const inp=$('onbName');if(inp)onbNameVal=inp.value;onbAvatar=a;SND.tick();renderOnb();}
+function skipOnboarding(){profile.onboarded=true;saveProfile();$('onb').classList.remove('show');nav('home');}
+function finishOnboarding(){const nm=((($('onbName')||{}).value||onbNameVal)||'').trim();profile.name=nm||'Игрок';profile.avatar=onbAvatar;if(!profile.owned.includes(onbAvatar))profile.owned.push(onbAvatar);profile.onboarded=true;saveProfile();$('onb').classList.remove('show');applyIdentityUI();SND.win();fxBurst(true);startTutorial();}
+function tutRFISpot(pos,a,b,hint){const c1=nc(a),c2=nc(b);const hand={c1,c2,code:handCode(c1.r,c2.r,c1.s.c===c2.s.c),suited:c1.s.c===c2.s.c};const inR=RFI[pos].has(hand.code);
+  return {view:'preflop',mode:'rfi',concept:'Обучение',pos,opener:null,hand,oppR:900,tutHint:hint,
+    prompt:'Все сбросили до тебя. Открываешь рейзом или фолд?',
+    actions:[{key:'raise',label:'RAISE',cls:'raise'},{key:'fold',label:'FOLD',cls:'fold'}],
+    grade(key){const ca=inR?'raise':'fold';const ok=key===ca;this.coach=ok?('Отлично! '+hand.code+(inR?' — сильная рука для открытия.':' — слишком слабо, фолд верный.')):('В этот раз правильно '+(ca==='raise'?'RAISE':'FOLD')+'. Дальше получится!');return {correct:ok,body:gridHTML({in:RFI[pos]},hand.code)};}};}
+function startTutorial(){const po=genPotOdds();po.tutHint='💡 Сравни эквити с шансами банка: если эквити больше — CALL.';
+  const spots=[tutRFISpot('BTN','As','Ah','💡 У тебя пара тузов (AA) — топовая рука. Жми RAISE.'),tutRFISpot('UTG','7d','2c','💡 7-2 — худшая рука в покере. Жми FOLD.'),po];
+  session={type:'tutorial',modeKey:'mixed',spots,n:3,idx:0,results:[],combo:0,maxCombo:0,lives:0,livesMax:0,score:0};
+  beginSession('🎓 Обучение');}
+
 /* ===== INIT ===== */
-ensureQuests();renderHome();fxSize();window.addEventListener('resize',fxSize);
-setTimeout(()=>{const s=$('splash');if(s){s.style.opacity='0';setTimeout(()=>s.remove(),520);}},1100);
+ensureQuests();updateCoins();applyIdentityUI();renderHome();fxSize();window.addEventListener('resize',fxSize);
+setTimeout(()=>{const s=$('splash');if(s){s.style.opacity='0';setTimeout(()=>{s.remove();if(!profile.onboarded)startOnboarding();},520);}},1100);
 </script>
 </body>
 </html>
