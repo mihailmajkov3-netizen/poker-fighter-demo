@@ -657,14 +657,14 @@ const RFI_TOKENS={
 };
 const RFI={},RFI_PCT={};Object.keys(RFI_TOKENS).forEach(p=>{RFI[p]=buildRange(RFI_TOKENS[p]);RFI_PCT[p]=Math.round(comboCount(RFI[p])/1326*100);});
 const VS_RAW=[
-  {opener:'BTN',hero:'BB',label:'BTN открывает',tb:['TT+','AQs+','AKo','A5s','A4s'],cl:['22-99','A2s-AJs','K8s+','Q9s+','J9s+','T8s+','97s+','86s+','75s+','65s','54s','ATo+','KJo+','QJo','JTo','T9o']},
+  {opener:'BTN',hero:'BB',label:'BTN открывает',tb:['TT+','AQs+','AKo','A5s','A4s'],cl:['22-99','A6s-AJs','A3s','A2s','K8s+','Q9s+','J9s+','T8s+','97s+','86s+','75s+','65s','54s','ATo-AQo','KJo+','QJo','JTo','T9o']},
   {opener:'CO',hero:'BTN',label:'CO открывает',tb:['TT+','AQs+','AKo','A5s','A4s'],cl:['22-99','ATs-AJs','A9s','KTs+','QTs+','J9s+','T9s','98s','87s','76s','65s','AQo','AJo','KQo']},
-  {opener:'CO',hero:'BB',label:'CO открывает',tb:['JJ+','AQs+','AKo','A5s'],cl:['22-TT','A2s-AJs','KTs+','QTs+','JTs','T9s','98s','87s','76s','65s','54s','ATo+','KJo+','QJo']},
-  {opener:'UTG',hero:'BTN',label:'UTG открывает',tb:['QQ+','AKs','AKo','A5s'],cl:['22-JJ','AJs+','ATs','KQs','KJs','QJs','JTs','T9s','AQo']},
-  {opener:'SB',hero:'BB',label:'SB открывает',tb:['99+','ATs+','KJs+','AJo+','KQo','A5s','A4s'],cl:['22-88','A9s-A2s','KTs','QTs+','J9s+','T9s','98s','87s','76s','ATo','KJo','QJo']},
-  {opener:'HJ',hero:'BB',label:'HJ открывает',tb:['JJ+','AQs+','AKo','A5s'],cl:['22-TT','A2s-AJs','KTs+','QTs+','JTs','T9s','98s','87s','76s','65s','ATo+','KJo+','QJo']},
+  {opener:'CO',hero:'BB',label:'CO открывает',tb:['JJ+','AQs+','AKo','A5s'],cl:['22-TT','A6s-AJs','A4s','A3s','A2s','KTs+','QTs+','JTs','T9s','98s','87s','76s','65s','54s','ATo-AQo','KJo+','QJo']},
+  {opener:'UTG',hero:'BTN',label:'UTG открывает',tb:['QQ+','AKs','AKo','A5s'],cl:['22-JJ','AJs','AQs','ATs','KQs','KJs','QJs','JTs','T9s','AQo']},
+  {opener:'SB',hero:'BB',label:'SB открывает',tb:['99+','ATs+','KJs+','AJo+','KQo','A5s','A4s'],cl:['22-88','A9s-A6s','A3s','A2s','KTs','QTs+','J9s+','T9s','98s','87s','76s','ATo','KJo','QJo']},
+  {opener:'HJ',hero:'BB',label:'HJ открывает',tb:['JJ+','AQs+','AKo','A5s'],cl:['22-TT','A6s-AJs','A4s','A3s','A2s','KTs+','QTs+','JTs','T9s','98s','87s','76s','65s','ATo-AQo','KJo+','QJo']},
   {opener:'HJ',hero:'BTN',label:'HJ открывает',tb:['TT+','AQs+','AKo','A5s','A4s'],cl:['22-99','AJs','ATs','A9s','KTs+','QTs+','J9s+','T9s','98s','87s','76s','AQo','AJo','KQo']},
-  {opener:'BTN',hero:'SB',label:'BTN открывает',tb:['88+','ATs+','KJs+','AJo+','KQo','A5s','A4s','A3s'],cl:['22-77','A9s-A4s','KTs','QTs+','JTs','T9s','KQo','AJo']}
+  {opener:'BTN',hero:'SB',label:'BTN открывает',tb:['88+','ATs+','KJs+','AJo+','KQo','A5s','A4s','A3s'],cl:['22-77','A9s-A6s','KTs','QTs+','JTs','T9s']}
 ].map(m=>({...m,tbS:buildRange(m.tb),clS:buildRange(m.cl)}));
 
 /* ===== PROFILE ===== */
