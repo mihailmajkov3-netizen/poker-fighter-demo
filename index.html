@@ -101,6 +101,16 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;b
 .ni-text{color:var(--muted);font-size:14px;line-height:1.6;margin:14px auto 0;max-width:340px}
 .ni-steps{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:18px}
 .ni-steps span{background:#16204f;border:1px solid var(--line);border-radius:10px;padding:6px 10px;font-size:11px;font-weight:700;color:var(--muted)}
+.ni-coach{display:flex;gap:10px;align-items:center;text-align:left;background:#16204f;border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin:16px auto 0;max-width:360px}
+.ni-cav{width:42px;height:42px;border-radius:50%;overflow:hidden;flex:0 0 auto;border:1px solid var(--gold)}
+.ni-ctx{font-size:12.5px;color:var(--muted);line-height:1.45}.ni-ctx b{color:var(--gold)}
+.coachcard{display:flex;gap:12px;align-items:center;background:linear-gradient(135deg,#26307e,#171f50);border:1px solid var(--line);border-radius:16px;padding:12px;margin:4px 2px 8px}
+.cc-av{width:54px;height:54px;border-radius:50%;overflow:hidden;border:2px solid var(--gold);flex:0 0 auto}
+.cc-tx{flex:1;min-width:0}
+.cc-rank{font-weight:800;font-size:16px}.cc-rank .cc-prog{font-size:11px;color:var(--muted);font-weight:700;margin-left:4px}
+.cc-sub{font-size:11px;color:var(--muted);margin:3px 0 7px}
+.cc-belt{height:7px;border-radius:4px;background:#161f47;overflow:hidden}
+.cc-belt i{display:block;height:100%;background:linear-gradient(90deg,#ffcf4d,#34d17a);border-radius:4px;transition:width .4s ease}
 
 .game-meta{display:flex;align-items:center;gap:8px;padding:8px 14px;font-size:12px}
 .lives{display:flex;gap:3px;font-size:15px}
@@ -1219,6 +1229,21 @@ function careerGen(nd){
   if(nd.kind==='potodds')return genPotOdds;
   return ()=>genPostflop(2);
 }
+const CAREER_RANKS=[{min:0,ic:'🐣',nm:'Рекрут'},{min:1,ic:'🐟',nm:'Любитель'},{min:3,ic:'♠️',nm:'Регуляр'},{min:5,ic:'🎯',nm:'Грайндер'},{min:7,ic:'💎',nm:'Про'},{min:9,ic:'🏆',nm:'Краш'}];
+function plural(n,one,few,many){const m10=n%10,m100=n%100;return m10===1&&m100!==11?one:(m10>=2&&m10<=4&&(m100<10||m100>=20)?few:many);}
+function careerRank(n){let r=CAREER_RANKS[0];for(const x of CAREER_RANKS)if(n>=x.min)r=x;return r;}
+function careerNextRank(n){for(const x of CAREER_RANKS)if(x.min>n)return x;return null;}
+const CAREER_COACH={
+  utg:'С UTG не геройствуй. Дисциплина — твой главный навык на этой позиции.',
+  hj:'Чуть свободнее, но без фанатизма. Расширяй диапазон с умом.',
+  co:'Позиция пошла работать на тебя. Открывай увереннее.',
+  btn:'Баттон — золотая жила. Дави на блайнды и забирай банки.',
+  sb:'Без позиции — осторожнее. Не влюбляйся в каждую руку.',
+  vsopen:'Открыли против тебя? Сначала пойми: кто и с какой позиции. Отвечай по ситуации.',
+  vs3:'Тебя 3-бетят — продолжай только тем, чем открывал. Без эмоций.',
+  potodds:'Математика не врёт. Посчитай шансы — и колл сам себя подскажет.',
+  postflop:'Флоп — начало истории. Читай борд и выбирай линию хладнокровно.'
+};
 let currentNodeIdx=0;
 function openNode(i){
   if(i>profile.career.node){toast('Сначала пройди предыдущий узел');return;}
@@ -1228,7 +1253,9 @@ function openNode(i){
   let html='';
   if(nd.kind==='rfi'){html+='<div class="ni-h">Диапазон открытия '+nd.pos+' · '+RFI_PCT[nd.pos]+'%</div>'+gridHTML({in:RFI[nd.pos]},null);}
   else html+='<div class="ni-icon">'+nd.ic+'</div>';
-  html+='<p class="ni-text">'+nd.learn+'</p><div class="ni-steps"><span>1 · Знакомство</span><span>2 · Тренировка</span><span>3 · Экзамен ⏱</span></div>';
+  html+='<p class="ni-text">'+nd.learn+'</p>';
+  if(CAREER_COACH[nd.id])html+='<div class="ni-coach"><div class="ni-cav">'+avatarHTML('viktor')+'</div><div class="ni-ctx"><b>Тренер Виктор</b><br>'+CAREER_COACH[nd.id]+'</div></div>';
+  html+='<div class="ni-steps"><span>1 · Знакомство</span><span>2 · Тренировка</span><span>3 · Экзамен ⏱</span></div>';
   $('nodeBody').innerHTML=html;
   $('nodeActions').innerHTML='<button class="next" onclick="startCareerTrain('+i+')">Начать тренировку ›</button><button class="home" onclick="nav(\'career\')">Назад</button>';
 }
@@ -1323,9 +1350,14 @@ function nextSpot(){$('fb').classList.remove('show');if(session.idx>=session.n-1
 /* ===== CAREER PATH RENDER ===== */
 function renderLadder(){
   const w=$('ladder');w.innerHTML='';
-  const done=Math.min(profile.career.node,CAREER.length);
+  const node=profile.career.node,rank=careerRank(node),nx=careerNextRank(node);
+  const belt=nx?Math.round((node-rank.min)/(nx.min-rank.min)*100):100;
+  const sub=nx?('Ещё '+(nx.min-node)+' '+plural(nx.min-node,'узел','узла','узлов')+' до ранга «'+nx.ic+' '+nx.nm+'»'):'Высший ранг достигнут — ты Краш! 🏆';
+  const cc=document.createElement('div');cc.className='coachcard';
+  cc.innerHTML='<div class="cc-av">'+avatarHTML('viktor')+'</div><div class="cc-tx"><div class="cc-rank">'+rank.ic+' '+rank.nm+' <span class="cc-prog">'+Math.min(node,CAREER.length)+'/'+CAREER.length+'</span></div><div class="cc-sub">'+sub+'</div><div class="cc-belt"><i style="width:'+belt+'%"></i></div></div>';
+  w.appendChild(cc);
   const hdr=document.createElement('div');hdr.className='phdr';
-  hdr.innerHTML=profile.career.node>=CAREER.length?'<b>Дорожка пройдена 🏆</b> Ты освоил базу — возвращайся за звёздами.':'Проходи узлы по порядку: <b>знакомство → тренировка → экзамен на время ⏱</b>. Пройдено: <b>'+done+'/'+CAREER.length+'</b>';
+  hdr.innerHTML='<b>Тренер Виктор:</b> проходи узлы по порядку — знакомство → тренировка → экзамен на время ⏱';
   w.appendChild(hdr);
   CAREER.forEach((nd,i)=>{
     const isDone=i<profile.career.node,cur=i===profile.career.node,unlocked=i<=profile.career.node;
@@ -1367,12 +1399,14 @@ function endSession(bust){
       ST.textContent='★'.repeat(stars)+'☆'.repeat(3-stars);
       SUB.innerHTML='Точность <b>'+acc+'%</b> · '+nd.nm;
       profile.career.stars[session.nodeIdx]=Math.max(profile.career.stars[session.nodeIdx]||0,stars);
-      const wasCur=session.nodeIdx===profile.career.node;
+      const wasCur=session.nodeIdx===profile.career.node;const prevNode=profile.career.node;
       if(wasCur&&profile.career.node<CAREER.length)profile.career.node++;
       if((session.mistakes||0)===0)_flawlessFlag=true;
       profile.rating+=12;saveProfile();trackQuest('career_pass',1);addCoins(40,true);fxBurst(true);
       const allDone=profile.career.node>=CAREER.length;
       queueModal({ic:stars===3?'🏆':'🎓',tag:'Узел пройден',name:nd.nm+' ✓',desc:'Получено '+stars+'★. '+(allDone?'Вся дорожка пройдена — база освоена!':'Открыт следующий узел дорожки!'),reward:'+12 рейтинга'});
+      const rb=careerRank(prevNode),ra=careerRank(profile.career.node);
+      if(wasCur&&ra.nm!==rb.nm){addCoins(30,true);saveProfile();queueModal({ic:ra.ic,tag:'Новый ранг',name:ra.nm,desc:'Тренер Виктор жмёт тебе руку. Ты вырос — двигаемся дальше!',reward:'+30 🪙'});}
       checkAch();_flawlessFlag=false;
       const nextI=session.nodeIdx+1;
       ACT.innerHTML=((!allDone&&nextI<CAREER.length)?'<button class="next" onclick="openNode('+nextI+')">Следующий узел ›</button>':'')+'<button class="home" onclick="nav(\'career\')">К дорожке</button>';
