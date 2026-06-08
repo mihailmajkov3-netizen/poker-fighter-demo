@@ -88,6 +88,19 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;b
 .stake .tx{flex:1}.stake .tx .nm{font-weight:800;font-size:15px}.stake .tx .ds{font-size:11px;color:var(--muted);margin-top:2px}
 .stake .stars{font-size:13px;letter-spacing:1px;color:var(--gold)}
 .stake .lk{font-size:18px}
+.ladder .phdr{padding:6px 4px 2px;color:var(--muted);font-size:12px;line-height:1.5}
+.ladder .phdr b{color:var(--txt)}
+.stake.cur .no{background:linear-gradient(180deg,#e0a532,#c2841d);color:#1a1206}
+.examtimer{height:6px;margin:6px 14px 0;border-radius:4px;background:#161f47;overflow:hidden;display:none}
+.examtimer.show{display:block}
+.examtimer i{display:block;height:100%;width:100%;border-radius:4px;background:linear-gradient(90deg,#34d17a,#ffcf4d)}
+.examtimer.warn i{background:linear-gradient(90deg,#ff8a5b,#ff5b6e)}
+#nodeBody{padding:16px 16px 8px;text-align:center;overflow-y:auto}
+.ni-h{font-weight:800;font-size:15px;color:var(--gold);margin-bottom:10px}
+.ni-icon{font-size:60px;margin:10px 0}
+.ni-text{color:var(--muted);font-size:14px;line-height:1.6;margin:14px auto 0;max-width:340px}
+.ni-steps{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:18px}
+.ni-steps span{background:#16204f;border:1px solid var(--line);border-radius:10px;padding:6px 10px;font-size:11px;font-weight:700;color:var(--muted)}
 
 .game-meta{display:flex;align-items:center;gap:8px;padding:8px 14px;font-size:12px}
 .lives{display:flex;gap:3px;font-size:15px}
@@ -500,6 +513,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;b
         <span class="x" onclick="quitGame()"><span class="ic">✕</span></span>
       </div>
       <div class="progress"><i id="gProgress" style="width:0%"></i></div>
+      <div class="examtimer" id="examTimer"><i id="examTimerFill"></i></div>
       <div id="stage"></div>
       <div class="actionbar" id="actionbar"></div>
     </div>
@@ -517,6 +531,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;b
         <div class="mem-result" id="memResult"></div>
       </div>
       <div class="mem-actions"><button class="clear" onclick="memClear()">Очистить</button><button class="reveal" onclick="memReveal()">Показать GTO</button><button class="check" onclick="memCheck()">Проверить</button></div>
+    </div>
+
+    <div class="screen" id="screen-node">
+      <div class="game-meta"><span class="hcount" id="nodeStep">Знакомство</span><span class="mid" id="nodeTitle">Узел</span><span class="x" onclick="nav('career')"><span class="ic">✕</span></span></div>
+      <div class="body" id="nodeBody"></div>
+      <div class="res-actions" id="nodeActions"></div>
     </div>
 
     <div class="screen" id="screen-results">
@@ -756,6 +776,7 @@ function loadProfile(){let p={};try{p=JSON.parse(localStorage.getItem('pf_profil
   const o=Object.assign({rating:1000,xp:0,hands:0,correct:0,streak:0,bestStreak:0,byMode:{},byConcept:{},career:{stake:0,stars:{}},achievements:[],mistakes:[],lastDaily:null,dailyStreak:0,quests:null,surBest:0,name:'Игрок',avatar:'alex',onboarded:false,coins:0,owned:['alex'],ownedThemes:['green'],theme:'green',soundOn:true,hapticsOn:true,lessonsRead:[]},p);
   if(!CHAR_BY_ID[o.avatar])o.avatar='alex';
   o.owned=(o.owned||[]).filter(x=>CHAR_BY_ID[x]);if(!o.owned.includes(o.avatar))o.owned.push(o.avatar);
+  o.career=o.career||{};if(typeof o.career.node!=='number')o.career.node=0;o.career.stars=o.career.stars||{};
   return o;}
 function saveProfile(){try{localStorage.setItem('pf_profile_v2',JSON.stringify(profile));}catch(e){}}
 function tierName(r){if(r>=2100)return 'Poseidon';if(r>=1900)return 'Jellyfish';if(r>=1750)return 'Junior Shark';if(r>=1600)return 'Squid';if(r>=1450)return 'Salmon';if(r>=1300)return 'Sea-Horse';if(r>=1150)return 'Nemo';if(r>=1000)return 'Goldfish';return 'Shrimp';}
@@ -783,9 +804,9 @@ const ACH=[
   {id:'h100',ic:'💯',nm:'Сотка',ds:'100 рук сыграно',cond:p=>p.hands>=100},
   {id:'r1300',ic:'🐠',nm:'Не планктон',ds:'Рейтинг 1300',cond:p=>p.rating>=1300},
   {id:'r1500',ic:'🦈',nm:'Акула',ds:'Рейтинг 1500',cond:p=>p.rating>=1500},
-  {id:'nl10',ic:'🪜',nm:'Поднялся',ds:'Дошёл до NL10',cond:p=>p.career.stake>=2},
-  {id:'nl100',ic:'💎',nm:'Хайроллер',ds:'Дошёл до NL100',cond:p=>p.career.stake>=5},
-  {id:'flawless',ic:'🛡️',nm:'Безупречно',ds:'Стейк без ошибок',cond:()=>_flawlessFlag},
+  {id:'nl10',ic:'🪜',nm:'Ученик',ds:'Прошёл 3 узла дорожки',cond:p=>p.career.node>=3},
+  {id:'nl100',ic:'💎',nm:'Выпускник',ds:'Прошёл 6 узлов дорожки',cond:p=>p.career.node>=6},
+  {id:'flawless',ic:'🛡️',nm:'Безупречно',ds:'Экзамен без ошибок',cond:()=>_flawlessFlag},
   {id:'preMaster',ic:'🎯',nm:'Префлоп-мастер',ds:'90%+ за 50 RFI',cond:p=>{const m=p.byMode.rfi;return m&&m.played>=50&&m.correct/m.played>=0.9;}},
   {id:'math',ic:'🧮',nm:'Математик',ds:'30 верных Pot Odds',cond:p=>{const m=p.byMode.potodds;return m&&m.correct>=30;}},
   {id:'daily7',ic:'📅',nm:'Дисциплина',ds:'Daily-стрик 7',cond:p=>p.dailyStreak>=7}
@@ -808,9 +829,9 @@ function renderHome(){
   const lvl=levelOf(profile.xp),xpIn=profile.xp%600;
   $('hLevel').textContent='Уровень '+lvl;$('hXp').textContent=xpIn+' / 600 XP';$('hXpFill').style.width=(xpIn/600*100)+'%';
   $('hHands').textContent=profile.hands;$('hAcc').textContent=profile.hands?Math.round(profile.correct/profile.hands*100)+'%':'—';$('hStreak').textContent=profile.bestStreak+'🔥';
-  const cs=STAKES[Math.min(profile.career.stake,STAKES.length-1)];
-  $('ctaStake').textContent=cs.nm+' · '+cs.sub;
-  $('ctaSub').textContent=profile.career.stake>=STAKES.length?'Все лимиты пройдены! 🏆':'Текущий лимит — жми, чтобы играть';
+  const cdone=profile.career.node>=CAREER.length,cn=Math.min(profile.career.node,CAREER.length-1),cnd=CAREER[cn];
+  $('ctaStake').textContent=cdone?'Дорожка пройдена 🏆':(cnd.ic+' '+cnd.nm);
+  $('ctaSub').textContent=cdone?'Вся база освоена':'Урок '+(cn+1)+'/'+CAREER.length+' — жми, чтобы продолжить';
   const wrap=$('modeList');wrap.innerHTML='';
   MODES_META.forEach(m=>{
     const bm=profile.byMode[m.key==='review'?'mixed':m.key];const acc=bm&&bm.played?Math.round(bm.correct/bm.played*100)+'%':'—';
@@ -837,7 +858,7 @@ function nav(s){
   else if(s==='shop'){show('shop');setTitle('Магазин');renderShop();}
   else if(s==='settings'){show('settings');setTitle('Настройки');renderSettings();}
 }
-function quitGame(){if(confirm('Выйти из забега? Рейтинг по сыгранным рукам сохранится.'))nav('home');}
+function quitGame(){if(confirm('Выйти из забега? Рейтинг по сыгранным рукам сохранится.')){clearExamTimer();nav('home');}}
 
 /* ===== CARD VIEWS ===== */
 const VIEW={};
@@ -947,8 +968,8 @@ function handFromCode(code){const d=newDeck();const r1=code[0],r2=code[1];let c1
   return {c1,c2,code,suited:c1.s.c===c2.s.c};}
 function handFromRange(set){return handFromCode(oneOf([...set]));}
 function rfiPrompt(pos){return (pos==='UTG'?'Твоё слово первое.':'Все до тебя сбросили — твоё слово.')+' Открываешь рейзом или фолд?';}
-function genRFI(){
-  const pos=oneOf(['UTG','HJ','CO','BTN','SB']);const hand=dealHand();const inR=RFI[pos].has(hand.code);
+function genRFI(forcePos){
+  const pos=forcePos||oneOf(['UTG','HJ','CO','BTN','SB']);const hand=dealHand();const inR=RFI[pos].has(hand.code);
   return {view:'preflop',mode:'rfi',concept:'Диапазон открытия',pos,opener:null,hand,oppR:1040,
     prompt:rfiPrompt(pos),
     actions:[{key:'fold',label:'FOLD',cls:'fold'},{key:'raise',label:'RAISE',cls:'raise'}],
@@ -1179,10 +1200,58 @@ function genFromMistake(){const m=session.queue&&session.queue.length?session.qu
   if(m.mode==='postflop'&&m.archId){const a=ARCH.find(x=>x.id===m.archId);if(a){const d=newDeck();const heroPos=oneOf(['BTN','CO','HJ','BB']);const built=a.build(d);const dr=dressing(a.facing,heroPos);return genPostflopFrom(a,built,dr,heroPos);}}
   return genPostflop(3);}
 function genPostflopFrom(a,built,dr,heroPos){const sp=genPostflop(3);return sp;} // simplify: fresh postflop
-function startCareer(stakeIdx){
-  const st=STAKES[stakeIdx];
-  session={type:'career',modeKey:'mixed',stakeIdx,gen:()=>genMixed(st.diff),n:st.hands,idx:0,results:[],combo:0,maxCombo:0,lives:st.lives,livesMax:st.lives,score:0,mistakes:0};
-  beginSession(st.nm+' · '+st.sub);
+/* ===== CAREER PATH ===== */
+const CAREER=[
+  {id:'utg',ic:'🟢',nm:'Открытие с UTG',concept:'rfi',kind:'rfi',pos:'UTG',learn:'UTG — самая ранняя позиция, ты говоришь первым. Открывай только сильнейшее: премиум-пары, сильные тузы, бродвеи. Всё остальное — фолд. Запомни сетку.'},
+  {id:'hj',ic:'🟢',nm:'Открытие с HJ',concept:'rfi',kind:'rfi',pos:'HJ',learn:'Hijack — на шаг позже UTG, можно шире. Добавляются мелкие пары, A8s+, больше suited-коннекторов. Но всё ещё дисциплина.'},
+  {id:'co',ic:'🟢',nm:'Открытие с CO',concept:'rfi',kind:'rfi',pos:'CO',learn:'Cutoff — предпоследняя позиция. Открывай широко: все пары, A2s+, много suited и часть оффсьюта. Позиция начинает работать на тебя.'},
+  {id:'btn',ic:'🔵',nm:'Открытие с BTN',concept:'rfi',kind:'rfi',pos:'BTN',learn:'Баттон — лучшая позиция за столом. Самый широкий диапазон открытия (~44%). Давишь на блайнды и всегда в позиции постфлоп.'},
+  {id:'sb',ic:'🔵',nm:'Открытие с SB',concept:'rfi',kind:'rfi',pos:'SB',learn:'Малый блайнд против большого. Открывай широко, но помни: постфлоп ты будешь без позиции, поэтому осторожнее, чем на BTN.'},
+  {id:'vsopen',ic:'⚔️',nm:'Против опена',concept:'vsopen',kind:'vsopen',learn:'Перед тобой открыли рейзом. Решение: 3-бет (сильные руки и блефы), колл (хорошие, но не топ) или фолд. Чем раньше позиция опенера — тем уже отвечаешь.'},
+  {id:'vs3',ic:'🛡️',nm:'Против 3-бета',concept:'vs3',kind:'vs3',learn:'Ты открыл — тебя 3-бетят. Продолжай только тем, с чем открывал: 4-бет (велью и блефы), колл (достаточно сильные) или фолд. Не защищай мусор.'},
+  {id:'potodds',ic:'🧮',nm:'Пот-оддсы и эквити',concept:'potodds',kind:'potodds',learn:'Считай шансы банка: сколько платишь относительно банка. Прикинь эквити (ауты ×4 на флопе). Колл выгоден, если твоё эквити ≥ нужного процента.'},
+  {id:'postflop',ic:'🃏',nm:'Постфлоп-линии',concept:'postflop',kind:'postflop',learn:'Игра после флопа. Оцени силу руки и характер борда, выбери линию: чек/бет/колл/фолд/рейз. Велью с сильным, контроль банка со средним, не плати без шансов.'}
+];
+function careerGen(nd){
+  if(nd.kind==='rfi')return ()=>genRFI(nd.pos);
+  if(nd.kind==='vsopen')return genVsOpen;
+  if(nd.kind==='vs3')return genVs3bet;
+  if(nd.kind==='potodds')return genPotOdds;
+  return ()=>genPostflop(2);
+}
+let currentNodeIdx=0;
+function openNode(i){
+  if(i>profile.career.node){toast('Сначала пройди предыдущий узел');return;}
+  currentNodeIdx=i;const nd=CAREER[i];
+  show('node');setTitle('Карьера');
+  $('nodeTitle').textContent=nd.nm;$('nodeStep').textContent='Знакомство';
+  let html='';
+  if(nd.kind==='rfi'){html+='<div class="ni-h">Диапазон открытия '+nd.pos+' · '+RFI_PCT[nd.pos]+'%</div>'+gridHTML({in:RFI[nd.pos]},null);}
+  else html+='<div class="ni-icon">'+nd.ic+'</div>';
+  html+='<p class="ni-text">'+nd.learn+'</p><div class="ni-steps"><span>1 · Знакомство</span><span>2 · Тренировка</span><span>3 · Экзамен ⏱</span></div>';
+  $('nodeBody').innerHTML=html;
+  $('nodeActions').innerHTML='<button class="next" onclick="startCareerTrain('+i+')">Начать тренировку ›</button><button class="home" onclick="nav(\'career\')">Назад</button>';
+}
+function startCareerTrain(i){const nd=CAREER[i];
+  session={type:'cartrain',modeKey:nd.concept,nodeIdx:i,gen:careerGen(nd),n:10,idx:0,results:[],combo:0,maxCombo:0,lives:99,livesMax:0,score:0};
+  beginSession('Тренировка · '+nd.nm);
+}
+function startCareerExam(i){const nd=CAREER[i];
+  session={type:'carexam',modeKey:nd.concept,nodeIdx:i,gen:careerGen(nd),n:8,idx:0,results:[],combo:0,maxCombo:0,lives:3,livesMax:3,score:0,mistakes:0,
+    exam:true,timed:true,timeLimit:(nd.kind==='postflop'||nd.kind==='potodds')?9000:6000};
+  beginSession('🎓 Экзамен · '+nd.nm);
+}
+/* exam per-decision timer */
+let examTimer=null;
+function clearExamTimer(){if(examTimer){clearTimeout(examTimer.start);clearTimeout(examTimer.warn);clearTimeout(examTimer.expire);examTimer=null;}const bar=$('examTimer');if(bar)bar.classList.remove('show','warn');}
+function startExamTimer(ms,delay){
+  const bar=$('examTimer'),fill=$('examTimerFill');if(!bar)return;
+  bar.classList.add('show');bar.classList.remove('warn');fill.style.transition='none';fill.style.width='100%';
+  const tk=session._cur;examTimer={};
+  examTimer.start=setTimeout(()=>{void fill.offsetWidth;fill.style.transition='width '+ms+'ms linear';fill.style.width='0%';
+    examTimer.warn=setTimeout(()=>bar.classList.add('warn'),ms*0.6);
+    examTimer.expire=setTimeout(()=>{if(session&&session._cur===tk){toast('⏱ Время вышло');choose('__timeout');}},ms);
+  },delay);
 }
 function beginSession(title){show('game');setTitle('Игра');$('gMode').textContent=title;updateHUD();renderCurrent();}
 function updateHUD(){
@@ -1202,13 +1271,14 @@ function renderCurrent(){
   VIEW[curSpot.view](curSpot,stage);SND.deal();
   if(s.type==='tutorial'&&curSpot.tutHint)setTimeout(()=>toast(curSpot.tutHint),250);
   const bar=$('actionbar');bar.innerHTML='';
-  if(curSpot.baseCoach||curSpot.coach){const g=document.createElement('button');g.className='abtn ghost';g.innerHTML='<span style="font-size:24px;line-height:1">💡</span>';g.title='Подсказка';g.onclick=()=>hint(curSpot);bar.appendChild(g);}
+  if(!s.exam&&(curSpot.baseCoach||curSpot.coach)){const g=document.createElement('button');g.className='abtn ghost';g.innerHTML='<span style="font-size:24px;line-height:1">💡</span>';g.title='Подсказка';g.onclick=()=>hint(curSpot);bar.appendChild(g);}
   curSpot.actions.forEach(a=>{const b=document.createElement('button');b.className='abtn '+a.cls;b.innerHTML=a.label+(a.sub?'<small>'+a.sub+'</small>':'');b.onclick=()=>choose(a.key);bar.appendChild(b);});
   if(curSpot.view==='preflop'){const bs=[].slice.call(bar.querySelectorAll('.abtn')).filter(b=>!b.classList.contains('ghost'));bs.forEach(b=>b.disabled=true);setTimeout(()=>{if(session&&session._cur===curSpot)bs.forEach(b=>b.disabled=false);},820);}
+  clearExamTimer();if(s.timed)startExamTimer(s.timeLimit,curSpot.view==='preflop'?880:250);
 }
 function hint(sp){toast('💡 '+(sp.baseCoach||sp.coach||'').split('.')[0]+'.');}
 function choose(key){
-  SND.tick();
+  clearExamTimer();SND.tick();
   document.querySelectorAll('#actionbar .abtn').forEach(b=>{if(!b.classList.contains('ghost'))b.disabled=true;});
   const sp=curSpot;const g=sp.grade(key);
   const isBoss=session.type==='career'&&session.idx===session.n-1;
@@ -1242,7 +1312,7 @@ function showFeedback(sp,g,delta,bust){
   let vcls=g.correct?'ok':(g.meh?'meh':'bad'),vtxt=g.correct?'✓ ВЕРНО':(g.meh?'≈ Почти':'✗ Ошибка');
   let html='<div class="verdict '+vcls+'">'+vtxt+(g.correct&&session.combo>=2?' · x'+Math.min(session.combo,9)+' комбо':'')+'</div>';
   html+='<div class="sub">Рейтинг <span class="rd '+(delta<0?'neg':'')+'">'+(delta>=0?'+':'')+delta+'</span> → '+profile.rating+'</div>';
-  if(g.body)html+=g.body;
+  if(g.body&&!session.exam)html+=g.body;
   if(sp.coach)html+='<div class="coach"><b>Тренер:</b> '+sp.coach+'</div>';
   fb.innerHTML=html;fb.classList.add('show');
   const bar=$('actionbar');
@@ -1250,27 +1320,20 @@ function showFeedback(sp,g,delta,bust){
 }
 function nextSpot(){$('fb').classList.remove('show');if(session.idx>=session.n-1){endSession(false);return;}session.idx++;renderCurrent();}
 
-/* ===== STAKES / CAREER ===== */
-const STAKES=[
-  {nm:'NL2',sub:'Микролимит',hands:8,lives:3,diff:1},
-  {nm:'NL5',sub:'Микро',hands:9,lives:3,diff:1},
-  {nm:'NL10',sub:'Низкий',hands:10,lives:3,diff:2},
-  {nm:'NL25',sub:'Низкий',hands:10,lives:3,diff:2},
-  {nm:'NL50',sub:'Средний',hands:11,lives:2,diff:2},
-  {nm:'NL100',sub:'Средний',hands:11,lives:2,diff:3},
-  {nm:'NL200',sub:'Высокий',hands:12,lives:2,diff:3},
-  {nm:'NL500',sub:'Высокий',hands:12,lives:2,diff:3},
-  {nm:'NL1000',sub:'Хайроллер',hands:14,lives:1,diff:3}
-];
+/* ===== CAREER PATH RENDER ===== */
 function renderLadder(){
   const w=$('ladder');w.innerHTML='';
-  STAKES.forEach((st,i)=>{
-    const unlocked=i<=profile.career.stake;const cleared=profile.career.stars[i]>0;const cur=i===profile.career.stake;
+  const done=Math.min(profile.career.node,CAREER.length);
+  const hdr=document.createElement('div');hdr.className='phdr';
+  hdr.innerHTML=profile.career.node>=CAREER.length?'<b>Дорожка пройдена 🏆</b> Ты освоил базу — возвращайся за звёздами.':'Проходи узлы по порядку: <b>знакомство → тренировка → экзамен на время ⏱</b>. Пройдено: <b>'+done+'/'+CAREER.length+'</b>';
+  w.appendChild(hdr);
+  CAREER.forEach((nd,i)=>{
+    const isDone=i<profile.career.node,cur=i===profile.career.node,unlocked=i<=profile.career.node;
     const stars=profile.career.stars[i]||0;
-    const el=document.createElement('div');el.className='stake'+(unlocked?'':' locked')+(cur?' cur':'')+(cleared?' cleared':'');
-    el.onclick=()=>{if(!unlocked){toast('Сначала пройди предыдущий лимит');return;}startCareer(i);};
-    el.innerHTML='<div class="no">'+(cleared?'✓':i+1)+'</div><div class="tx"><div class="nm">'+st.nm+' · '+st.sub+'</div><div class="ds">'+st.hands+' рук · '+st.lives+' '+(st.lives===1?'жизнь':'жизни')+' · сложность '+st.diff+'/3</div></div>'+
-      (unlocked?'<div class="stars">'+'★'.repeat(stars)+'☆'.repeat(3-stars)+'</div>':'<div class="lk">🔒</div>');
+    const el=document.createElement('div');el.className='stake'+(unlocked?'':' locked')+(cur?' cur':'')+(isDone?' cleared':'');
+    el.onclick=()=>{if(!unlocked){toast('Сначала пройди предыдущий узел');return;}openNode(i);};
+    const right=isDone?('<div class="stars">'+'★'.repeat(stars)+'☆'.repeat(3-stars)+'</div>'):cur?'<div class="stars" style="color:var(--gold);font-weight:800">играть ›</div>':'<div class="lk">🔒</div>';
+    el.innerHTML='<div class="no">'+(isDone?'✓':(i+1))+'</div><div class="tx"><div class="nm">'+nd.ic+' '+nd.nm+'</div><div class="ds">'+(nd.kind==='rfi'?('Диапазон открытия '+nd.pos):nd.id==='vsopen'?'3-бет / колл / фолд':nd.id==='vs3'?'4-бет / колл / фолд':nd.id==='potodds'?'Шансы банка и эквити':'Линии после флопа')+'</div></div>'+right;
     w.appendChild(el);
   });
 }
@@ -1289,26 +1352,30 @@ function endSession(bust){
     SUB.innerHTML='Продержался <b>'+survived+'</b> верных подряд'+(rec&&survived>0?' · 🏆 новый рекорд!':' · рекорд '+(profile.surBest||0));
     if(survived>=8)fxBurst(true);
     ACT.innerHTML='<button class="again" onclick="startSurvival()">Ещё раз</button><button class="home" onclick="nav(\'home\')">В меню</button>';
-  } else if(session.type==='career'){
-    const st=STAKES[session.stakeIdx];
-    if(bust){T.textContent='ВЫЛЕТ 💥';T.className='bad';SUB.innerHTML='Закончились жизни на '+st.nm+'. Попробуй ещё раз.';ACT.innerHTML='<button class="again" onclick="startCareer('+session.stakeIdx+')">Реванш</button><button class="home" onclick="nav(\'career\')">К карте</button>';}
+  } else if(session.type==='cartrain'){
+    const nd=CAREER[session.nodeIdx];const passT=acc>=70;
+    T.textContent=passT?'ТРЕНИРОВКА ПРОЙДЕНА':'ЕЩЁ НЕМНОГО';T.className=passT?'':'mid';
+    SUB.innerHTML='Точность <b>'+acc+'%</b>'+(passT?' · готов к экзамену 🎓':' · нужно ≥70%, повтори');
+    if(passT)ACT.innerHTML='<button class="next" onclick="startCareerExam('+session.nodeIdx+')">🎓 Экзамен ⏱ ›</button><button class="home" onclick="openNode('+session.nodeIdx+')">К узлу</button>';
+    else ACT.innerHTML='<button class="again" onclick="startCareerTrain('+session.nodeIdx+')">Ещё раз</button><button class="home" onclick="openNode('+session.nodeIdx+')">К узлу</button>';
+  } else if(session.type==='carexam'){
+    const nd=CAREER[session.nodeIdx];
+    if(bust){T.textContent='ЭКЗАМЕН ПРОВАЛЕН 💥';T.className='bad';SUB.innerHTML='Три ошибки. Ты уже близко — пересдай.';ACT.innerHTML='<button class="again" onclick="startCareerExam('+session.nodeIdx+')">Пересдать</button><button class="home" onclick="openNode('+session.nodeIdx+')">К узлу</button>';}
     else{
-      const stars=acc>=100?3:acc>=80?2:acc>=60?1:0;
-      const passed=stars>=1;
-      T.textContent=passed?(stars===3?'ИДЕАЛЬНО!':'ЛИМИТ ПРОЙДЕН!'):'НЕ ХВАТИЛО';T.className=passed?'':'mid';
-      ST.textContent=passed?'★'.repeat(stars)+'☆'.repeat(3-stars):'';
-      SUB.innerHTML='Точность <b>'+acc+'%</b> на '+st.nm;
-      if(passed){
-        profile.career.stars[session.stakeIdx]=Math.max(profile.career.stars[session.stakeIdx]||0,stars);
-        if(session.stakeIdx===profile.career.stake&&session.stakeIdx<STAKES.length-1)profile.career.stake++;
-        if(session.mistakes===0)_flawlessFlag=true;
-        profile.rating+=15;saveProfile();trackQuest('career_pass',1);addCoins(50,true);fxBurst(true);
-        queueModal({ic:stars===3?'🏆':'🪜',tag:'Лимит пройден',name:st.nm+' ✓',desc:'Получено '+stars+'★. '+(profile.career.stake<STAKES.length?'Открыт новый лимит!':'Все лимиты пройдены!'),reward:'+15 рейтинга'});
-        checkAch();_flawlessFlag=false;
-        ACT.innerHTML=(profile.career.stake<STAKES.length?'<button class="next" onclick="startCareer('+Math.min(session.stakeIdx+1,STAKES.length-1)+')">Следующий лимит ›</button>':'')+'<button class="home" onclick="nav(\'career\')">К карте</button>';
-      }else{
-        SUB.innerHTML+=' · нужно ≥60%';ACT.innerHTML='<button class="again" onclick="startCareer('+session.stakeIdx+')">Ещё раз</button><button class="home" onclick="nav(\'career\')">К карте</button>';
-      }
+      const stars=acc>=100?3:acc>=88?2:1;
+      T.textContent=stars===3?'ЭКЗАМЕН СДАН ИДЕАЛЬНО!':'ЭКЗАМЕН СДАН!';T.className='';
+      ST.textContent='★'.repeat(stars)+'☆'.repeat(3-stars);
+      SUB.innerHTML='Точность <b>'+acc+'%</b> · '+nd.nm;
+      profile.career.stars[session.nodeIdx]=Math.max(profile.career.stars[session.nodeIdx]||0,stars);
+      const wasCur=session.nodeIdx===profile.career.node;
+      if(wasCur&&profile.career.node<CAREER.length)profile.career.node++;
+      if((session.mistakes||0)===0)_flawlessFlag=true;
+      profile.rating+=12;saveProfile();trackQuest('career_pass',1);addCoins(40,true);fxBurst(true);
+      const allDone=profile.career.node>=CAREER.length;
+      queueModal({ic:stars===3?'🏆':'🎓',tag:'Узел пройден',name:nd.nm+' ✓',desc:'Получено '+stars+'★. '+(allDone?'Вся дорожка пройдена — база освоена!':'Открыт следующий узел дорожки!'),reward:'+12 рейтинга'});
+      checkAch();_flawlessFlag=false;
+      const nextI=session.nodeIdx+1;
+      ACT.innerHTML=((!allDone&&nextI<CAREER.length)?'<button class="next" onclick="openNode('+nextI+')">Следующий узел ›</button>':'')+'<button class="home" onclick="nav(\'career\')">К дорожке</button>';
     }
   }else{
     T.textContent=acc>=70?'GREAT SUCCESS!':'GOOD FIGHT!';T.className=acc>=70?'':'mid';
