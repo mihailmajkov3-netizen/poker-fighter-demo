@@ -213,6 +213,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;b
 .gc{aspect-ratio:1;border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700;background:#1a2350;color:#5a6aa8;position:relative}
 .gc.in{background:linear-gradient(180deg,#e0a532,#c2841d);color:#241a00}.gc.in3{background:linear-gradient(180deg,#d05cff,#9b3cdf);color:#fff}.gc.incall{background:linear-gradient(180deg,#2f9d68,#1f7a4d);color:#fff}
 .gc.hl{box-shadow:0 0 0 2px #fff,0 0 8px rgba(255,255,255,.7);z-index:2}
+.gc.of{filter:brightness(1.32)}
 .gridpct{margin-top:8px;font-size:12px;color:var(--muted);text-align:center}.gridpct b{color:#fff;font-weight:700}
 .gridlegend{display:flex;gap:12px;margin-top:5px;font-size:10px;color:var(--muted);flex-wrap:wrap;justify-content:center}
 .gridlegend span{display:flex;align-items:center;gap:4px}.gridlegend i{width:11px;height:11px;border-radius:3px;display:inline-block}
@@ -949,7 +950,7 @@ function gridHTML(sets,hl,rl){
   let h='<div class="gridwrap"><div class="grid13">';
   for(let r=0;r<13;r++)for(let c=0;c<13;c++){let code,disp;
     if(r===c){code=RANKS[r]+RANKS[c];disp=code;}else if(r<c){code=RANKS[r]+RANKS[c]+'s';disp=RANKS[r]+RANKS[c];}else{code=RANKS[c]+RANKS[r]+'o';disp=RANKS[c]+RANKS[r];}
-    let cls='gc';if(sets.three&&sets.three.has(code))cls+=' in3';else if(sets.call&&sets.call.has(code))cls+=' incall';else if(sets.in&&sets.in.has(code))cls+=' in';
+    let cls='gc'+(r>c?' of':'');if(sets.three&&sets.three.has(code))cls+=' in3';else if(sets.call&&sets.call.has(code))cls+=' incall';else if(sets.in&&sets.in.has(code))cls+=' in';
     if(hl&&code===hl)cls+=' hl';h+='<div class="'+cls+'">'+disp+'</div>';}
   h+='</div>';
   if(sets.three){
@@ -1463,7 +1464,7 @@ function renderMemControls(){
   }
 }
 function renderMemGrid(reveal){const g=$('memGrid');g.innerHTML='';const m=memData();const rs=memMode!=='rfi'?memRaiseSet(m):null;
-  for(let r=0;r<13;r++)for(let c=0;c<13;c++){const code=cellCode(r,c);const cell=document.createElement('div');cell.className='gc';cell.textContent=cellDisp(r,c);
+  for(let r=0;r<13;r++)for(let c=0;c<13;c++){const code=cellCode(r,c);const cell=document.createElement('div');cell.className='gc'+(r>c?' of':'');cell.textContent=cellDisp(r,c);
     if(memMode==='rfi'){
       if(reveal){if(RFI[memPos].has(code))cell.classList.add('in');}else if(memSel.has(code))cell.classList.add('in');
       cell.onclick=()=>{if(reveal)return;if(memSel.has(code))memSel.delete(code);else memSel.add(code);renderMemGrid();};
@@ -1480,14 +1481,14 @@ function memCheck(){
   const g=$('memGrid');g.innerHTML='';
   if(memMode==='rfi'){
     const gto=RFI[memPos];let hit=0,extra=0;gto.forEach(h=>{if(memSel.has(h))hit++;});memSel.forEach(h=>{if(!gto.has(h))extra++;});const total=gto.size;const score=Math.max(0,Math.round((hit-extra*0.5)/total*100));
-    for(let r=0;r<13;r++)for(let c=0;c<13;c++){const code=cellCode(r,c);const cell=document.createElement('div');cell.className='gc';cell.textContent=cellDisp(r,c);const inG=gto.has(code),inS=memSel.has(code);
+    for(let r=0;r<13;r++)for(let c=0;c<13;c++){const code=cellCode(r,c);const cell=document.createElement('div');cell.className='gc'+(r>c?' of':'');cell.textContent=cellDisp(r,c);const inG=gto.has(code),inS=memSel.has(code);
       if(inG&&inS)cell.classList.add('incall');else if(inG&&!inS)cell.style.cssText='background:#7a3a3a;color:#ffc0c0';else if(!inG&&inS)cell.style.cssText='background:#b8862a;color:#241a00';g.appendChild(cell);}
     $('memResult').innerHTML='<b>'+score+'%</b> · попал '+hit+'/'+total+' · лишних '+extra+'<div style="font-size:11px;color:var(--muted);margin-top:4px"><span style="color:#9bf0c0">●</span> верно <span style="color:#ffc0c0">●</span> пропуск <span style="color:#ffd98a">●</span> лишнее</div>';
     applyResult('memorize',score>=75,1050,'Запоминание диапазонов');
     if(memCareer)careerDrawCheck(score);
   }else{
     const m=memData();const rs=memRaiseSet(m);let hit=0,extra=0;const tot=rs.size+m.clS.size;
-    for(let r=0;r<13;r++)for(let c=0;c<13;c++){const code=cellCode(r,c);const cell=document.createElement('div');cell.className='gc';cell.textContent=cellDisp(r,c);
+    for(let r=0;r<13;r++)for(let c=0;c<13;c++){const code=cellCode(r,c);const cell=document.createElement('div');cell.className='gc'+(r>c?' of':'');cell.textContent=cellDisp(r,c);
       const truth=rs.has(code)?'3':m.clS.has(code)?'call':'fold';const user=mem3.has(code)?'3':memCall.has(code)?'call':'none';
       if(truth!=='fold'&&user===truth){hit++;cell.classList.add(truth==='3'?'in3':'incall');}
       else if(truth!=='fold'&&user!==truth){cell.style.cssText='background:#7a3a3a;color:#ffc0c0';}
