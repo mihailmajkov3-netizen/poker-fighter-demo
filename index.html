@@ -673,6 +673,16 @@ const VS_RAW=[
   {opener:'CO',hero:'SB',label:'CO открывает',tb:['88+','ATs+','KJs+','AJo+','KQo','A5s','A4s','A3s'],cl:['55-77','A9s-A6s','KTs','QTs+','JTs','T9s','98s']},
   {opener:'UTG',hero:'BB',label:'UTG открывает',tb:['TT+','AQs+','AKo','A5s','A4s'],cl:['22-99','A9s-A6s','A3s','A2s','AJs','ATs','KTs+','QTs+','JTs','T9s','98s','87s','76s','ATo-AQo','KJo+','QJo']}
 ].map(m=>({...m,tbS:buildRange(m.tb),clS:buildRange(m.cl)}));
+const VS3_RAW=[
+  {hero:'BTN',threebettor:'BB',label:'BB делает 3-бет',fb:['QQ+','AKs','A5s','A4s'],cl:['55-JJ','AQs','AJs','ATs','KQs','KJs','QJs','JTs','T9s','98s','AQo','AKo']},
+  {hero:'BTN',threebettor:'SB',label:'SB делает 3-бет',fb:['QQ+','AKs','AKo','A5s'],cl:['66-JJ','AQs','AJs','ATs','KQs','KJs','QJs','JTs','T9s','AQo']},
+  {hero:'CO',threebettor:'BTN',label:'BTN делает 3-бет',fb:['QQ+','AKs','AKo','A5s','A4s'],cl:['77-JJ','AQs','AJs','KQs','KJs','QJs','JTs','AQo']},
+  {hero:'CO',threebettor:'BB',label:'BB делает 3-бет',fb:['QQ+','AKs','AKo','A5s'],cl:['77-JJ','AQs','AJs','KQs','KJs','QJs','JTs','AQo']},
+  {hero:'HJ',threebettor:'BTN',label:'BTN делает 3-бет',fb:['QQ+','AKs','AKo','A5s'],cl:['99-JJ','AQs','AJs','KQs','KJs','QJs','JTs','AQo']},
+  {hero:'HJ',threebettor:'BB',label:'BB делает 3-бет',fb:['QQ+','AKs','AKo','A5s'],cl:['99-JJ','AQs','AJs','KQs','KJs','QJs','JTs','AQo']},
+  {hero:'UTG',threebettor:'BB',label:'BB делает 3-бет',fb:['KK+','AKs','A5s'],cl:['TT-QQ','AQs','AJs','KQs','AKo']},
+  {hero:'SB',threebettor:'BB',label:'BB делает 3-бет',fb:['JJ+','AQs+','AKo','A5s','A4s'],cl:['88-TT','AJs','ATs','KQs','KJs','QJs','JTs','AQo']}
+].map(m=>({...m,fbS:buildRange(m.fb),clS:buildRange(m.cl)}));
 
 /* ===== PROFILE ===== */
 const MODE_NAMES={rfi:'Preflop RFI',vsopen:'vs Open',postflop:'Postflop',potodds:'Pot Odds',memorize:'Range Trainer',mixed:'Микс'};
@@ -774,11 +784,11 @@ VIEW.preflop=function(sp,stage){
   const seatByPos={};for(let i=0;i<6;i++){seatByPos[ORDER[(heroIdx+i+6)%6]]=SLOT[i];}
   ORDER.forEach(pos=>{
     const isHero=pos===sp.pos,isAggr=pos===sp.opener;const xy=seatByPos[pos],x=xy[0],y=xy[1];
-    const folded=!isHero&&!isAggr&&ACT.indexOf(pos)<heroAct;
+    const folded=!isHero&&!isAggr&&(sp.is3bet||ACT.indexOf(pos)<heroAct);
     const ord=(ORDER.indexOf(pos)-heroIdx+6)%6;
     const seat=document.createElement('div');seat.className='pseat'+(isHero?' hero':'')+(isAggr?' aggr':'')+(folded?' folded':'');
     seat.style.left=x+'%';seat.style.top=y+'%';seat.style.animationDelay=(ord*0.07)+'s';
-    seat.innerHTML=(isAggr?'<div class="praisetag" style="animation-delay:.95s">RAISE</div>':'')+'<div class="pav">'+(isHero?profile.avatar:oneOf(BOTAV))+'</div><div class="pinfo"><div class="ppos">'+pos+'</div><div class="pstk">100bb</div></div>';
+    seat.innerHTML=(isAggr?'<div class="praisetag" style="animation-delay:.95s">'+(sp.is3bet?'3-BET':'RAISE')+'</div>':'')+((sp.is3bet&&isHero)?'<div class="praisetag" style="background:#2f6fd0;animation-delay:1.1s">OPEN</div>':'')+'<div class="pav">'+(isHero?profile.avatar:oneOf(BOTAV))+'</div><div class="pinfo"><div class="ppos">'+pos+'</div><div class="pstk">100bb</div></div>';
     if(isHero){const hc=document.createElement('div');hc.style.cssText='display:flex;gap:3px;margin-top:2px';hc.appendChild(cardEl(sp.hand.c1,'sm'));hc.appendChild(cardEl(sp.hand.c2,'sm'));[...hc.children].forEach((c,ci)=>c.style.animationDelay=(1.0+ci*0.1)+'s');seat.appendChild(hc);}
     else{const bk=document.createElement('div');bk.style.cssText='display:flex;gap:3px;margin-top:2px';bk.innerHTML='<div class="cardback"></div><div class="cardback"></div>';seat.appendChild(bk);}
     tw.appendChild(seat);
@@ -786,7 +796,8 @@ VIEW.preflop=function(sp,stage){
   });
   function chip(pos,txt,delay){const xy=seatByPos[pos];const cx=xy[0]+(50-xy[0])*0.34,cy=xy[1]+(50-xy[1])*0.34;const c=document.createElement('div');c.className='pchip';c.style.left=cx+'%';c.style.top=cy+'%';c.style.animationDelay=delay+'s';c.innerHTML='<span class="pd"></span>'+txt;tw.appendChild(c);}
   chip('SB','0.5bb',0.55);chip('BB','1bb',0.62);
-  if(sp.opener)chip(sp.opener,'2.5bb',0.95);
+  if(sp.opener)chip(sp.opener,sp.is3bet?'8bb':'2.5bb',0.95);
+  if(sp.is3bet)chip(sp.pos,'2.5bb',0.82);
   col.appendChild(tw);
   const banner=document.createElement('div');banner.className='pf-banner';banner.innerHTML='<b style="color:var(--gold);font-size:18px">'+sp.hand.code+'</b><br>'+sp.prompt;
   col.appendChild(banner);
@@ -829,14 +840,14 @@ VIEW.table=function(sp,stage){
   seat('Hero',sp.pos,sp.heroStack,true);
   Object.keys(sp.seats).forEach(n=>seat(n,n,sp.seats[n],false));
 };
-function gridHTML(sets,hl){
+function gridHTML(sets,hl,rl){
   let h='<div class="gridwrap"><div class="grid13">';
   for(let r=0;r<13;r++)for(let c=0;c<13;c++){let code,disp;
     if(r===c){code=RANKS[r]+RANKS[c];disp=code;}else if(r<c){code=RANKS[r]+RANKS[c]+'s';disp=RANKS[r]+RANKS[c];}else{code=RANKS[c]+RANKS[r]+'o';disp=RANKS[c]+RANKS[r];}
     let cls='gc';if(sets.three&&sets.three.has(code))cls+=' in3';else if(sets.call&&sets.call.has(code))cls+=' incall';else if(sets.in&&sets.in.has(code))cls+=' in';
     if(hl&&code===hl)cls+=' hl';h+='<div class="'+cls+'">'+disp+'</div>';}
   h+='</div>';
-  h+=sets.three?'<div class="gridlegend"><span><i style="background:linear-gradient(180deg,#d05cff,#9b3cdf)"></i>3-бет</span><span><i style="background:linear-gradient(180deg,#2f9d68,#1f7a4d)"></i>колл</span><span><i style="background:#1a2350"></i>фолд</span></div>':'<div class="gridlegend"><span><i style="background:linear-gradient(180deg,#e0a532,#c2841d)"></i>raise</span><span><i style="background:#1a2350"></i>fold</span></div>';
+  h+=sets.three?'<div class="gridlegend"><span><i style="background:linear-gradient(180deg,#d05cff,#9b3cdf)"></i>'+(rl||'3-бет')+'</span><span><i style="background:linear-gradient(180deg,#2f9d68,#1f7a4d)"></i>колл</span><span><i style="background:#1a2350"></i>фолд</span></div>':'<div class="gridlegend"><span><i style="background:linear-gradient(180deg,#e0a532,#c2841d)"></i>raise</span><span><i style="background:#1a2350"></i>fold</span></div>';
   return h+'</div>';
 }
 function readoutHTML(sp){const nm={fold:'Fold',call:sp.facing?'Call':'Check',raise:sp.facing?'Raise':'Bet'};
@@ -866,6 +877,15 @@ function genVsOpen(){
     grade(key){const ok=key===ca;const meh=!ok&&((ca==='call'&&key==='threebet')||(ca==='threebet'&&key==='call'));
       const nmm={threebet:'3-бет',call:'колл',fold:'фолд'};this.coach=hand.code+' против '+m.opener+' → '+nmm[ca]+'.'+(ca==='threebet'?' Сильна/подходит как 3-бет.':ca==='call'?' Хороша для колла, но не 3-бета.':' Слишком слаба.');
       return {correct:ok,meh,body:gridHTML({three:m.tbS,call:m.clS},hand.code)};}};
+}
+function genVs3bet(){
+  const m=oneOf(VS3_RAW);const hand=dealHand();let ca='fold';if(m.fbS.has(hand.code))ca='fourbet';else if(m.clS.has(hand.code))ca='call';
+  return {view:'preflop',mode:'vs3',concept:'Игра против 3-бета',pos:m.hero,opener:m.threebettor,is3bet:true,hand,oppR:1230,
+    prompt:'<b>Ты открыл рейз с '+m.hero+', '+m.threebettor+' делает 3-бет.</b> Что делаешь?',
+    actions:[{key:'fold',label:'FOLD',cls:'fold'},{key:'call',label:'CALL',cls:'call'},{key:'fourbet',label:'4-BET',cls:'threebet'}],
+    grade(key){const ok=key===ca;const meh=!ok&&((ca==='call'&&key==='fourbet')||(ca==='fourbet'&&key==='call'));
+      const nmm={fourbet:'4-бет',call:'колл',fold:'фолд'};this.coach=hand.code+' против 3-бета от '+m.threebettor+' → '+nmm[ca]+'.'+(ca==='fourbet'?' Сильна для велью или подходит как 4-бет-блеф.':ca==='call'?' Достаточно сильна для колла, но не для 4-бета.':' Слишком слаба, чтобы продолжать против 3-бета.');
+      return {correct:ok,meh,body:gridHTML({three:m.fbS,call:m.clS},hand.code,'4-бет')};}};
 }
 
 /* ===== POSTFLOP ARCHETYPES (procedural) ===== */
@@ -899,11 +919,11 @@ const ARCH=[
    build(d){const pr=oneOf(['77','88','99','TT','JJ']);const suit=oneOf(['s','h','d','c']);const board=wetTwoTone(d,suit);
      // ensure set rank present on board
      board[2]=d.takeRank(pr[0]);const h=[d.takeRank(pr[0]),d.takeRank(pr[0])];return {hero:h,board};},
-   coach:'Сет на мокром борде. Рейзуй за велью и защиту: куча дро у оппонента заплатит, нельзя давать бесплатные карты.'},
+   coach:'Сет на мокром борде. Рейзи за велью и защиту: куча дро у оппонента заплатит, нельзя давать бесплатные карты.'},
   {id:'twopair',concept:'Велью двумя парами',diff:2,facing:true,best:'raise',handLabel:'Две пары',boardLabel:'координированный',
    build(d){const r1=oneOf(['A','K','Q','J']),r2=oneOf(RANKS.filter(r=>RVAL[r]<RVAL[r1]&&RVAL[r]>=5));const h=[d.takeRank(r1),d.takeRank(r2)];
      const low=oneOf(RANKS.filter(r=>r!==r1&&r!==r2&&RVAL[r]<RVAL[r2]));const su=shuffle(['s','h','d','c']);const board=[d.takeRC(r1,su[0]),d.takeRC(r2,su[1]),d.takeRC(low,su[2])];return {hero:h,board};},
-   coach:'Две пары — сильное велью. Рейзуй: тебя оплатят топ-пары и дро, а ты ещё уязвим к дро — раздувай банк сейчас.'},
+   coach:'Две пары — сильное велью. Рейзи: тебя оплатят топ-пары и дро, а ты ещё уязвим к дро — раздувай банк сейчас.'},
   {id:'nfd_oop',concept:'Полублеф флеш-дро',diff:2,facing:true,best:'raise',handLabel:'Натсовое флеш-дро',boardLabel:'мокрый',
    build(d){const suit=oneOf(['s','h','d','c']);const low=RANKS.filter(r=>RVAL[r]<8);
      const h=[d.takeRC('A',suit),d.takeSuit(suit,['Q','J','T','9'])];
@@ -939,13 +959,13 @@ const ARCH=[
   {id:'combo_raise',concept:'Полублеф комбо-дро',diff:3,facing:true,best:'raise',handLabel:'Флеш-дро + стрит-дро',boardLabel:'очень мокрый',
    build(d){const suit=oneOf(['s','h','d','c']);const base=oneOf([10,9,8]);const h=[d.takeRC(RCHAR[base],suit),d.takeRC(RCHAR[base-1],suit)];
      const board=[d.takeRC(RCHAR[base-2],suit),d.takeRC(RCHAR[base+1],suit),d.takeOffSuit(suit,['2','3','4'])];return {hero:h,board,oop:true};},
-   coach:'Комбо-дро (флеш + стрит) — ~15 аутов, часто фаворит против одной пары. Рейзуй: максимум fold equity + огромное эквити.'},
+   coach:'Комбо-дро (флеш + стрит) — ~15 аутов, часто фаворит против одной пары. Рейзи: максимум fold equity + огромное эквити.'},
   {id:'trips_value',concept:'Велью трипсом',diff:2,facing:false,best:'raise',handLabel:'Трипс',boardLabel:'парный',
    build(d){const X=oneOf(['Q','J','T','9','8']);const k=oneOf(RANKS.filter(r=>RVAL[r]>=9&&r!==X));const h=[d.takeRank(X),d.takeRank(k)];const low=oneOf(RANKS.filter(r=>RVAL[r]<RVAL[X]&&r!==k));const su=shuffle(['s','h','d','c']);const board=[d.takeRC(X,su[0]),d.takeRC(X,su[1]),d.takeRC(low,su[2])];return {hero:h,board,oop:false};},
    coach:'Трипс на парном борде — сильное велью. Ставь: оплатят топ-пары и дро, рука почти всегда впереди.'},
   {id:'flush_made',concept:'Велью флешем',diff:2,facing:true,best:'raise',handLabel:'Флеш',boardLabel:'три одной масти',
    build(d){const su=oneOf(['s','h','d','c']);const h=[d.takeSuit(su,['A','K','Q']),d.takeSuit(su,['J','T','9','8'])];const board=[d.takeSuit(su,['7','6','5','4','3','2']),d.takeSuit(su,['7','6','5','4','3','2']),d.takeSuit(su,['9','8','7','6','5'])];return {hero:h,board,oop:true};},
-   coach:'Собранный флеш — почти натс. Рейзуй за велью: оплатят сеты, две пары и младшие флеши.'},
+   coach:'Собранный флеш — почти натс. Рейзи за велью: оплатят сеты, две пары и младшие флеши.'},
   {id:'straight_made',concept:'Велью стритом',diff:2,facing:true,best:'raise',handLabel:'Стрит',boardLabel:'связанный',
    build(d){const base=oneOf([9,10,11]);const h=[d.takeRank(RCHAR[base]),d.takeRank(RCHAR[base-1])];const su=shuffle(['s','h','d','c']);const board=[d.takeRC(RCHAR[base-2],su[0]),d.takeRC(RCHAR[base-3],su[1]),d.takeRC(RCHAR[base-4],su[2])];return {hero:h,board,oop:false};},
    coach:'Готовый стрит на связанном борде. Велью-рейз: платят две пары, сеты и младшие дро.'},
@@ -1043,9 +1063,10 @@ function genPotOdds(){
 
 /* ===== MIXED generator (career/daily) ===== */
 function genMixed(diffCap){const r=Math.random();
-  if(r<0.34)return tag(genRFI());
-  if(r<0.55)return tag(genVsOpen());
-  if(r<0.8)return genPostflop(diffCap);
+  if(r<0.3)return tag(genRFI());
+  if(r<0.48)return tag(genVsOpen());
+  if(r<0.6)return tag(genVs3bet());
+  if(r<0.82)return genPostflop(diffCap);
   return tag(genPotOdds());}
 function tag(sp){return sp;}
 
@@ -1228,8 +1249,13 @@ let memMode='rfi',memPos='UTG',memVsIdx=0,memBrush='3',memSel=new Set(),mem3=new
 function cellCode(r,c){if(r===c)return RANKS[r]+RANKS[c];if(r<c)return RANKS[r]+RANKS[c]+'s';return RANKS[c]+RANKS[r]+'o';}
 function cellDisp(r,c){return r<=c?RANKS[r]+RANKS[c]:RANKS[c]+RANKS[r];}
 function openMemorize(){show('mem');setTitle('Range Trainer');memMode='rfi';memPos='UTG';memVsIdx=0;memBrush='3';memSel=new Set();mem3=new Set();memCall=new Set();renderMemTabs();renderMemControls();renderMemGrid();$('memResult').textContent='';}
-function renderMemTabs(){$('memTabs').innerHTML='<div class="memtab'+(memMode==='rfi'?' active':'')+'" onclick="memSwitch(\'rfi\')">Открытие (RFI)</div><div class="memtab'+(memMode==='vs'?' active':'')+'" onclick="memSwitch(\'vs\')">Против опена</div>';}
-function memSwitch(m){memMode=m;memSel=new Set();mem3=new Set();memCall=new Set();SND.tick();renderMemTabs();renderMemControls();renderMemGrid();$('memResult').textContent='';}
+function renderMemTabs(){$('memTabs').innerHTML='<div class="memtab'+(memMode==='rfi'?' active':'')+'" onclick="memSwitch(\'rfi\')">Открытие</div><div class="memtab'+(memMode==='vs'?' active':'')+'" onclick="memSwitch(\'vs\')">vs опен</div><div class="memtab'+(memMode==='vs3'?' active':'')+'" onclick="memSwitch(\'vs3\')">vs 3-бет</div>';}
+function memSwitch(m){memMode=m;memVsIdx=0;memSel=new Set();mem3=new Set();memCall=new Set();SND.tick();renderMemTabs();renderMemControls();renderMemGrid();$('memResult').textContent='';}
+function memMatchups(){return memMode==='vs3'?VS3_RAW:VS_RAW;}
+function memData(){return memMatchups()[memVsIdx]||memMatchups()[0];}
+function memRaiseSet(m){return memMode==='vs3'?m.fbS:m.tbS;}
+function memRaiseLabel(){return memMode==='vs3'?'4-бет':'3-бет';}
+function memMatchLabel(m){return m.hero+(memMode==='vs3'?' / '+m.threebettor:' vs '+m.opener);}
 function renderMemControls(){
   const instr=$('memInstr'),pb=$('memPosBtns'),br=$('memBrush'),lg=$('memLegend');
   if(memMode==='rfi'){
@@ -1237,26 +1263,27 @@ function renderMemControls(){
     pb.innerHTML='';['UTG','HJ','CO','BTN','SB'].forEach(p=>{const b=document.createElement('div');b.className='posbtn'+(p===memPos?' active':'');b.textContent=p+' '+RFI_PCT[p]+'%';b.onclick=()=>{memPos=p;memSel=new Set();renderMemControls();renderMemGrid();$('memResult').textContent='';};pb.appendChild(b);});
     lg.innerHTML='<span><i style="background:linear-gradient(180deg,#e0a532,#c2841d)"></i>raise</span><span><i style="background:#1a2350"></i>fold</span>';
   }else{
-    instr.textContent='Раскрась 3-бет и колл против опена (выбери кисть):';br.style.display='';
-    pb.innerHTML='';VS_RAW.forEach((m,i)=>{const b=document.createElement('div');b.className='posbtn'+(i===memVsIdx?' active':'');b.textContent=m.hero+' vs '+m.opener;b.onclick=()=>{memVsIdx=i;mem3=new Set();memCall=new Set();renderMemControls();renderMemGrid();$('memResult').textContent='';};pb.appendChild(b);});
-    br.innerHTML='';[['3','3-бет','b3'],['call','Колл','bcall'],['erase','Ластик','berase']].forEach(x=>{const b=document.createElement('div');b.className='posbtn '+x[2]+(memBrush===x[0]?' active':'');b.textContent=x[1];b.onclick=()=>{memBrush=x[0];SND.tick();renderMemControls();};br.appendChild(b);});
-    lg.innerHTML='<span><i style="background:linear-gradient(180deg,#d05cff,#9b3cdf)"></i>3-бет</span><span><i style="background:linear-gradient(180deg,#2f9d68,#1f7a4d)"></i>колл</span><span><i style="background:#1a2350"></i>фолд</span>';
+    const rl=memRaiseLabel();
+    instr.textContent='Раскрась '+rl+' и колл (выбери кисть):';br.style.display='';
+    pb.innerHTML='';memMatchups().forEach((m,i)=>{const b=document.createElement('div');b.className='posbtn'+(i===memVsIdx?' active':'');b.textContent=memMatchLabel(m);b.onclick=()=>{memVsIdx=i;mem3=new Set();memCall=new Set();renderMemControls();renderMemGrid();$('memResult').textContent='';};pb.appendChild(b);});
+    br.innerHTML='';[['3',rl,'b3'],['call','Колл','bcall'],['erase','Ластик','berase']].forEach(x=>{const b=document.createElement('div');b.className='posbtn '+x[2]+(memBrush===x[0]?' active':'');b.textContent=x[1];b.onclick=()=>{memBrush=x[0];SND.tick();renderMemControls();};br.appendChild(b);});
+    lg.innerHTML='<span><i style="background:linear-gradient(180deg,#d05cff,#9b3cdf)"></i>'+rl+'</span><span><i style="background:linear-gradient(180deg,#2f9d68,#1f7a4d)"></i>колл</span><span><i style="background:#1a2350"></i>фолд</span>';
   }
 }
-function renderMemGrid(reveal){const g=$('memGrid');g.innerHTML='';const m=VS_RAW[memVsIdx];
+function renderMemGrid(reveal){const g=$('memGrid');g.innerHTML='';const m=memData();const rs=memMode!=='rfi'?memRaiseSet(m):null;
   for(let r=0;r<13;r++)for(let c=0;c<13;c++){const code=cellCode(r,c);const cell=document.createElement('div');cell.className='gc';cell.textContent=cellDisp(r,c);
     if(memMode==='rfi'){
       if(reveal){if(RFI[memPos].has(code))cell.classList.add('in');}else if(memSel.has(code))cell.classList.add('in');
       cell.onclick=()=>{if(reveal)return;if(memSel.has(code))memSel.delete(code);else memSel.add(code);renderMemGrid();};
     }else{
-      if(reveal){if(m.tbS.has(code))cell.classList.add('in3');else if(m.clS.has(code))cell.classList.add('incall');}
+      if(reveal){if(rs.has(code))cell.classList.add('in3');else if(m.clS.has(code))cell.classList.add('incall');}
       else{if(mem3.has(code))cell.classList.add('in3');else if(memCall.has(code))cell.classList.add('incall');}
       cell.onclick=()=>{if(reveal)return;mem3.delete(code);memCall.delete(code);if(memBrush==='3')mem3.add(code);else if(memBrush==='call')memCall.add(code);renderMemGrid();};
     }
     g.appendChild(cell);}
 }
 function memClear(){if(memMode==='rfi')memSel=new Set();else{mem3=new Set();memCall=new Set();}SND.tick();renderMemGrid();$('memResult').textContent='';}
-function memReveal(){renderMemGrid(true);if(memMode==='rfi')$('memResult').innerHTML='Эталон GTO '+memPos+' ('+RFI_PCT[memPos]+'%). Запоминай.';else{const m=VS_RAW[memVsIdx];$('memResult').innerHTML='Эталон '+m.hero+' vs '+m.opener+': <span style="color:#d99bff">фиолет = 3-бет</span>, <span style="color:#9bf0c0">зелёное = колл</span>.';}}
+function memReveal(){renderMemGrid(true);if(memMode==='rfi')$('memResult').innerHTML='Эталон GTO '+memPos+' ('+RFI_PCT[memPos]+'%). Запоминай.';else{const m=memData();$('memResult').innerHTML='Эталон '+memMatchLabel(m)+': <span style="color:#d99bff">фиолет = '+memRaiseLabel()+'</span>, <span style="color:#9bf0c0">зелёное = колл</span>.';}}
 function memCheck(){
   const g=$('memGrid');g.innerHTML='';
   if(memMode==='rfi'){
@@ -1266,15 +1293,15 @@ function memCheck(){
     $('memResult').innerHTML='<b>'+score+'%</b> · попал '+hit+'/'+total+' · лишних '+extra+'<div style="font-size:11px;color:var(--muted);margin-top:4px"><span style="color:#9bf0c0">●</span> верно <span style="color:#ffc0c0">●</span> пропуск <span style="color:#ffd98a">●</span> лишнее</div>';
     applyResult('memorize',score>=75,1050,'Запоминание диапазонов');
   }else{
-    const m=VS_RAW[memVsIdx];let hit=0,extra=0;const tot=m.tbS.size+m.clS.size;
+    const m=memData();const rs=memRaiseSet(m);let hit=0,extra=0;const tot=rs.size+m.clS.size;
     for(let r=0;r<13;r++)for(let c=0;c<13;c++){const code=cellCode(r,c);const cell=document.createElement('div');cell.className='gc';cell.textContent=cellDisp(r,c);
-      const truth=m.tbS.has(code)?'3':m.clS.has(code)?'call':'fold';const user=mem3.has(code)?'3':memCall.has(code)?'call':'none';
+      const truth=rs.has(code)?'3':m.clS.has(code)?'call':'fold';const user=mem3.has(code)?'3':memCall.has(code)?'call':'none';
       if(truth!=='fold'&&user===truth){hit++;cell.classList.add(truth==='3'?'in3':'incall');}
       else if(truth!=='fold'&&user!==truth){cell.style.cssText='background:#7a3a3a;color:#ffc0c0';}
       else if(truth==='fold'&&user!=='none'){extra++;cell.style.cssText='background:#b8862a;color:#241a00';}
       g.appendChild(cell);}
     const score=Math.max(0,Math.round((hit-extra*0.5)/tot*100));
-    $('memResult').innerHTML='<b>'+score+'%</b> · верно '+hit+'/'+tot+' · лишних '+extra+'<div style="font-size:11px;color:var(--muted);margin-top:4px">3-бет/колл верно · <span style="color:#ffc0c0">красное</span> ошибка · <span style="color:#ffd98a">жёлтое</span> лишнее</div>';
+    $('memResult').innerHTML='<b>'+score+'%</b> · верно '+hit+'/'+tot+' · лишних '+extra+'<div style="font-size:11px;color:var(--muted);margin-top:4px">'+memRaiseLabel()+'/колл верно · <span style="color:#ffc0c0">красное</span> ошибка · <span style="color:#ffd98a">жёлтое</span> лишнее</div>';
     applyResult('memorize',score>=70,1100,'vs-диапазоны');
   }
   $('tbRating').textContent=profile.rating;checkAch();SND.correct();
