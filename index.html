@@ -940,6 +940,12 @@ const OPT_FACE=[{key:'fold',label:'FOLD',cls:'fold'},{key:'call',label:'CALL',cl
 
 /* ===== PREFLOP GENERATORS ===== */
 function dealHand(){const d=newDeck();const c1=d.takeRank(oneOf(RANKS)),c2=d.takeRank(oneOf(RANKS));return {c1,c2,code:handCode(c1.r,c2.r,c1.s.c===c2.s.c),suited:c1.s.c===c2.s.c};}
+function handFromCode(code){const d=newDeck();const r1=code[0],r2=code[1];let c1,c2;
+  if(code.length===2){c1=d.takeRank(r1);c2=d.takeRank(r2);}
+  else if(code[2]==='s'){const su=oneOf(['s','h','d','c']);c1=d.takeRC(r1,su);c2=d.takeRC(r2,su);}
+  else{c1=d.takeRank(r1);c2=d.takeOffSuit(c1.s.c,[r2]);}
+  return {c1,c2,code,suited:c1.s.c===c2.s.c};}
+function handFromRange(set){return handFromCode(oneOf([...set]));}
 function rfiPrompt(pos){return (pos==='UTG'?'Твоё слово первое.':'Все до тебя сбросили — твоё слово.')+' Открываешь рейзом или фолд?';}
 function genRFI(){
   const pos=oneOf(['UTG','HJ','CO','BTN','SB']);const hand=dealHand();const inR=RFI[pos].has(hand.code);
@@ -960,7 +966,7 @@ function genVsOpen(){
       return {correct:ok,meh,body:gridHTML({three:m.tbS,call:m.clS},hand.code)};}};
 }
 function genVs3bet(){
-  const m=oneOf(VS3_RAW);const hand=dealHand();let ca='fold';if(m.fbS.has(hand.code))ca='fourbet';else if(m.clS.has(hand.code))ca='call';
+  const m=oneOf(VS3_RAW);const hand=handFromRange(RFI[m.hero]);let ca='fold';if(m.fbS.has(hand.code))ca='fourbet';else if(m.clS.has(hand.code))ca='call';
   return {view:'preflop',mode:'vs3',concept:'Игра против 3-бета',pos:m.hero,opener:m.threebettor,is3bet:true,hand,oppR:1230,
     prompt:'<b>Ты открыл рейз с '+m.hero+', '+m.threebettor+' делает 3-бет.</b> Что делаешь?',
     actions:[{key:'fold',label:'FOLD',cls:'fold'},{key:'call',label:'CALL',cls:'call'},{key:'fourbet',label:'4-BET',cls:'threebet'}],
