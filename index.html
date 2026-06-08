@@ -749,7 +749,7 @@ const VS3_RAW=[
 ].map(m=>({...m,fbS:buildRange(m.fb),clS:buildRange(m.cl)}));
 
 /* ===== PROFILE ===== */
-const MODE_NAMES={rfi:'Preflop RFI',vsopen:'vs Open',postflop:'Postflop',potodds:'Pot Odds',memorize:'Range Trainer',mixed:'Микс'};
+const MODE_NAMES={rfi:'Preflop RFI',vsopen:'vs Open',vs3:'vs 3-бет',postflop:'Postflop',potodds:'Pot Odds',memorize:'Range Trainer',mixed:'Микс'};
 let profile=loadProfile();
 function loadProfile(){let p={};try{p=JSON.parse(localStorage.getItem('pf_profile_v2'))||{};}catch(e){}
   const o=Object.assign({rating:1000,xp:0,hands:0,correct:0,streak:0,bestStreak:0,byMode:{},byConcept:{},career:{stake:0,stars:{}},achievements:[],mistakes:[],lastDaily:null,dailyStreak:0,quests:null,surBest:0,name:'Игрок',avatar:'alex',onboarded:false,coins:0,owned:['alex'],ownedThemes:['green'],theme:'green',soundOn:true,hapticsOn:true,lessonsRead:[]},p);
@@ -795,6 +795,7 @@ function checkAch(){ACH.forEach(a=>{if(!profile.achievements.includes(a.id)&&a.c
 const MODES_META=[
   {key:'rfi',ic:'🎯',nm:'Preflop RFI',ds:'Открыть рейзом или фолд'},
   {key:'vsopen',ic:'⚔️',nm:'vs Open',ds:'3-бет / колл / фолд'},
+  {key:'vs3',ic:'🛡️',nm:'vs 3-бет',ds:'4-бет / колл / фолд'},
   {key:'postflop',ic:'🃏',nm:'Postflop',ds:'Линии на флопе и тёрне'},
   {key:'potodds',ic:'🧮',nm:'Pot Odds & EV',ds:'Шансы банка и эквити'},
   {key:'memorize',ic:'🧠',nm:'Range Trainer',ds:'Построй диапазон на сетке'},
@@ -1150,7 +1151,7 @@ function tag(sp){return sp;}
 /* ===== SESSION ENGINE ===== */
 let session=null;
 function startDrill(key){
-  const gen=key==='rfi'?genRFI:key==='vsopen'?genVsOpen:key==='postflop'?(()=>genPostflop(3)):genPotOdds;
+  const gen=key==='rfi'?genRFI:key==='vsopen'?genVsOpen:key==='vs3'?genVs3bet:key==='postflop'?(()=>genPostflop(3)):genPotOdds;
   session={type:'drill',modeKey:key,gen,n:12,idx:0,results:[],combo:0,maxCombo:0,lives:99,livesMax:0,score:0};
   beginSession('Тренировка · '+MODE_NAMES[key]);
 }
@@ -1165,7 +1166,7 @@ function startReview(){
 }
 function genFromMistake(){const m=session.queue&&session.queue.length?session.queue.shift():null;
   if(!m)return genMixed(3);
-  if(m.mode==='rfi')return genRFI();if(m.mode==='vsopen')return genVsOpen();if(m.mode==='potodds')return genPotOdds();
+  if(m.mode==='rfi')return genRFI();if(m.mode==='vsopen')return genVsOpen();if(m.mode==='vs3')return genVs3bet();if(m.mode==='potodds')return genPotOdds();
   if(m.mode==='postflop'&&m.archId){const a=ARCH.find(x=>x.id===m.archId);if(a){const d=newDeck();const heroPos=oneOf(['BTN','CO','HJ','BB']);const built=a.build(d);const dr=dressing(a.facing,heroPos);return genPostflopFrom(a,built,dr,heroPos);}}
   return genPostflop(3);}
 function genPostflopFrom(a,built,dr,heroPos){const sp=genPostflop(3);return sp;} // simplify: fresh postflop
@@ -1217,7 +1218,7 @@ function choose(key){
   } else {
     session.combo=0;SND.wrong();vibe([35,25,35]);
     if(session.livesMax>0){session.lives--;session.mistakes=(session.mistakes||0)+1;$('stage').classList.add('shake');}
-    if(['rfi','vsopen','postflop','potodds'].includes(sp.mode)){profile.mistakes.unshift({mode:sp.mode,archId:sp.archId||null,concept:sp.concept});profile.mistakes=profile.mistakes.slice(0,30);saveProfile();}
+    if(['rfi','vsopen','vs3','postflop','potodds'].includes(sp.mode)){profile.mistakes.unshift({mode:sp.mode,archId:sp.archId||null,concept:sp.concept});profile.mistakes=profile.mistakes.slice(0,30);saveProfile();}
   }
   if(session.type==='review'&&g.correct&&profile.mistakes.length){profile.mistakes.shift();saveProfile();}
   trackQuest('hands',1);if(g.correct)trackQuest('mode_correct',1,sp.mode||session.modeKey);trackQuest('streak',profile.streak);if(session.combo>=5)trackQuest('combo5',1);
@@ -1400,7 +1401,7 @@ function renderProfile(){$('pRating').textContent=profile.rating;$('pTier').text
   $('pAva').innerHTML=avatarHTML(profile.avatar);$('pName').textContent=profile.name;$('pCoins').textContent='🪙 '+(profile.coins||0);
   $('pHands').textContent=profile.hands;$('pAcc').textContent=profile.hands?Math.round(profile.correct/profile.hands*100)+'%':'—';$('pStreak').textContent=profile.bestStreak;$('pXp').textContent=profile.xp;
   $('achCount').textContent=profile.achievements.length+'/'+ACH.length;
-  const w=$('modeAcc');w.innerHTML='';['rfi','vsopen','postflop','potodds','memorize'].forEach(k=>{const bm=profile.byMode[k];const acc=bm&&bm.played?Math.round(bm.correct/bm.played*100):0;const pl=bm?bm.played:0;const el=document.createElement('div');el.className='ma';el.innerHTML='<div class="top"><span>'+MODE_NAMES[k]+'</span><span style="color:var(--muted)">'+(pl?acc+'% · '+pl:'—')+'</span></div><div class="bar"><i style="width:'+acc+'%"></i></div>';w.appendChild(el);});}
+  const w=$('modeAcc');w.innerHTML='';['rfi','vsopen','vs3','postflop','potodds','memorize'].forEach(k=>{const bm=profile.byMode[k];const acc=bm&&bm.played?Math.round(bm.correct/bm.played*100):0;const pl=bm?bm.played:0;const el=document.createElement('div');el.className='ma';el.innerHTML='<div class="top"><span>'+MODE_NAMES[k]+'</span><span style="color:var(--muted)">'+(pl?acc+'% · '+pl:'—')+'</span></div><div class="bar"><i style="width:'+acc+'%"></i></div>';w.appendChild(el);});}
 function renderAch(){const w=$('achGrid');w.innerHTML='';ACH.forEach(a=>{const un=profile.achievements.includes(a.id);const el=document.createElement('div');el.className='ach'+(un?'':' locked');el.innerHTML='<div class="ic">'+(un?a.ic:'🔒')+'</div><div class="nm">'+a.nm+'</div><div class="ds">'+a.ds+'</div>';w.appendChild(el);});}
 
 /* ===== JUICE: confetti / flash / count-up / float ===== */
