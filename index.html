@@ -434,6 +434,13 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;b
 .pf-banner b{color:var(--txt)}
 @keyframes seatIn{from{opacity:0;transform:translate(-50%,-50%) scale(.55)}to{opacity:1;transform:translate(-50%,-50%) scale(1)}}
 @keyframes chipDrop{from{opacity:0;transform:translate(-50%,-130%) scale(.6)}to{opacity:1;transform:translate(-50%,-50%) scale(1)}}
+/* avatar SVG fill */
+.seat .av,.pav,.phead .ava,.pf-card .ava,.hof-row .av,#onb .avopt,.sitem .se{overflow:hidden}
+.seat .av>svg,.pav>svg,.phead .ava>svg,.pf-card .ava>svg,.hof-row .av>svg,#onb .avopt>svg,#onb .oic>svg,.sitem .se>svg{display:block;width:100%;height:100%}
+#onb .oic{width:96px;height:96px;border-radius:50%;overflow:hidden;display:flex;align-items:center;justify-content:center;margin:0 auto}
+.sitem .se{width:54px;height:54px;border-radius:50%;margin:0 auto 4px}
+.sitem .sname{font-size:11px;font-weight:700;color:var(--txt)}
+.avemoji{display:flex;align-items:center;justify-content:center;width:100%;height:100%;line-height:1}
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 </head>
@@ -615,6 +622,62 @@ const rnd=n=>Math.floor(Math.random()*n);
 const oneOf=a=>a[rnd(a.length)];
 function shuffle(a){for(let i=a.length-1;i>0;i--){const j=rnd(i+1);[a[i],a[j]]=[a[j],a[i]];}return a;}
 
+/* ===== AVATARS (cartoon characters, inline SVG) ===== */
+function shade(hex,amt){let n=parseInt(hex.slice(1),16);let r=Math.max(0,Math.min(255,(n>>16)+amt)),g=Math.max(0,Math.min(255,((n>>8)&255)+amt)),b=Math.max(0,Math.min(255,(n&255)+amt));return '#'+((1<<24)+(r<<16)+(g<<8)+b).toString(16).slice(1);}
+function hairFront(s,hair,hairHi){switch(s){
+ case 'short': return `<path d="M21,39 C20,21 28,14 40,14 C52,14 60,21 59,39 C59,32 54,27 40,27 C26,27 21,32 21,39 Z" fill="${hair}"/><path d="M40,14 C30,14 23,19 22,30 C26,25 32,24 40,24 Z" fill="${hairHi}" opacity=".5"/>`;
+ case 'buzz': return `<path d="M22,36 C22,20 58,20 58,36 C58,30 53,28 40,28 C27,28 22,30 22,36 Z" fill="${hair}"/>`;
+ case 'side': return `<path d="M21,38 C20,20 28,14 40,14 C52,14 60,20 59,38 C59,30 54,26 44,27 C40,22 30,24 28,30 C25,29 22,32 21,38 Z" fill="${hair}"/>`;
+ case 'pony': return `<path d="M22,37 C22,20 58,20 58,37 C58,28 50,25 40,25 C30,25 22,28 22,37 Z" fill="${hair}"/>`;
+ case 'bun': return `<path d="M23,36 C23,21 57,21 57,36 C57,27 49,25 40,25 C31,25 23,27 23,36 Z" fill="${hair}"/>`;
+ case 'long': return `<path d="M21,40 C19,21 28,14 40,14 C52,14 61,21 59,40 C59,31 53,26 44,27 C41,22 31,23 29,29 C25,28 22,33 21,40 Z" fill="${hair}"/>`;
+ case 'curly': return `<path d="M20,38 C18,27 23,17 31,17 C33,12 47,12 49,17 C57,17 62,27 60,38 C60,32 57,31 53,32 C53,27 47,27 47,31 C45,26 35,26 33,31 C33,27 27,27 27,32 C23,31 20,32 20,38 Z" fill="${hair}"/>`;
+ case 'mohawk': return `<path d="M34,14 C35,9 45,9 46,14 L46,30 C46,25 34,25 34,30 Z" fill="${hair}"/>`;
+ case 'afro': return `<circle cx="40" cy="19" r="11.5" fill="${hair}"/><circle cx="23" cy="33" r="7.5" fill="${hair}"/><circle cx="57" cy="33" r="7.5" fill="${hair}"/><path d="M18,42 C13,24 26,13 40,13 C54,13 67,24 62,42 C62,34 56,30 40,30 C24,30 18,34 18,42 Z" fill="${hair}"/>`;
+ default: return '';}}
+function hairBack(s,hair,hairSh){switch(s){
+ case 'long': return `<path d="M16,62 C9,42 13,16 40,15 C67,16 71,42 64,62 C66,47 61,33 40,33 C19,33 14,47 16,62 Z" fill="${hairSh}"/>`;
+ case 'pony': return `<path d="M55,24 C71,27 74,52 65,67 C64,55 59,43 51,35 Z" fill="${hairSh}"/>`;
+ case 'bun': return `<circle cx="40" cy="13" r="8" fill="${hairSh}"/>`;
+ default: return '';}}
+function charSVG(c){const skin=c.skin,skinSh=shade(skin,-30),skinHi=shade(skin,16);const hair=c.hair,hairSh=shade(hair,-22),hairHi=shade(hair,30);const cloth=c.cloth,clothSh=shade(cloth,-32),clothHi=shade(cloth,24);const acc=c.acc||[],has=k=>acc.includes(k);const eye=c.eye||'#3b2a20';const u=c.id;
+ let s=`<svg viewBox="0 0 80 80" width="100%" height="100%" preserveAspectRatio="xMidYMid slice"><defs><radialGradient id="bg${u}" cx="0.5" cy="0.3" r="0.95"><stop offset="0" stop-color="${c.bg[0]}"/><stop offset="1" stop-color="${c.bg[1]}"/></radialGradient></defs><rect width="80" height="80" fill="url(#bg${u})"/>`;
+ s+=hairBack(c.hairS,hair,hairSh);
+ s+=`<path d="M5,80 C5,61 22,52 40,52 C58,52 75,61 75,80 Z" fill="${cloth}"/><path d="M5,80 C5,70 13,63 22,60 C18,67 17,74 18,80 Z" fill="${clothHi}" opacity=".5"/><path d="M31,53 C34,60 46,60 49,53 L49,56 C45,61 35,61 31,56 Z" fill="${clothSh}"/>`;
+ s+=`<rect x="34.5" y="45" width="11" height="10" rx="5" fill="${skinSh}"/>`;
+ s+=`<ellipse cx="24" cy="37" rx="3" ry="4.2" fill="${skin}"/><ellipse cx="56" cy="37" rx="3" ry="4.2" fill="${skin}"/>`;
+ if(has('earring')){s+=`<circle cx="24" cy="41.5" r="1.5" fill="#ffd45e"/><circle cx="56" cy="41.5" r="1.5" fill="#ffd45e"/>`;}
+ s+=`<ellipse cx="40" cy="35" rx="16.5" ry="18.5" fill="${skin}"/><ellipse cx="33" cy="33" rx="9" ry="11" fill="${skinHi}" opacity=".35"/><ellipse cx="40" cy="49" rx="9" ry="5" fill="${skinSh}" opacity=".18"/>`;
+ if(has('beard')){s+=`<path d="M24,36 C24,52 31,59 40,59 C49,59 56,52 56,36 C56,47 50,51 40,51 C30,51 24,47 24,36 Z" fill="${hair}"/>`;}
+ s+=hairFront(c.hairS,hair,hairHi);
+ s+=`<path d="M28,30 Q33,27.8 38,30" fill="none" stroke="${hairSh}" stroke-width="2" stroke-linecap="round"/><path d="M42,30 Q47,27.8 52,30" fill="none" stroke="${hairSh}" stroke-width="2" stroke-linecap="round"/>`;
+ s+=`<ellipse cx="33" cy="35" rx="3" ry="3.5" fill="#fff"/><ellipse cx="47" cy="35" rx="3" ry="3.5" fill="#fff"/><circle cx="33.6" cy="35.4" r="1.8" fill="${eye}"/><circle cx="47.6" cy="35.4" r="1.8" fill="${eye}"/><circle cx="32.9" cy="34.5" r="0.7" fill="#fff"/><circle cx="46.9" cy="34.5" r="0.7" fill="#fff"/>`;
+ s+=`<path d="M40,36 L38.4,40.5 Q40,41.8 41.6,40.5" fill="none" stroke="${skinSh}" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" opacity=".7"/>`;
+ if(has('beard')){s+=`<path d="M34,44 Q40,42 46,44 Q40,46.5 34,44 Z" fill="${hair}"/>`;}
+ s+=`<path d="M34.5,45 Q40,49.5 45.5,45" fill="none" stroke="#9c4a40" stroke-width="2" stroke-linecap="round"/>`;
+ if(c.blush){s+=`<ellipse cx="28.5" cy="42" rx="3" ry="1.8" fill="#ff8f8f" opacity=".32"/><ellipse cx="51.5" cy="42" rx="3" ry="1.8" fill="#ff8f8f" opacity=".32"/>`;}
+ if(has('glasses')){s+=`<g fill="rgba(180,214,255,.16)" stroke="#23252e" stroke-width="1.8"><rect x="27.5" y="31.5" width="11" height="8" rx="3"/><rect x="41.5" y="31.5" width="11" height="8" rx="3"/></g><path d="M38.5,34.5 H41.5 M52.5,34 L57,34" stroke="#23252e" stroke-width="1.8" fill="none" stroke-linecap="round"/><path d="M27.5,34 L24,34" stroke="#23252e" stroke-width="1.8" stroke-linecap="round"/>`;}
+ if(has('shades')){s+=`<g fill="#1b1f2b" stroke="#0c0e14" stroke-width="1.5"><rect x="26.5" y="31" width="12" height="8.5" rx="3.5"/><rect x="41.5" y="31" width="12" height="8.5" rx="3.5"/></g><path d="M38.5,33.5 H41.5" stroke="#0c0e14" stroke-width="2"/>`;}
+ if(has('cap')){const cap=c.cap||'#e0533b';s+=`<path d="M20,28 C20,13 60,13 60,28 C52,22 28,22 20,28 Z" fill="${cap}"/><path d="M18,28 C26,25 33,25 38,27 L36,31 C30,30 24,31 19,33 Z" fill="${shade(cap,-30)}"/><circle cx="40" cy="15.5" r="1.6" fill="${shade(cap,30)}"/>`;}
+ if(has('headphones')){s+=`<path d="M21,34 C21,15 59,15 59,34" fill="none" stroke="#23262f" stroke-width="3.5" stroke-linecap="round"/><rect x="18.5" y="31" width="6.5" height="11" rx="3" fill="#2c3140"/><rect x="55" y="31" width="6.5" height="11" rx="3" fill="#2c3140"/>`;}
+ return s+`</svg>`;}
+const CHARS=[
+ {id:'alex',nm:'Алекс',skin:'#f1c39d',hair:'#5a3b22',hairS:'short',cloth:'#3f74d9',bg:['#3a6fd0','#1b3566']},
+ {id:'maya',nm:'Майя',skin:'#d3a074',hair:'#1d1b24',hairS:'long',cloth:'#8b3fd4',bg:['#9450d6','#3d1f63'],acc:['earring'],blush:1},
+ {id:'viktor',nm:'Виктор',skin:'#7d5237',hair:'#2a2a2f',hairS:'buzz',cloth:'#2b3046',bg:['#566077','#23283a'],acc:['beard','glasses']},
+ {id:'lina',nm:'Лина',skin:'#f3cba6',hair:'#d8a23c',hairS:'pony',cloth:'#27a866',bg:['#2bbf7a','#12603f'],acc:['earring'],blush:1},
+ {id:'kai',nm:'Кай',skin:'#d99f72',hair:'#23242e',hairS:'mohawk',cloth:'#e0533b',bg:['#e0573b','#7a2418'],acc:['headphones']},
+ {id:'sofi',nm:'Софи',skin:'#f6cfb8',hair:'#c2432a',hairS:'bun',cloth:'#d98a2b',bg:['#e0a23a','#7a5215'],acc:['glasses'],blush:1},
+ {id:'dan',nm:'Дэн',skin:'#cf9a6c',hair:'#241b14',hairS:'curly',cloth:'#3fa093',bg:['#3fa093','#185049'],acc:['beard']},
+ {id:'nina',nm:'Нина',skin:'#875338',hair:'#17171d',hairS:'afro',cloth:'#d63f6e',bg:['#d6477b','#6e1f3c'],acc:['earring']},
+ {id:'rex',nm:'Рекс',skin:'#e7b083',hair:'#3a2a1a',hairS:'short',cloth:'#3b4252',bg:['#c79a45','#5e4416'],acc:['cap','shades'],cap:'#222838'},
+ {id:'emma',nm:'Эмма',skin:'#f4cdb4',hair:'#7a4a26',hairS:'side',cloth:'#c45c9c',bg:['#cf6aa6','#5e2a4a'],blush:1}
+];
+const CHAR_BY_ID={};CHARS.forEach(c=>CHAR_BY_ID[c.id]=c);
+const CHAR_IDS=CHARS.map(c=>c.id);
+function avatarHTML(id){const c=CHAR_BY_ID[id];if(c)return charSVG(c);return '<span class="avemoji">'+(id||'🦈')+'</span>';}
+function charForName(n){let h=0;n=n||'';for(let i=0;i<n.length;i++)h=(h*31+n.charCodeAt(i))>>>0;return CHAR_IDS[h%CHAR_IDS.length];}
+
 /* ===== ranks / cards ===== */
 const RANKS=['A','K','Q','J','T','9','8','7','6','5','4','3','2'];
 const RVAL={'2':0,'3':1,'4':2,'5':3,'6':4,'7':5,'8':6,'9':7,'T':8,'J':9,'Q':10,'K':11,'A':12};
@@ -689,7 +752,10 @@ const VS3_RAW=[
 const MODE_NAMES={rfi:'Preflop RFI',vsopen:'vs Open',postflop:'Postflop',potodds:'Pot Odds',memorize:'Range Trainer',mixed:'Микс'};
 let profile=loadProfile();
 function loadProfile(){let p={};try{p=JSON.parse(localStorage.getItem('pf_profile_v2'))||{};}catch(e){}
-  return Object.assign({rating:1000,xp:0,hands:0,correct:0,streak:0,bestStreak:0,byMode:{},byConcept:{},career:{stake:0,stars:{}},achievements:[],mistakes:[],lastDaily:null,dailyStreak:0,quests:null,surBest:0,name:'Игрок',avatar:'🦈',onboarded:false,coins:0,owned:['🦈'],ownedThemes:['green'],theme:'green',soundOn:true,hapticsOn:true,lessonsRead:[]},p);}
+  const o=Object.assign({rating:1000,xp:0,hands:0,correct:0,streak:0,bestStreak:0,byMode:{},byConcept:{},career:{stake:0,stars:{}},achievements:[],mistakes:[],lastDaily:null,dailyStreak:0,quests:null,surBest:0,name:'Игрок',avatar:'alex',onboarded:false,coins:0,owned:['alex'],ownedThemes:['green'],theme:'green',soundOn:true,hapticsOn:true,lessonsRead:[]},p);
+  if(!CHAR_BY_ID[o.avatar])o.avatar='alex';
+  o.owned=(o.owned||[]).filter(x=>CHAR_BY_ID[x]);if(!o.owned.includes(o.avatar))o.owned.push(o.avatar);
+  return o;}
 function saveProfile(){try{localStorage.setItem('pf_profile_v2',JSON.stringify(profile));}catch(e){}}
 function tierName(r){if(r>=2100)return 'Poseidon';if(r>=1900)return 'Jellyfish';if(r>=1750)return 'Junior Shark';if(r>=1600)return 'Squid';if(r>=1450)return 'Salmon';if(r>=1300)return 'Sea-Horse';if(r>=1150)return 'Nemo';if(r>=1000)return 'Goldfish';return 'Shrimp';}
 const levelOf=xp=>Math.floor(xp/600)+1;
@@ -773,7 +839,6 @@ function quitGame(){if(confirm('Выйти из забега? Рейтинг п�
 
 /* ===== CARD VIEWS ===== */
 const VIEW={};
-const BOTAV=['🧔','👨','👩','👴','👵','🤓','😎','🧑','👲','👳','🧓','👮','💂','🤵','👰','🕵️','👱','🥸'];
 VIEW.preflop=function(sp,stage){
   const col=document.createElement('div');col.style.cssText='flex:1;display:flex;flex-direction:column;min-height:0';
   const tw=document.createElement('div');tw.className='table-wrap pf-oval';
@@ -783,13 +848,14 @@ VIEW.preflop=function(sp,stage){
   const heroIdx=ORDER.indexOf(sp.pos);
   const ACT=['UTG','HJ','CO','BTN','SB','BB'];const heroAct=ACT.indexOf(sp.pos);
   const seatByPos={};for(let i=0;i<6;i++){seatByPos[ORDER[(heroIdx+i+6)%6]]=SLOT[i];}
+  const botPool=shuffle(CHAR_IDS.filter(id=>id!==profile.avatar)),botAv={};let bi=0;
   ORDER.forEach(pos=>{
     const isHero=pos===sp.pos,isAggr=pos===sp.opener;const xy=seatByPos[pos],x=xy[0],y=xy[1];
     const folded=!isHero&&!isAggr&&(sp.is3bet||ACT.indexOf(pos)<heroAct);
     const ord=(ORDER.indexOf(pos)-heroIdx+6)%6;
     const seat=document.createElement('div');seat.className='pseat'+(isHero?' hero':'')+(isAggr?' aggr':'')+(folded?' folded':'');
     seat.style.left=x+'%';seat.style.top=y+'%';seat.style.animationDelay=(ord*0.07)+'s';
-    seat.innerHTML=(isAggr?'<div class="praisetag" style="animation-delay:.95s">'+(sp.is3bet?'3-BET':'RAISE')+'</div>':'')+((sp.is3bet&&isHero)?'<div class="praisetag" style="background:#2f6fd0;animation-delay:1.1s">OPEN</div>':'')+'<div class="pav">'+(isHero?profile.avatar:oneOf(BOTAV))+'</div><div class="pinfo"><div class="ppos">'+pos+'</div><div class="pstk">100bb</div></div>';
+    seat.innerHTML=(isAggr?'<div class="praisetag" style="animation-delay:.95s">'+(sp.is3bet?'3-BET':'RAISE')+'</div>':'')+((sp.is3bet&&isHero)?'<div class="praisetag" style="background:#2f6fd0;animation-delay:1.1s">OPEN</div>':'')+'<div class="pav">'+avatarHTML(isHero?profile.avatar:(botAv[pos]||(botAv[pos]=botPool[(bi++)%botPool.length])))+'</div><div class="pinfo"><div class="ppos">'+pos+'</div><div class="pstk">100bb</div></div>';
     if(isHero){const hc=document.createElement('div');hc.style.cssText='display:flex;gap:3px;margin-top:2px';hc.appendChild(cardEl(sp.hand.c1,'sm'));hc.appendChild(cardEl(sp.hand.c2,'sm'));[...hc.children].forEach((c,ci)=>c.style.animationDelay=(1.0+ci*0.1)+'s');seat.appendChild(hc);}
     else{const bk=document.createElement('div');bk.style.cssText='display:flex;gap:3px;margin-top:2px';bk.innerHTML='<div class="cardback"></div><div class="cardback"></div>';seat.appendChild(bk);}
     tw.appendChild(seat);
@@ -832,7 +898,7 @@ VIEW.table=function(sp,stage){
   function seat(name,label,stack,isHero){
     const p=POS[isHero?'Hero':name]||[50,50];const s=document.createElement('div');s.className='seat'+(isHero?' hero':'');s.style.left=p[0]+'%';s.style.top=p[1]+'%';
     const la=!isHero&&sp.lastacts&&sp.lastacts[label];
-    s.innerHTML=(la?'<div class="lastact la-'+la+'">'+la.toUpperCase()+'</div>':'')+'<div class="av">'+(isHero?profile.avatar:label.slice(0,2).toUpperCase())+'</div><div class="info"><div class="pos">'+label+'</div><div class="stk">$'+(stack!=null?stack:sp.heroStack)+'</div></div>';
+    s.innerHTML=(la?'<div class="lastact la-'+la+'">'+la.toUpperCase()+'</div>':'')+'<div class="av">'+(isHero?avatarHTML(profile.avatar):label.slice(0,2).toUpperCase())+'</div><div class="info"><div class="pos">'+label+'</div><div class="stk">$'+(stack!=null?stack:sp.heroStack)+'</div></div>';
     tw.appendChild(s);
     if(!isHero&&sp.dealer===label){const d=document.createElement('div');d.className='dealerbtn';d.textContent='D';d.style.left=(p[0]+(p[0]>50?-13:13))+'%';d.style.top=(p[1]-6)+'%';tw.appendChild(d);}
     const bet=!isHero&&sp.bets&&sp.bets[label];
@@ -1326,12 +1392,12 @@ function renderHof(){renderDivBanner();const arr=BOTS.map(b=>({...b})).concat([{
     if(i===0){const z=document.createElement('div');z.className='zoneline p';z.innerHTML='<i></i>зона повышения<i></i>';w.appendChild(z);}
     if(i===arr.length-relegN){const z=document.createElement('div');z.className='zoneline r';z.innerHTML='<i></i>зона понижения<i></i>';w.appendChild(z);}
     const row=document.createElement('div');row.className='hof-row'+(x.me?' me':'')+(i<promoN?' promo':'')+(i>=arr.length-relegN?' releg':'');
-    row.innerHTML='<div class="rk">#'+(i+1)+'</div><div class="av">'+(x.me?profile.avatar:'🐟')+'</div><div class="nm">'+(x.me?profile.name:x.n)+'</div><div class="pts">'+x.r+'</div><div class="rank">'+tierName(x.r)+'</div>';w.appendChild(row);});}
+    row.innerHTML='<div class="rk">#'+(i+1)+'</div><div class="av">'+avatarHTML(x.me?profile.avatar:charForName(x.n))+'</div><div class="nm">'+(x.me?profile.name:x.n)+'</div><div class="pts">'+x.r+'</div><div class="rank">'+tierName(x.r)+'</div>';w.appendChild(row);});}
 function hofTab(t,el){document.querySelectorAll('.tabs .tab').forEach(x=>x.classList.remove('active'));el.classList.add('active');renderHof();if(t!=='global')toast(t==='friends'?'Друзья (макет)':'Недельный (макет)');}
 
 /* ===== PROFILE / ACH ===== */
 function renderProfile(){$('pRating').textContent=profile.rating;$('pTier').textContent=tierName(profile.rating)+' · Уровень '+levelOf(profile.xp);
-  $('pAva').textContent=profile.avatar;$('pName').textContent=profile.name;$('pCoins').textContent='🪙 '+(profile.coins||0);
+  $('pAva').innerHTML=avatarHTML(profile.avatar);$('pName').textContent=profile.name;$('pCoins').textContent='🪙 '+(profile.coins||0);
   $('pHands').textContent=profile.hands;$('pAcc').textContent=profile.hands?Math.round(profile.correct/profile.hands*100)+'%':'—';$('pStreak').textContent=profile.bestStreak;$('pXp').textContent=profile.xp;
   $('achCount').textContent=profile.achievements.length+'/'+ACH.length;
   const w=$('modeAcc');w.innerHTML='';['rfi','vsopen','postflop','potodds','memorize'].forEach(k=>{const bm=profile.byMode[k];const acc=bm&&bm.played?Math.round(bm.correct/bm.played*100):0;const pl=bm?bm.played:0;const el=document.createElement('div');el.className='ma';el.innerHTML='<div class="top"><span>'+MODE_NAMES[k]+'</span><span style="color:var(--muted)">'+(pl?acc+'% · '+pl:'—')+'</span></div><div class="bar"><i style="width:'+acc+'%"></i></div>';w.appendChild(el);});}
@@ -1426,7 +1492,7 @@ function vibe(p){if(profile.hapticsOn&&navigator.vibrate){try{navigator.vibrate(
 /* ===== COINS / IDENTITY ===== */
 function addCoins(n,silent){profile.coins=(profile.coins||0)+n;saveProfile();updateCoins();if(!silent)SND.coin();}
 function updateCoins(){const t=$('coinPill');if(t)t.textContent='🪙 '+(profile.coins||0);const s=$('shopCoins');if(s)s.textContent='🪙 '+(profile.coins||0);}
-function applyIdentityUI(){const hn=$('hName');if(hn)hn.textContent=profile.name;const ha=$('hAva');if(ha)ha.textContent=profile.avatar;}
+function applyIdentityUI(){const hn=$('hName');if(hn)hn.textContent=profile.name;const ha=$('hAva');if(ha)ha.innerHTML=avatarHTML(profile.avatar);}
 
 /* ===== THEMES ===== */
 const SHOP_THEME=[{id:'green',n:'Классика',p:0,c:['#2a9e63','#1f7a4d','#0f4d30']},{id:'blue',n:'Океан',p:200,c:['#2f7fd0','#1f5aa0','#103a6e']},{id:'purple',n:'Аметист',p:250,c:['#7d4fd0','#5a2fa0','#3a1a6e']},{id:'crimson',n:'Багровый',p:250,c:['#c0392b','#8e2820','#5a140f']},{id:'night',n:'Полночь',p:300,c:['#2a3550','#1a2335','#0d1320']}];
@@ -1492,15 +1558,15 @@ function lessonNext(){SND.tick();if(lsPage<lsCur.pages.length-1){lsPage++;render
   nav('learn');}}
 
 /* ===== SHOP ===== */
-const SHOP_AV=[{e:'🦈',p:0},{e:'🐠',p:100},{e:'🐡',p:120},{e:'🐢',p:120},{e:'🐙',p:150},{e:'🦑',p:180},{e:'🦞',p:200},{e:'🐬',p:220},{e:'🐳',p:300}];
+const SHOP_AV=[{id:'alex',p:0},{id:'lina',p:80},{id:'maya',p:100},{id:'dan',p:120},{id:'emma',p:140},{id:'sofi',p:160},{id:'kai',p:180},{id:'nina',p:200},{id:'viktor',p:240},{id:'rex',p:300}];
 function renderShop(){updateCoins();
-  const a=$('shopAv');a.innerHTML='';SHOP_AV.forEach(it=>{const owned=profile.owned.includes(it.e);const eq=profile.avatar===it.e;const el=document.createElement('div');el.className='sitem'+(eq?' equipped':'');el.onclick=()=>buyAvatar(it.e,it.p);
-    el.innerHTML='<div class="se">'+it.e+'</div><div class="sp '+(eq?'eq':owned?'eq':it.p===0?'free':'')+'">'+(eq?'Надет':owned?'Выбрать':it.p===0?'Бесплатно':'🪙 '+it.p)+'</div>';a.appendChild(el);});
+  const a=$('shopAv');a.innerHTML='';SHOP_AV.forEach(it=>{const owned=profile.owned.includes(it.id);const eq=profile.avatar===it.id;const el=document.createElement('div');el.className='sitem'+(eq?' equipped':'');el.onclick=()=>buyAvatar(it.id,it.p);
+    el.innerHTML='<div class="se">'+avatarHTML(it.id)+'</div><div class="sname">'+CHAR_BY_ID[it.id].nm+'</div><div class="sp '+(eq?'eq':owned?'eq':it.p===0?'free':'')+'">'+(eq?'Надет':owned?'Выбрать':it.p===0?'Бесплатно':'🪙 '+it.p)+'</div>';a.appendChild(el);});
   const t=$('shopTh');t.innerHTML='';SHOP_THEME.forEach(it=>{const owned=profile.ownedThemes.includes(it.id);const eq=profile.theme===it.id;const el=document.createElement('div');el.className='sitem'+(eq?' equipped':'');el.onclick=()=>buyTheme(it.id,it.p);
     el.innerHTML='<div class="theme-prev" style="background:linear-gradient(135deg,'+it.c[0]+','+it.c[2]+')"></div><div class="sname">'+it.n+'</div><div class="sp '+(eq?'eq':owned?'eq':it.p===0?'free':'')+'">'+(eq?'Активна':owned?'Выбрать':it.p===0?'Бесплатно':'🪙 '+it.p)+'</div>';t.appendChild(el);});}
-function buyAvatar(e,p){if(profile.owned.includes(e)){profile.avatar=e;saveProfile();SND.tick();applyIdentityUI();renderShop();toast('Аватар выбран');return;}
+function buyAvatar(id,p){if(profile.owned.includes(id)){profile.avatar=id;saveProfile();SND.tick();applyIdentityUI();renderShop();toast('Аватар выбран');return;}
   if((profile.coins||0)<p){SND.wrong();toast('Не хватает монет: нужно '+p+' 🪙');return;}
-  profile.coins-=p;profile.owned.push(e);profile.avatar=e;saveProfile();SND.coin();fxBurst(true);updateCoins();applyIdentityUI();renderShop();toast('Куплено! Аватар '+e);}
+  profile.coins-=p;profile.owned.push(id);profile.avatar=id;saveProfile();SND.coin();fxBurst(true);updateCoins();applyIdentityUI();renderShop();toast('Куплено! '+CHAR_BY_ID[id].nm);}
 function buyTheme(id,p){if(profile.ownedThemes.includes(id)){profile.theme=id;saveProfile();SND.tick();renderShop();toast('Тема активна');return;}
   if((profile.coins||0)<p){SND.wrong();toast('Не хватает монет: нужно '+p+' 🪙');return;}
   profile.coins-=p;profile.ownedThemes.push(id);profile.theme=id;saveProfile();SND.coin();fxBurst(true);updateCoins();renderShop();toast('Куплено! Тема '+id);}
@@ -1519,12 +1585,12 @@ const ONB_SLIDES=[
   {ic:'🪜',h:'От новичка до акулы',p:'Карьера по лимитам, ежедневные задания, лиги и достижения. Возвращайся каждый день и прокачивайся.'},
   {type:'profile',ic:'🦈',h:'Создай профиль',p:'Как тебя зовут и кто твой аватар?'}
 ];
-let onbIdx=0,onbAvatar='🦈',onbNameVal='';
-function startOnboarding(){onbIdx=0;onbAvatar=profile.avatar||'🦈';onbNameVal=(profile.name&&profile.name!=='Игрок')?profile.name:'';$('onb').classList.add('show');renderOnb();}
+let onbIdx=0,onbAvatar='alex',onbNameVal='';
+function startOnboarding(){onbIdx=0;onbAvatar=CHAR_BY_ID[profile.avatar]?profile.avatar:'alex';onbNameVal=(profile.name&&profile.name!=='Игрок')?profile.name:'';$('onb').classList.add('show');renderOnb();}
 function renderOnb(){const s=ONB_SLIDES[onbIdx],o=$('onb');
   const dots='<div class="dots">'+ONB_SLIDES.map((_,i)=>'<i class="'+(i===onbIdx?'on':'')+'"></i>').join('')+'</div>';
-  if(s.type==='profile'){const avs=['🦈','🐠','🐡','🐢','🐙','🦑','🐬','🐳'];
-    o.innerHTML='<div class="oic">'+onbAvatar+'</div><h2>'+s.h+'</h2><p>'+s.p+'</p><input class="nameinp" id="onbName" maxlength="14" placeholder="Твоё имя" value="'+onbNameVal.replace(/"/g,'')+'" oninput="onbNameVal=this.value"><div class="avrow">'+avs.map(a=>'<div class="avopt'+(a===onbAvatar?' sel':'')+'" onclick="onbPickAv(\''+a+'\')">'+a+'</div>').join('')+'</div>'+dots+'<button class="obtn" onclick="finishOnboarding()">Поехали! 🚀</button>';
+  if(s.type==='profile'){const avs=['alex','maya','lina','kai','dan','sofi'];
+    o.innerHTML='<div class="oic">'+avatarHTML(onbAvatar)+'</div><h2>'+s.h+'</h2><p>'+s.p+'</p><input class="nameinp" id="onbName" maxlength="14" placeholder="Твоё имя" value="'+onbNameVal.replace(/"/g,'')+'" oninput="onbNameVal=this.value"><div class="avrow">'+avs.map(a=>'<div class="avopt'+(a===onbAvatar?' sel':'')+'" onclick="onbPickAv(\''+a+'\')">'+avatarHTML(a)+'</div>').join('')+'</div>'+dots+'<button class="obtn" onclick="finishOnboarding()">Поехали! 🚀</button>';
   }else{o.innerHTML='<div class="oic">'+s.ic+'</div><h2>'+s.h+'</h2><p>'+s.p+'</p>'+dots+'<button class="obtn" onclick="onbNext()">'+(onbIdx===0?'Начать':'Дальше')+' ›</button>'+(onbIdx===0?'<div class="skip" onclick="skipOnboarding()">Пропустить</div>':'');}
 }
 function onbNext(){SND.tick();onbIdx++;renderOnb();}
