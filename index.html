@@ -540,7 +540,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;b
         <div class="gridwrap"><div class="grid13" id="memGrid"></div><div class="gridlegend" id="memLegend"></div></div>
         <div class="mem-result" id="memResult"></div>
       </div>
-      <div class="mem-actions"><button class="clear" onclick="memClear()">Очистить</button><button class="reveal" onclick="memReveal()">Показать GTO</button><button class="check" onclick="memCheck()">Проверить</button></div>
+      <div class="mem-actions"><button class="clear" onclick="memClear()">Очистить</button><button class="reveal" onclick="memReveal()">Показать GTO</button><button class="check" onclick="memCheck()">Проверить</button><button class="check" id="memProceed" style="display:none;background:linear-gradient(180deg,#e0a532,#c2841d)" onclick="careerDrawDone()">К раздачам ›</button></div>
     </div>
 
     <div class="screen" id="screen-node">
@@ -1255,18 +1255,28 @@ function openNode(i){
   else html+='<div class="ni-icon">'+nd.ic+'</div>';
   html+='<p class="ni-text">'+nd.learn+'</p>';
   if(CAREER_COACH[nd.id])html+='<div class="ni-coach"><div class="ni-cav">'+avatarHTML('viktor')+'</div><div class="ni-ctx"><b>Тренер Виктор</b><br>'+CAREER_COACH[nd.id]+'</div></div>';
-  html+='<div class="ni-steps"><span>1 · Знакомство</span><span>2 · Тренировка</span><span>3 · Экзамен ⏱</span></div>';
+  const draw=nd.kind==='rfi';
+  html+='<div class="ni-steps">'+(draw?'<span>1 · Нарисуй рендж 🎨</span><span>2 · Раздачи ×20 ⏱</span>':'<span>Раздачи ×20 ⏱</span>')+'</div>';
   $('nodeBody').innerHTML=html;
-  $('nodeActions').innerHTML='<button class="next" onclick="startCareerTrain('+i+')">Начать тренировку ›</button><button class="home" onclick="nav(\'career\')">Назад</button>';
+  $('nodeActions').innerHTML=(draw?'<button class="next" onclick="startCareerDraw('+i+')">Нарисуй рендж ›</button>':'<button class="next" onclick="startCareerHands('+i+')">Раздачи ×20 ›</button>')+'<button class="home" onclick="nav(\'career\')">Назад</button>';
 }
-function startCareerTrain(i){const nd=CAREER[i];
-  session={type:'cartrain',modeKey:nd.concept,nodeIdx:i,gen:careerGen(nd),n:10,idx:0,results:[],combo:0,maxCombo:0,lives:99,livesMax:0,score:0};
-  beginSession('Тренировка · '+nd.nm);
+let memCareer=null;
+function startCareerDraw(i){const nd=CAREER[i];memCareer={i};
+  show('mem');setTitle('Этап 1 · Рендж '+nd.pos);
+  memMode='rfi';memPos=nd.pos;memBrush='3';memSel=new Set();mem3=new Set();memCall=new Set();
+  renderMemTabs();renderMemControls();renderMemGrid();
+  $('memTabs').style.display='none';$('memPosBtns').style.display='none';$('memProceed').style.display='none';
+  $('memInstr').textContent='Нарисуй диапазон открытия '+nd.pos+' ('+RFI_PCT[nd.pos]+'%) и нажми «Проверить»';
+  $('memResult').textContent='';
 }
-function startCareerExam(i){const nd=CAREER[i];
-  session={type:'carexam',modeKey:nd.concept,nodeIdx:i,gen:careerGen(nd),n:8,idx:0,results:[],combo:0,maxCombo:0,lives:3,livesMax:3,score:0,mistakes:0,
+function careerDrawCheck(score){const pb=$('memProceed');if(!pb)return;
+  if(score>=80){pb.style.display='';$('memResult').innerHTML+='<div style="color:#34d17a;font-weight:700;margin-top:6px">Отлично! Жми «К раздачам ›»</div>';}
+  else{pb.style.display='none';$('memResult').innerHTML+='<div style="color:#ffb86b;font-weight:700;margin-top:6px">Нужно ≥80% — поправь и проверь снова</div>';}}
+function careerDrawDone(){const i=memCareer?memCareer.i:0;memCareer=null;$('memProceed').style.display='none';startCareerHands(i);}
+function startCareerHands(i){const nd=CAREER[i];memCareer=null;
+  session={type:'carhands',modeKey:nd.concept,nodeIdx:i,gen:careerGen(nd),n:20,idx:0,results:[],combo:0,maxCombo:0,lives:99,livesMax:0,score:0,mistakes:0,
     exam:true,timed:true,timeLimit:(nd.kind==='postflop'||nd.kind==='potodds')?9000:6000};
-  beginSession('🎓 Экзамен · '+nd.nm);
+  beginSession('Раздачи ⏱ · '+nd.nm);
 }
 /* exam per-decision timer */
 let examTimer=null;
@@ -1384,18 +1394,12 @@ function endSession(bust){
     SUB.innerHTML='Продержался <b>'+survived+'</b> верных подряд'+(rec&&survived>0?' · 🏆 новый рекорд!':' · рекорд '+(profile.surBest||0));
     if(survived>=8)fxBurst(true);
     ACT.innerHTML='<button class="again" onclick="startSurvival()">Ещё раз</button><button class="home" onclick="nav(\'home\')">В меню</button>';
-  } else if(session.type==='cartrain'){
-    const nd=CAREER[session.nodeIdx];const passT=acc>=70;
-    T.textContent=passT?'ТРЕНИРОВКА ПРОЙДЕНА':'ЕЩЁ НЕМНОГО';T.className=passT?'':'mid';
-    SUB.innerHTML='Точность <b>'+acc+'%</b>'+(passT?' · готов к экзамену 🎓':' · нужно ≥70%, повтори');
-    if(passT)ACT.innerHTML='<button class="next" onclick="startCareerExam('+session.nodeIdx+')">🎓 Экзамен ⏱ ›</button><button class="home" onclick="openNode('+session.nodeIdx+')">К узлу</button>';
-    else ACT.innerHTML='<button class="again" onclick="startCareerTrain('+session.nodeIdx+')">Ещё раз</button><button class="home" onclick="openNode('+session.nodeIdx+')">К узлу</button>';
-  } else if(session.type==='carexam'){
-    const nd=CAREER[session.nodeIdx];
-    if(bust){T.textContent='ЭКЗАМЕН ПРОВАЛЕН 💥';T.className='bad';SUB.innerHTML='Три ошибки. Ты уже близко — пересдай.';ACT.innerHTML='<button class="again" onclick="startCareerExam('+session.nodeIdx+')">Пересдать</button><button class="home" onclick="openNode('+session.nodeIdx+')">К узлу</button>';}
+  } else if(session.type==='carhands'){
+    const nd=CAREER[session.nodeIdx];const pass=acc>=80;
+    if(!pass){T.textContent='ЕЩЁ НЕМНОГО';T.className='mid';SUB.innerHTML='Точность <b>'+acc+'%</b> · нужно ≥80%, повтори раздачи';ACT.innerHTML='<button class="again" onclick="startCareerHands('+session.nodeIdx+')">Ещё раз</button><button class="home" onclick="openNode('+session.nodeIdx+')">К узлу</button>';}
     else{
-      const stars=acc>=100?3:acc>=88?2:1;
-      T.textContent=stars===3?'ЭКЗАМЕН СДАН ИДЕАЛЬНО!':'ЭКЗАМЕН СДАН!';T.className='';
+      const stars=acc>=95?3:acc>=88?2:1;
+      T.textContent=stars===3?'УЗЕЛ ПРОЙДЕН ИДЕАЛЬНО!':'УЗЕЛ ПРОЙДЕН!';T.className='';
       ST.textContent='★'.repeat(stars)+'☆'.repeat(3-stars);
       SUB.innerHTML='Точность <b>'+acc+'%</b> · '+nd.nm;
       profile.career.stars[session.nodeIdx]=Math.max(profile.career.stars[session.nodeIdx]||0,stars);
@@ -1436,7 +1440,7 @@ function handleDaily(){const today=new Date().toISOString().slice(0,10);if(profi
 let memMode='rfi',memPos='UTG',memVsIdx=0,memBrush='3',memSel=new Set(),mem3=new Set(),memCall=new Set();
 function cellCode(r,c){if(r===c)return RANKS[r]+RANKS[c];if(r<c)return RANKS[r]+RANKS[c]+'s';return RANKS[c]+RANKS[r]+'o';}
 function cellDisp(r,c){return r<=c?RANKS[r]+RANKS[c]:RANKS[c]+RANKS[r];}
-function openMemorize(){show('mem');setTitle('Range Trainer');memMode='rfi';memPos='UTG';memVsIdx=0;memBrush='3';memSel=new Set();mem3=new Set();memCall=new Set();renderMemTabs();renderMemControls();renderMemGrid();$('memResult').textContent='';}
+function openMemorize(){memCareer=null;show('mem');setTitle('Range Trainer');memMode='rfi';memPos='UTG';memVsIdx=0;memBrush='3';memSel=new Set();mem3=new Set();memCall=new Set();renderMemTabs();renderMemControls();renderMemGrid();$('memResult').textContent='';$('memTabs').style.display='';$('memPosBtns').style.display='';$('memProceed').style.display='none';}
 function renderMemTabs(){$('memTabs').innerHTML='<div class="memtab'+(memMode==='rfi'?' active':'')+'" onclick="memSwitch(\'rfi\')">Открытие</div><div class="memtab'+(memMode==='vs'?' active':'')+'" onclick="memSwitch(\'vs\')">vs опен</div><div class="memtab'+(memMode==='vs3'?' active':'')+'" onclick="memSwitch(\'vs3\')">vs 3-бет</div>';}
 function memSwitch(m){memMode=m;memVsIdx=0;memSel=new Set();mem3=new Set();memCall=new Set();SND.tick();renderMemTabs();renderMemControls();renderMemGrid();$('memResult').textContent='';}
 function memMatchups(){return memMode==='vs3'?VS3_RAW:VS_RAW;}
@@ -1480,6 +1484,7 @@ function memCheck(){
       if(inG&&inS)cell.classList.add('incall');else if(inG&&!inS)cell.style.cssText='background:#7a3a3a;color:#ffc0c0';else if(!inG&&inS)cell.style.cssText='background:#b8862a;color:#241a00';g.appendChild(cell);}
     $('memResult').innerHTML='<b>'+score+'%</b> · попал '+hit+'/'+total+' · лишних '+extra+'<div style="font-size:11px;color:var(--muted);margin-top:4px"><span style="color:#9bf0c0">●</span> верно <span style="color:#ffc0c0">●</span> пропуск <span style="color:#ffd98a">●</span> лишнее</div>';
     applyResult('memorize',score>=75,1050,'Запоминание диапазонов');
+    if(memCareer)careerDrawCheck(score);
   }else{
     const m=memData();const rs=memRaiseSet(m);let hit=0,extra=0;const tot=rs.size+m.clS.size;
     for(let r=0;r<13;r++)for(let c=0;c<13;c++){const code=cellCode(r,c);const cell=document.createElement('div');cell.className='gc';cell.textContent=cellDisp(r,c);
