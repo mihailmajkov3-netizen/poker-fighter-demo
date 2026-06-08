@@ -190,7 +190,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;b
 .gc{aspect-ratio:1;border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700;background:#1a2350;color:#5a6aa8;position:relative}
 .gc.in{background:linear-gradient(180deg,#e0a532,#c2841d);color:#241a00}.gc.in3{background:linear-gradient(180deg,#d05cff,#9b3cdf);color:#fff}.gc.incall{background:linear-gradient(180deg,#2f9d68,#1f7a4d);color:#fff}
 .gc.hl{box-shadow:0 0 0 2px #fff,0 0 8px rgba(255,255,255,.7);z-index:2}
-.gridlegend{display:flex;gap:12px;margin-top:7px;font-size:10px;color:var(--muted);flex-wrap:wrap;justify-content:center}
+.gridpct{margin-top:8px;font-size:12px;color:var(--muted);text-align:center}.gridpct b{color:#fff;font-weight:700}
+.gridlegend{display:flex;gap:12px;margin-top:5px;font-size:10px;color:var(--muted);flex-wrap:wrap;justify-content:center}
 .gridlegend span{display:flex;align-items:center;gap:4px}.gridlegend i{width:11px;height:11px;border-radius:3px;display:inline-block}
 
 .mem-top{padding:10px 16px;text-align:center}.mem-top .poscycle{display:inline-flex;gap:6px;margin-top:8px;flex-wrap:wrap;justify-content:center}
@@ -840,6 +841,9 @@ VIEW.table=function(sp,stage){
   seat('Hero',sp.pos,sp.heroStack,true);
   Object.keys(sp.seats).forEach(n=>seat(n,n,sp.seats[n],false));
 };
+function combosOf(code){return code.length===2?6:(code[2]==='s'?4:12);}
+function comboSum(set){let n=0;if(set)set.forEach(c=>n+=combosOf(c));return n;}
+function pctOf(combos){return Math.round(combos/1326*100);}
 function gridHTML(sets,hl,rl){
   let h='<div class="gridwrap"><div class="grid13">';
   for(let r=0;r<13;r++)for(let c=0;c<13;c++){let code,disp;
@@ -847,7 +851,14 @@ function gridHTML(sets,hl,rl){
     let cls='gc';if(sets.three&&sets.three.has(code))cls+=' in3';else if(sets.call&&sets.call.has(code))cls+=' incall';else if(sets.in&&sets.in.has(code))cls+=' in';
     if(hl&&code===hl)cls+=' hl';h+='<div class="'+cls+'">'+disp+'</div>';}
   h+='</div>';
-  h+=sets.three?'<div class="gridlegend"><span><i style="background:linear-gradient(180deg,#d05cff,#9b3cdf)"></i>'+(rl||'3-бет')+'</span><span><i style="background:linear-gradient(180deg,#2f9d68,#1f7a4d)"></i>колл</span><span><i style="background:#1a2350"></i>фолд</span></div>':'<div class="gridlegend"><span><i style="background:linear-gradient(180deg,#e0a532,#c2841d)"></i>raise</span><span><i style="background:#1a2350"></i>fold</span></div>';
+  if(sets.three){
+    const cR=comboSum(sets.three),cC=comboSum(sets.call),rname=rl||'3-бет';
+    h+='<div class="gridpct">Весь рендж <b>'+pctOf(cR+cC)+'%</b> · '+rname+' <b>'+pctOf(cR)+'%</b> · колл <b>'+pctOf(cC)+'%</b></div>';
+    h+='<div class="gridlegend"><span><i style="background:linear-gradient(180deg,#d05cff,#9b3cdf)"></i>'+rname+'</span><span><i style="background:linear-gradient(180deg,#2f9d68,#1f7a4d)"></i>колл</span><span><i style="background:#1a2350"></i>фолд</span></div>';
+  }else{
+    h+='<div class="gridpct">Весь рендж <b>'+pctOf(comboSum(sets.in))+'%</b></div>';
+    h+='<div class="gridlegend"><span><i style="background:linear-gradient(180deg,#e0a532,#c2841d)"></i>raise</span><span><i style="background:#1a2350"></i>fold</span></div>';
+  }
   return h+'</div>';
 }
 function readoutHTML(sp){const nm={fold:'Fold',call:sp.facing?'Call':'Check',raise:sp.facing?'Raise':'Bet'};
