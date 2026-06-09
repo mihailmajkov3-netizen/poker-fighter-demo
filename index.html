@@ -147,6 +147,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;b
 .seat .av{width:38px;height:38px;border-radius:50%;background:linear-gradient(180deg,#34407e,#1a2350);border:2px solid #56badf;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:#bfe6ff}
 .seat .info{background:rgba(8,14,40,.82);border-radius:9px;padding:3px 9px;text-align:center;line-height:1.25;min-width:62px}
 .seat .pos{font-size:11px;font-weight:800}.seat .stk{font-size:10px;color:var(--gold)}
+.seat.hero .info{border:1px solid rgba(255,207,77,.55);background:rgba(8,14,40,.92)}
+.seat.hero .stk{font-size:12.5px;font-weight:800}.seat.hero .pos{color:#7fe0a8}
 .seat.hero .av{border-color:var(--gold);width:42px;height:42px;background:linear-gradient(180deg,#3a2e6e,#241a4a)}
 .seat .lastact{position:absolute;top:-13px;font-size:9px;font-weight:800;padding:2px 7px;border-radius:6px;white-space:nowrap}
 .la-bet{background:#2f6fd0}.la-check{background:#475089}.la-raise{background:#b8862a}
@@ -948,18 +950,19 @@ VIEW.table=function(sp,stage){
   stage.appendChild(tw);
   const b=tw.querySelector('#tb');sp.board.forEach(c=>b.appendChild(cardEl(c,'tbl')));
   const h=tw.querySelector('#th');sp.hero.forEach(c=>h.appendChild(cardEl(c)));
-  const POS={Hero:[50,84],Button:[15,78],SB:[8,48],BB:[28,15],UTG:[72,15],Hijack:[92,48],Cutoff:[85,78]};
-  function seat(name,label,stack,isHero){
-    const p=POS[isHero?'Hero':name]||[50,50];const s=document.createElement('div');s.className='seat'+(isHero?' hero':'');s.style.left=p[0]+'%';s.style.top=p[1]+'%';
-    const la=!isHero&&sp.lastacts&&sp.lastacts[label];
-    s.innerHTML=(la?'<div class="lastact la-'+la+'">'+la.toUpperCase()+'</div>':'')+'<div class="av">'+(isHero?avatarHTML(profile.avatar):label.slice(0,2).toUpperCase())+'</div><div class="info"><div class="pos">'+label+'</div><div class="stk">$'+(stack!=null?stack:sp.heroStack)+'</div></div>';
+  const oppNames=Object.keys(sp.seats);
+  const RING={2:[[18,30],[82,30]],3:[[14,52],[50,14],[86,52]],4:[[14,57],[15,24],[85,24],[86,57]],5:[[14,57],[14,23],[50,14],[86,23],[86,57]]};
+  const slots=RING[oppNames.length]||RING[5];
+  function seat(p,label,stack,isHero,name){
+    const s=document.createElement('div');s.className='seat'+(isHero?' hero':'');s.style.left=p[0]+'%';s.style.top=p[1]+'%';
+    const la=!isHero&&sp.lastacts&&sp.lastacts[name];
+    s.innerHTML=(la?'<div class="lastact la-'+la+'">'+la.toUpperCase()+'</div>':'')+'<div class="av">'+(isHero?avatarHTML(profile.avatar):avatarHTML(charForName(name)))+'</div><div class="info"><div class="pos">'+label+'</div><div class="stk">$'+stack+'</div></div>';
     tw.appendChild(s);
-    if(!isHero&&sp.dealer===label){const d=document.createElement('div');d.className='dealerbtn';d.textContent='D';d.style.left=(p[0]+(p[0]>50?-13:13))+'%';d.style.top=(p[1]-6)+'%';tw.appendChild(d);}
-    const bet=!isHero&&sp.bets&&sp.bets[label];
-    if(bet){const ch=document.createElement('div');ch.className='betchip';ch.style.left=(p[0]+(p[0]>55?-10:p[0]<45?10:0))+'%';ch.style.top=(p[1]+(p[1]<50?12:-12))+'%';ch.innerHTML='<span class="dot"></span>$'+bet;tw.appendChild(ch);}
+    if(!isHero&&sp.dealer===name){const L=Math.hypot(50-p[0],50-p[1])||1,px=-(50-p[1])/L,py=(50-p[0])/L;const d=document.createElement('div');d.className='dealerbtn';d.style.left=(p[0]+px*11)+'%';d.style.top=(p[1]+py*11)+'%';d.textContent='D';tw.appendChild(d);}
+    if(!isHero){const bet=sp.bets&&sp.bets[name];if(bet){const ch=document.createElement('div');ch.className='betchip';ch.style.left=(p[0]+(50-p[0])*0.34)+'%';ch.style.top=(p[1]+(50-p[1])*0.34)+'%';ch.innerHTML='<span class="dot"></span>$'+bet;tw.appendChild(ch);}}
   }
-  seat('Hero',sp.pos,sp.heroStack,true);
-  Object.keys(sp.seats).forEach(n=>seat(n,n,sp.seats[n],false));
+  oppNames.forEach((n,i)=>seat(slots[i]||[50,50],n,sp.seats[n],false,n));
+  seat([50,80],sp.pos,sp.heroStack,true,'Hero');
 };
 function combosOf(code){return code.length===2?6:(code[2]==='s'?4:12);}
 function comboSum(set){let n=0;if(set)set.forEach(c=>n+=combosOf(c));return n;}
