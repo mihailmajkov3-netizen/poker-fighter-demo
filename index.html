@@ -25,7 +25,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;b
 @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-7px)}75%{transform:translateX(7px)}}
 @media (min-width:560px) and (min-height:640px){
   body{display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at 50% 20%,#1c2a66 0%,#070a16 72%)}
-  #app{position:relative;inset:auto;width:402px;height:862px;max-width:none;border-radius:0;border:none;box-shadow:0 0 60px rgba(0,0,0,.5),0 0 0 1px rgba(120,150,230,.12);transform:scale(var(--appScale,1));transform-origin:center center}
+  #app{position:relative;inset:auto;width:402px;height:862px;max-width:none;border-radius:0;border:none;box-shadow:0 0 60px rgba(0,0,0,.5),0 0 0 1px rgba(120,150,230,.12);transform:scale(var(--appScale,1));transform-origin:center center;will-change:transform}
 }
 #splash{position:absolute;inset:0;z-index:500;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;background:radial-gradient(120% 80% at 50% 40%,#26318a 0%,#0a1230 70%);transition:opacity .5s ease}
 #splash h1{font-size:34px;font-weight:900;letter-spacing:1px;background:linear-gradient(180deg,#cdd9ff,#6f86d6);-webkit-background-clip:text;background-clip:text;color:transparent}
@@ -1854,9 +1854,11 @@ function build3D(){
 }
 
 /* ===== RESPONSIVE FIT ===== */
-function fitApp(){const r=document.documentElement.style;
-  if(innerWidth<560||innerHeight<640){r.setProperty('--appScale','1');return;}
-  const k=Math.min(innerWidth/402,innerHeight/862);
+function fitApp(){const r=document.documentElement.style,app=$('app');
+  if(innerWidth<560||innerHeight<640){app.style.width='';app.style.height='';r.setProperty('--appScale','1');return;}
+  const baseH=862;let baseW=Math.round(baseH*innerWidth/innerHeight);baseW=Math.max(402,Math.min(baseW,1024));
+  app.style.width=baseW+'px';app.style.height=baseH+'px';
+  const k=Math.min(innerWidth/baseW,innerHeight/baseH);
   r.setProperty('--appScale',(Math.round(k*1000)/1000));}
 window.addEventListener('resize',fitApp);fitApp();
 /* ===== INIT ===== */
