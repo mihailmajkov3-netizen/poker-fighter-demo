@@ -58,6 +58,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;b
 .bigcta small{font-weight:700;opacity:.85;font-size:12px}
 .bigcta .arrow{position:absolute;right:16px;top:50%;transform:translateY(-50%);font-size:26px}
 .daily{margin:0 14px 6px;padding:14px;border-radius:16px;cursor:pointer;background:linear-gradient(135deg,#7b5cff,#4f8cff);box-shadow:0 6px 18px rgba(79,140,255,.3);position:relative}
+.cashcta{margin:0 14px 6px;padding:14px;border-radius:16px;cursor:pointer;background:linear-gradient(135deg,#2f9d68,#1f7a4d);box-shadow:0 6px 18px rgba(47,157,104,.3);position:relative;color:#fff}
+.cashcta:active{transform:scale(.985)}
+.cashcta .tag{font-size:11px;font-weight:800;letter-spacing:1px;opacity:.85}.cashcta h3{font-size:19px;font-weight:900;margin:2px 0 2px}.cashcta small{font-weight:700;opacity:.85;font-size:12px}.cashcta .arrow{position:absolute;right:16px;top:50%;transform:translateY(-50%);font-size:24px}
+.fb .cashres{text-align:center;font-weight:800;font-size:15px;margin-bottom:8px}
+.fb .cashres.win{color:#34d17a}.fb .cashres.loss,.fb .cashres.cooler{color:#ff6b6b}.fb .cashres.fold,.fb .cashres.flat{color:var(--muted)}
 .daily:active{transform:scale(.985)}
 .daily .tag{font-size:10px;font-weight:700;letter-spacing:1px;opacity:.85}
 .daily h3{font-size:17px;font-weight:900;margin:2px 0 2px}.daily small{opacity:.9;font-size:11px}
@@ -511,6 +516,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;b
         </div>
         <div class="bigcta" onclick="nav('career')"><div class="tag">🪜 КАРЬЕРА</div><h3 id="ctaStake">NL2 · Микролимит</h3><small id="ctaSub">Поднимайся по лимитам</small><div class="arrow">›</div></div>
         <div class="daily" onclick="startDaily()"><div class="tag">⚡ ЕЖЕДНЕВНЫЙ ВЫЗОВ</div><h3>Daily Fight</h3><small id="dailySub">8 спотов · бонус к рейтингу</small><div class="arrow">›</div></div>
+        <div class="cashcta" onclick="startCash()"><div class="tag">💵 КЭШ-СТОЛ · 6-MAX</div><h3>Сессия 100bb</h3><small>Играй поток рук, веди стек в плюс</small><div class="arrow">›</div></div>
         <div class="quests" onclick="nav('quests')"><div class="qh"><span>🎯 Задания дня</span><span class="badge" id="qBadge">0/3</span></div><div id="qMini" style="margin-top:8px"></div></div>
         <div class="section-h">Свободная тренировка</div>
         <div class="modes" id="modeList"></div>
@@ -893,7 +899,7 @@ function nav(s){
   else if(s==='shop'){show('shop');setTitle('Магазин');renderShop();}
   else if(s==='settings'){show('settings');setTitle('Настройки');renderSettings();}
 }
-function quitGame(){if(confirm('Выйти из забега? Рейтинг по сыгранным рукам сохранится.')){clearExamTimer();clearTimeout(gridAdv);nav('home');}}
+function quitGame(){if(session&&session.type==='cash'){cashSummary();return;}if(confirm('Выйти из забега? Рейтинг по сыгранным рукам сохранится.')){clearExamTimer();clearTimeout(gridAdv);nav('home');}}
 
 /* ===== CARD VIEWS ===== */
 const VIEW={};
@@ -1236,6 +1242,40 @@ function startDaily(){
   session={type:'daily',modeKey:'mixed',gen:()=>genMixed(3),n:8,idx:0,results:[],combo:0,maxCombo:0,lives:99,livesMax:0,score:0};
   beginSession('⚡ Daily Fight');
 }
+/* ===== CASH GAME (session play) ===== */
+function startCash(){
+  session={type:'cash',modeKey:'mixed',gen:()=>genMixed(2),n:1e9,idx:0,results:[],combo:0,maxCombo:0,lives:99,livesMax:0,score:0,
+    stack:100,invested:100,peak:100};
+  beginSession('💵 Кэш-стол · 6-max');
+}
+function cashResolve(sp,key,g){
+  const posted=sp.pos==='SB'?0.5:sp.pos==='BB'?1:0;
+  if(key==='fold')return {bb:-posted,kind:'fold',txt:posted?('Фолд · −'+posted+'bb блайнд'):'Фолд · 0'};
+  const rnd=Math.random();
+  if(g.correct){
+    if(rnd<0.48){const w=2+Math.floor(Math.random()*9);return {bb:w,kind:'win',txt:'Забрал банк · +'+w+'bb'};}
+    if(rnd<0.66)return {bb:1,kind:'win',txt:'Соперник спасовал · +1bb'};
+    if(rnd<0.84){const l=1+Math.floor(Math.random()*3);return {bb:-l,kind:'loss',txt:'Не зашло · −'+l+'bb'};}
+    const l=5+Math.floor(Math.random()*9);return {bb:-l,kind:'cooler',txt:'Кулер · −'+l+'bb'};
+  }
+  if(rnd<0.66){const l=3+Math.floor(Math.random()*10);return {bb:-l,kind:'loss',txt:'Ошибка стоила · −'+l+'bb'};}
+  if(rnd<0.84)return {bb:0,kind:'flat',txt:'Пронесло · 0bb'};
+  const w=1+Math.floor(Math.random()*3);return {bb:w,kind:'win',txt:'Повезло · +'+w+'bb'};
+}
+function cashRebuy(){session.invested+=100;session.stack=100;$('fb').classList.remove('show');session.idx++;renderCurrent();}
+function cashSummary(){
+  show('results');setTitle('Сессия');
+  const hands=session.results.length,net=Math.round((session.stack-session.invested)*10)/10;
+  const bb100=hands?Math.round(net/hands*100):0;
+  const ok=session.results.filter(x=>x.correct).length,acc=hands?Math.round(ok/hands*100):0;
+  const T=$('resTitle'),ST=$('resStars'),SUB=$('resSub'),ACT=$('resActions');
+  ST.textContent='';
+  T.textContent=net>0?'💵 В ПЛЮСЕ!':net<0?'В МИНУСЕ':'НОЛЬ';T.className=net>=0?'':'mid';
+  SUB.innerHTML='Итог <b>'+(net>=0?'+':'')+net+'bb</b> за '+hands+' рук · <b>'+(bb100>=0?'+':'')+bb100+'</b> bb/100';
+  $('resStats').innerHTML='<div class="s"><div class="v g">'+acc+'%</div><div class="l">Точность</div></div><div class="s"><div class="v gold">'+session.peak+'</div><div class="l">Пик</div></div><div class="s"><div class="v">'+hands+'</div><div class="l">Рук</div></div>';
+  $('resList').innerHTML='';
+  ACT.innerHTML='<button class="again" onclick="startCash()">Сесть снова</button><button class="home" onclick="nav(\'home\')">В меню</button>';
+}
 function startReview(){
   const q=profile.mistakes.slice(0,10);
   session={type:'review',modeKey:'mixed',gen:()=>genFromMistake(),n:Math.max(5,q.length),idx:0,results:[],combo:0,maxCombo:0,lives:99,livesMax:0,score:0,queue:q.slice()};
@@ -1340,7 +1380,12 @@ function startExamTimer(ms,delay){
 }
 function beginSession(title){show('game');setTitle('Игра');$('gMode').textContent=title;updateHUD();renderCurrent();}
 function updateHUD(){
-  const s=session;$('gHcount').textContent=(s.idx+1)+'/'+s.n;
+  const s=session;
+  if(s.type==='cash'){const net=Math.round((s.stack-s.invested)*10)/10;
+    $('gHcount').textContent='💰 '+s.stack+'bb';
+    $('gCombo').textContent=(net>=0?'+':'')+net+'bb';$('gCombo').style.color=net>=0?'#34d17a':'#ff6b6b';
+    $('gLives').style.display='none';$('gProgress').style.width=Math.max(2,Math.min(100,s.stack/2))+'%';return;}
+  $('gHcount').textContent=(s.idx+1)+'/'+s.n;
   $('gCombo').textContent='x'+(s.combo>=1?Math.min(s.combo,9):1);
   $('gCombo').style.color=s.combo>=3?'#34d17a':'var(--gold)';
   $('gProgress').style.width=(s.idx/s.n*100)+'%';
@@ -1387,14 +1432,27 @@ function choose(key){
   if(session.type==='review'&&g.correct&&profile.mistakes.length){profile.mistakes.shift();saveProfile();}
   trackQuest('hands',1);if(g.correct)trackQuest('mode_correct',1,sp.mode||session.modeKey);trackQuest('streak',profile.streak);if(session.combo>=5)trackQuest('combo5',1);
   session.results.push({sp,choice:key,correct:g.correct,delta});
+  if(session.type==='cash'){const cr=cashResolve(sp,key,g);session.stack=Math.max(0,Math.round((session.stack+cr.bb)*10)/10);session.peak=Math.max(session.peak,session.stack);session._cr=cr;}
   if(levelOf(profile.xp)>lvlBefore)queueModal({ic:'⭐',tag:'Новый уровень',name:'Уровень '+levelOf(profile.xp),desc:'Ты становишься сильнее. Так держать!'});
   checkAch();updateHUD();
-  const bust=session.livesMax>0&&session.lives<=0;
+  const bust=session.type==='cash'?session.stack<=0:(session.livesMax>0&&session.lives<=0);
   playActionAnim(sp,key,function(){showFeedback(sp,g,delta,bust);});
 }
 function showFeedback(sp,g,delta,bust){
   const fb=$('fb');const last=session.idx>=session.n-1;
   let vcls=g.correct?'ok':(g.meh?'meh':'bad'),vtxt=g.correct?'✓ ВЕРНО':(g.meh?'≈ Почти':'✗ Ошибка');
+  if(session.type==='cash'){
+    const cr=session._cr,net=Math.round((session.stack-session.invested)*10)/10;
+    let h='<div class="verdict '+vcls+'">'+vtxt+'</div>';
+    h+='<div class="cashres '+cr.kind+'">'+cr.txt+'</div>';
+    h+='<div class="sub">Стек <b>'+session.stack+'bb</b> · сессия <span class="rd '+(net<0?'neg':'')+'">'+(net>=0?'+':'')+net+'bb</span></div>';
+    if(sp.coach)h+='<div class="coach"><b>Тренер:</b> '+sp.coach+'</div>';
+    fb.innerHTML=h;fb.classList.add('show');
+    const bar=$('actionbar');
+    if(bust)bar.innerHTML='<button class="abtn lose" onclick="cashRebuy()">↺ Сесть заново (100bb)</button><button class="abtn fold" onclick="cashSummary()">Встать</button>';
+    else bar.innerHTML='<button class="abtn adv" onclick="nextSpot()">Следующая рука ›</button><button class="abtn fold" onclick="cashSummary()">Встать 💵</button>';
+    return;
+  }
   let html='<div class="verdict '+vcls+'">'+vtxt+(g.correct&&session.combo>=2?' · x'+Math.min(session.combo,9)+' комбо':'')+'</div>';
   html+='<div class="sub">Рейтинг <span class="rd '+(delta<0?'neg':'')+'">'+(delta>=0?'+':'')+delta+'</span> → '+profile.rating+'</div>';
   if(g.body&&(!session.exam||session.gridMode))html+=g.body;
