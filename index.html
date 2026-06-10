@@ -1446,6 +1446,7 @@ function showFeedback(sp,g,delta,bust){
     let h='<div class="verdict '+vcls+'">'+vtxt+'</div>';
     h+='<div class="cashres '+cr.kind+'">'+cr.txt+'</div>';
     h+='<div class="sub">Стек <b>'+session.stack+'bb</b> · сессия <span class="rd '+(net<0?'neg':'')+'">'+(net>=0?'+':'')+net+'bb</span></div>';
+    if(g.body)h+=g.body;
     if(sp.coach)h+='<div class="coach"><b>Тренер:</b> '+sp.coach+'</div>';
     fb.innerHTML=h;fb.classList.add('show');
     const bar=$('actionbar');
