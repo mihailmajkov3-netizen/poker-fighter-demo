@@ -516,7 +516,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;b
         </div>
         <div class="bigcta" onclick="nav('career')"><div class="tag">🪜 КАРЬЕРА</div><h3 id="ctaStake">NL2 · Микролимит</h3><small id="ctaSub">Поднимайся по лимитам</small><div class="arrow">›</div></div>
         <div class="daily" onclick="startDaily()"><div class="tag">⚡ ЕЖЕДНЕВНЫЙ ВЫЗОВ</div><h3>Daily Fight</h3><small id="dailySub">8 спотов · бонус к рейтингу</small><div class="arrow">›</div></div>
-        <div class="cashcta" onclick="startCash()"><div class="tag">💵 КЭШ-СТОЛ · 6-MAX</div><h3>Сессия 100bb</h3><small>Играй поток рук, веди стек в плюс</small><div class="arrow">›</div></div>
+        <div class="cashcta" onclick="chooseCash()"><div class="tag">💵 КЭШ-СТОЛ · 5–9 MAX</div><h3>Сессия 100bb</h3><small>Выбери размер стола, веди стек в плюс</small><div class="arrow">›</div></div>
         <div class="quests" onclick="nav('quests')"><div class="qh"><span>🎯 Задания дня</span><span class="badge" id="qBadge">0/3</span></div><div id="qMini" style="margin-top:8px"></div></div>
         <div class="section-h">Свободная тренировка</div>
         <div class="modes" id="modeList"></div>
@@ -907,16 +907,17 @@ VIEW.preflop=function(sp,stage){
   const col=document.createElement('div');col.style.cssText='flex:1;display:flex;flex-direction:column;min-height:0';
   const tw=document.createElement('div');tw.className='table-wrap pf-oval';
   const tc=themeColors(profile.theme);tw.style.background='radial-gradient(120% 90% at 50% 42%,'+tc[0]+' 0%,'+tc[1]+' 45%,'+tc[2]+' 100%)';
-  const ORDER=['BTN','SB','BB','UTG','HJ','CO'];
-  const SLOT=[[50,81],[14,62],[14,27],[50,16],[86,27],[86,62]];
+  let N=sp.tableSize||6;let ORDER=(TABLE_SEATS[N]||TABLE_SEATS[6]).slice();
+  if((sp.pos&&!ORDER.includes(sp.pos))||(sp.opener&&!ORDER.includes(sp.opener))){N=6;ORDER=TABLE_SEATS[6].slice();}
+  const SLOT=ringSlots(N);
   const heroIdx=ORDER.indexOf(sp.pos);
-  const ACT=['UTG','HJ','CO','BTN','SB','BB'];const heroAct=ACT.indexOf(sp.pos);
-  const seatByPos={};for(let i=0;i<6;i++){seatByPos[ORDER[(heroIdx+i+6)%6]]=SLOT[i];}
+  const ACT=ACT_ORDER.filter(p=>ORDER.includes(p));const heroAct=ACT.indexOf(sp.pos);
+  const seatByPos={};for(let i=0;i<N;i++){seatByPos[ORDER[(heroIdx+i+N)%N]]=SLOT[i];}
   const botPool=shuffle(CHAR_IDS.filter(id=>id!==profile.avatar)),botAv={};let bi=0;
   ORDER.forEach(pos=>{
     const isHero=pos===sp.pos,isAggr=pos===sp.opener;const xy=seatByPos[pos],x=xy[0],y=xy[1];
     const folded=!isHero&&!isAggr&&(sp.is3bet||ACT.indexOf(pos)<heroAct);
-    const ord=(ORDER.indexOf(pos)-heroIdx+6)%6;
+    const ord=(ORDER.indexOf(pos)-heroIdx+N)%N;
     const seat=document.createElement('div');seat.className='pseat'+(isHero?' hero':'')+(isAggr?' aggr':'')+(folded?' folded':'');
     seat.style.left=x+'%';seat.style.top=y+'%';seat.style.animationDelay=(ord*0.07)+'s';
     seat.innerHTML=(isAggr?'<div class="praisetag" style="animation-delay:.95s">'+(sp.is3bet?'3-BET':'RAISE')+'</div>':'')+((sp.is3bet&&isHero)?'<div class="praisetag hopen" style="animation-delay:1.1s">OPEN</div>':'')+'<div class="pav">'+avatarHTML(isHero?profile.avatar:(botAv[pos]||(botAv[pos]=botPool[(bi++)%botPool.length])))+'</div><div class="pinfo"><div class="ppos">'+pos+'</div><div class="pstk">100bb</div></div>';
@@ -1010,15 +1011,28 @@ function handFromCode(code){const d=newDeck();const r1=code[0],r2=code[1];let c1
   else{c1=d.takeRank(r1);c2=d.takeOffSuit(c1.s.c,[r2]);}
   return {c1,c2,code,suited:c1.s.c===c2.s.c};}
 function handFromRange(set){return handFromCode(oneOf([...set]));}
-function rfiPrompt(pos){return (pos==='UTG'?'Твоё слово первое.':'Все до тебя сбросили — твоё слово.')+' Открываешь рейзом или фолд?';}
-function genRFI(forcePos){
-  const pos=forcePos||oneOf(['UTG','HJ','CO','BTN','SB']);const hand=dealHand();const inR=RFI[pos].has(hand.code);
-  return {view:'preflop',mode:'rfi',concept:'Диапазон открытия',pos,opener:null,hand,oppR:1040,
+/* table formats: positions per size, mapped to existing range profiles */
+const TABLE_SEATS={5:['BTN','SB','BB','UTG','CO'],6:['BTN','SB','BB','UTG','HJ','CO'],7:['BTN','SB','BB','UTG','LJ','HJ','CO'],8:['BTN','SB','BB','UTG','UTG1','LJ','HJ','CO'],9:['BTN','SB','BB','UTG','UTG1','UTG2','LJ','HJ','CO']};
+const ACT_ORDER=['UTG','UTG1','UTG2','LJ','HJ','CO','BTN','SB','BB'];
+function rfiRange(pos){return RFI[pos]||(pos==='LJ'?RFI.HJ:RFI.UTG);}
+function rfiPct(pos){return Math.round(comboCount(rfiRange(pos))/1326*100);}
+function rfiOpeners(N){return (TABLE_SEATS[N]||TABLE_SEATS[6]).filter(p=>p!=='BB');}
+function ringSlots(N){
+  if(N===6)return [[50,81],[14,62],[14,27],[50,16],[86,27],[86,62]];
+  const out=[],cx=50,cy=46,rx=39,ry=40;
+  for(let i=0;i<N;i++){const a=Math.PI/2+i/N*2*Math.PI;out.push([Math.round((cx+rx*Math.cos(a))*10)/10,Math.round((cy+ry*Math.sin(a))*10)/10]);}
+  return out;
+}
+function rfiPrompt(pos){return ((pos==='UTG'||pos==='UTG1'||pos==='UTG2')?'Ранняя позиция.':'Все до тебя сбросили — твоё слово.')+' Открываешь рейзом или фолд?';}
+function genRFI(forcePos,tableSize){
+  const pool=tableSize?rfiOpeners(tableSize):['UTG','HJ','CO','BTN','SB'];
+  const pos=forcePos||oneOf(pool);const range=rfiRange(pos),pct=rfiPct(pos);const hand=dealHand();const inR=range.has(hand.code);
+  return {view:'preflop',mode:'rfi',concept:'Диапазон открытия',pos,opener:null,hand,oppR:1040,tableSize:tableSize||undefined,
     prompt:rfiPrompt(pos),
     actions:[{key:'fold',label:'FOLD',cls:'fold'},{key:'raise',label:'RAISE',cls:'raise'}],
     grade(key){const ca=inR?'raise':'fold';const ok=key===ca;
-      this.coach=ok?(inR?hand.code+' входит в диапазон '+pos+' ('+RFI_PCT[pos]+'%). Прибыльный опен.':hand.code+' вне диапазона '+pos+'. Фолд верный.'):(inR?hand.code+' ВХОДИТ в диапазон '+pos+' — фолд теряет EV.':hand.code+' слишком слаб для '+pos+' ('+RFI_PCT[pos]+'%). Рейз — лик.');
-      return {correct:ok,body:gridHTML({in:RFI[pos]},hand.code)};}};
+      this.coach=ok?(inR?hand.code+' входит в диапазон '+pos+' ('+pct+'%). Прибыльный опен.':hand.code+' вне диапазона '+pos+'. Фолд верный.'):(inR?hand.code+' ВХОДИТ в диапазон '+pos+' — фолд теряет EV.':hand.code+' слишком слаб для '+pos+' ('+pct+'%). Рейз — лик.');
+      return {correct:ok,body:gridHTML({in:range},hand.code)};}};
 }
 function genVsOpen(heroPos){
   const pool=heroPos?VS_RAW.filter(m=>m.hero===heroPos):VS_RAW;const m=oneOf(pool.length?pool:VS_RAW);const hand=dealHand();let ca='fold';if(m.tbS.has(hand.code))ca='threebet';else if(m.clS.has(hand.code))ca='call';
@@ -1243,10 +1257,25 @@ function startDaily(){
   beginSession('⚡ Daily Fight');
 }
 /* ===== CASH GAME (session play) ===== */
-function startCash(){
-  session={type:'cash',modeKey:'mixed',gen:()=>genMixed(2),n:1e9,idx:0,results:[],combo:0,maxCombo:0,lives:99,livesMax:0,score:0,
+function chooseCash(){
+  let h='<h3>💵 Кэш-стол</h3><div class="psub">Выбери размер стола</div><div class="pickgrid">';
+  [9,8,7,6,5].forEach(n=>{h+='<div class="pickbtn'+(n===6?' rand':'')+'" onclick="startCash('+n+')">'+n+'-max'+(n===6?' · стандарт':'')+'</div>';});
+  h+='</div>';
+  $('pickSheet').innerHTML=h;$('pickMask').classList.add('show');
+}
+function cashSpot(N){const r=Math.random();let sp;
+  if(r<0.46)sp=genRFI(null,N);
+  else if(r<0.63)sp=genVsOpen();
+  else if(r<0.75)sp=genVs3bet();
+  else sp=genPostflop(2);
+  if(sp.view==='preflop'&&!sp.tableSize)sp.tableSize=N;
+  return sp;
+}
+function startCash(size){
+  $('pickMask').classList.remove('show');const N=size||6;
+  session={type:'cash',modeKey:'mixed',tableSize:N,gen:()=>cashSpot(N),n:1e9,idx:0,results:[],combo:0,maxCombo:0,lives:99,livesMax:0,score:0,
     stack:100,invested:100,peak:100};
-  beginSession('💵 Кэш-стол · 6-max');
+  beginSession('💵 Кэш-стол · '+N+'-max');
 }
 function cashResolve(sp,key,g){
   const posted=sp.pos==='SB'?0.5:sp.pos==='BB'?1:0;
@@ -1274,7 +1303,7 @@ function cashSummary(){
   SUB.innerHTML='Итог <b>'+(net>=0?'+':'')+net+'bb</b> за '+hands+' рук · <b>'+(bb100>=0?'+':'')+bb100+'</b> bb/100';
   $('resStats').innerHTML='<div class="s"><div class="v g">'+acc+'%</div><div class="l">Точность</div></div><div class="s"><div class="v gold">'+session.peak+'</div><div class="l">Пик</div></div><div class="s"><div class="v">'+hands+'</div><div class="l">Рук</div></div>';
   $('resList').innerHTML='';
-  ACT.innerHTML='<button class="again" onclick="startCash()">Сесть снова</button><button class="home" onclick="nav(\'home\')">В меню</button>';
+  ACT.innerHTML='<button class="again" onclick="startCash('+(session.tableSize||6)+')">Сесть снова</button><button class="home" onclick="nav(\'home\')">В меню</button>';
 }
 function startReview(){
   const q=profile.mistakes.slice(0,10);
