@@ -244,10 +244,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;b
 .mem-live{text-align:center;font-size:13px;color:var(--muted);margin-top:8px}.mem-live b{color:var(--gold);font-size:15px}
 .pickmask{position:absolute;inset:0;background:rgba(4,8,24,.72);z-index:60;display:none;align-items:flex-end;justify-content:center}
 .pickmask.show{display:flex}
-.picksheet{width:100%;max-width:460px;background:linear-gradient(180deg,#1b2766,#141d4a);border-top:1px solid var(--line);border-radius:20px 20px 0 0;padding:18px 16px calc(20px + env(safe-area-inset-bottom));animation:sheetUp .25s ease}
+.picksheet{width:100%;max-width:460px;background:linear-gradient(180deg,#1b2766,#141d4a);border-top:1px solid var(--line);border-radius:20px 20px 0 0;padding:18px 16px calc(20px + env(safe-area-inset-bottom));animation:sheetUp .25s ease;max-height:88vh;overflow-y:auto}
 @keyframes sheetUp{from{transform:translateY(40px);opacity:.4}to{transform:none;opacity:1}}
 .picksheet h3{font-size:17px;font-weight:800;text-align:center;margin-bottom:3px}
 .picksheet .psub{font-size:12px;color:var(--muted);text-align:center;margin-bottom:14px}
+.picklbl{font-size:11px;font-weight:700;color:#8ea0d8;margin:13px 2px 7px;text-transform:uppercase;letter-spacing:.4px}
 .pickgrid{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
 .pickbtn{flex:1 1 28%;min-width:84px;border:1px solid var(--line);background:#26315f;border-radius:12px;padding:13px 8px;font-weight:800;font-size:14px;color:#fff;cursor:pointer;text-align:center}
 .pickbtn:active{transform:scale(.96)}
@@ -1059,8 +1060,8 @@ function genRFI(forcePos,tableSize){
       this.coach=ok?(inR?hand.code+' достойна открыть бой с '+pos+' ('+pct+'%). Сильный бьёт уверенно, ученик.':'Терпение. '+hand.code+' слаба для '+pos+' — мудрый ждёт лучшего часа.'):(inR?'Ты дрогнул. '+hand.code+' ВХОДИТ в диапазон '+pos+' — воин не прячет силу.':'Поспешил. '+hand.code+' слишком слаба для '+pos+' ('+pct+'%). Жадность — слабость.');
       return {correct:ok,body:gridHTML({in:range},hand.code,null,false,{att:pos})};}};
 }
-function genVsOpen(heroPos){
-  const pool=heroPos?VS_RAW.filter(m=>m.hero===heroPos):VS_RAW;const m=oneOf(pool.length?pool:VS_RAW);const hand=dealHand();let ca='fold';if(m.tbS.has(hand.code))ca='threebet';else if(m.clS.has(hand.code))ca='call';
+function genVsOpen(heroPos,openerPos){
+  const pool=VS_RAW.filter(m=>(!heroPos||m.hero===heroPos)&&(!openerPos||m.opener===openerPos));const m=oneOf(pool.length?pool:VS_RAW);const hand=dealHand();let ca='fold';if(m.tbS.has(hand.code))ca='threebet';else if(m.clS.has(hand.code))ca='call';
   return {view:'preflop',mode:'vsopen',concept:'Игра против опена',pos:m.hero,opener:m.opener,hand,oppR:1150,
     prompt:'<b>'+m.label+' рейз 2.5bb</b>. Ты на '+m.hero+'. Что делаешь?',
     actions:[{key:'fold',label:'FOLD',cls:'fold'},{key:'call',label:'CALL',cls:'call'},{key:'threebet',label:'3-BET',cls:'threebet'}],
@@ -1068,8 +1069,8 @@ function genVsOpen(heroPos){
       const nmm={threebet:'3-бет',call:'колл',fold:'фолд'};this.coach=posAnimal(m.opener)+' ('+m.opener+') открыл бой. '+hand.code+' → '+nmm[ca]+'.'+(ca==='threebet'?' Контратакуй — 3-бет ставит его в тупик.':ca==='call'?' Достойна боя, но не атаки. Колл.':' Слаба против него — отступи без сожалений.');
       return {correct:ok,meh,body:gridHTML({three:m.tbS,call:m.clS},hand.code,null,false,{att:m.opener,def:m.hero})};}};
 }
-function genVs3bet(heroPos){
-  const pool=heroPos?VS3_RAW.filter(m=>m.hero===heroPos):VS3_RAW;const m=oneOf(pool.length?pool:VS3_RAW);const hand=handFromRange(RFI[m.hero]);let ca='fold';if(m.fbS.has(hand.code))ca='fourbet';else if(m.clS.has(hand.code))ca='call';
+function genVs3bet(heroPos,tbPos){
+  const pool=VS3_RAW.filter(m=>(!heroPos||m.hero===heroPos)&&(!tbPos||m.threebettor===tbPos));const m=oneOf(pool.length?pool:VS3_RAW);const hand=handFromRange(RFI[m.hero]);let ca='fold';if(m.fbS.has(hand.code))ca='fourbet';else if(m.clS.has(hand.code))ca='call';
   return {view:'preflop',mode:'vs3',concept:'Игра против 3-бета',pos:m.hero,opener:m.threebettor,is3bet:true,hand,oppR:1230,
     prompt:'<b>Ты открыл рейз с '+m.hero+', '+m.threebettor+' делает 3-бет.</b> Что делаешь?',
     actions:[{key:'fold',label:'FOLD',cls:'fold'},{key:'call',label:'CALL',cls:'call'},{key:'fourbet',label:'4-BET',cls:'threebet'}],
@@ -1262,20 +1263,34 @@ function tag(sp){return sp;}
 
 /* ===== SESSION ENGINE ===== */
 let session=null;
-function startDrill(key,pos){
-  const gen=key==='rfi'?(()=>genRFI(pos)):key==='vsopen'?(()=>genVsOpen(pos)):key==='vs3'?(()=>genVs3bet(pos)):key==='postflop'?(()=>genPostflop(3)):genPotOdds;
+function startDrill(key,pos,opener){
+  const gen=key==='rfi'?(()=>genRFI(pos)):key==='vsopen'?(()=>genVsOpen(pos,opener)):key==='vs3'?(()=>genVs3bet(pos,opener)):key==='postflop'?(()=>genPostflop(3)):genPotOdds;
   session={type:'drill',modeKey:key,gen,n:12,idx:0,results:[],combo:0,maxCombo:0,lives:99,livesMax:0,score:0};
-  beginSession('Тренировка · '+MODE_NAMES[key]+(pos?' · '+pos:''));
+  const sub=pos?(' · '+pos+(opener?(key==='vs3'?' vs '+opener+' 3-бет':' vs '+opener):'')):'';
+  beginSession('Тренировка · '+MODE_NAMES[key]+sub);
 }
 function chooseMode(key){
   const titles={rfi:'Preflop RFI',vsopen:'vs Open',vs3:'vs 3-бет'};
-  const positions=key==='rfi'?['UTG','HJ','CO','BTN','SB']:[...new Set((key==='vsopen'?VS_RAW:VS3_RAW).map(m=>m.hero))];
-  let h='<h3>'+titles[key]+'</h3><div class="psub">Выбери позицию или тренируй вперемешку</div><div class="pickgrid">';
-  positions.forEach(p=>{h+='<div class="pickbtn" onclick="startPick(\''+key+'\',\''+p+'\')">'+p+(key==='rfi'?' · '+RFI_PCT[p]+'%':'')+'</div>';});
-  h+='<div class="pickbtn rand" onclick="startPick(\''+key+'\',null)">🎲 Случайная позиция</div></div>';
+  if(key==='rfi'){
+    const positions=['UTG','HJ','CO','BTN','SB'];
+    let h='<h3>'+titles[key]+'</h3><div class="psub">Выбери позицию или тренируй вперемешку</div><div class="pickgrid">';
+    positions.forEach(p=>{h+='<div class="pickbtn" onclick="startPick(\'rfi\',\''+p+'\')">'+p+' · '+RFI_PCT[p]+'%</div>';});
+    h+='<div class="pickbtn rand" onclick="startPick(\'rfi\',null)">🎲 Случайная позиция</div></div>';
+    $('pickSheet').innerHTML=h;$('pickMask').classList.add('show');return;
+  }
+  const RAW=key==='vsopen'?VS_RAW:VS3_RAW,oppKey=key==='vsopen'?'opener':'threebettor';
+  const byHero={};RAW.forEach(m=>{(byHero[m.hero]=byHero[m.hero]||[]).push(m[oppKey]);});
+  let h='<h3>'+titles[key]+'</h3><div class="psub">Выбери конкретный спот — кто атакует и против кого</div>';
+  h+='<div class="pickgrid"><div class="pickbtn rand" onclick="startPickSpot(\''+key+'\',null,null)">🎲 Все споты вперемешку</div></div>';
+  Object.keys(byHero).forEach(hero=>{
+    h+='<div class="picklbl">🛡 '+hero+' защищается против:</div><div class="pickgrid">';
+    byHero[hero].forEach(opp=>{h+='<div class="pickbtn" onclick="startPickSpot(\''+key+'\',\''+hero+'\',\''+opp+'\')">'+opp+(key==='vs3'?' 3-бет':' open')+'</div>';});
+    h+='<div class="pickbtn" style="opacity:.75" onclick="startPickSpot(\''+key+'\',\''+hero+'\',null)">🎲 любой</div></div>';
+  });
   $('pickSheet').innerHTML=h;$('pickMask').classList.add('show');
 }
 function startPick(key,pos){$('pickMask').classList.remove('show');startDrill(key,pos||undefined);}
+function startPickSpot(key,pos,opener){$('pickMask').classList.remove('show');startDrill(key,pos||undefined,opener||undefined);}
 function closePick(e){if(e.target.id==='pickMask')$('pickMask').classList.remove('show');}
 function startDaily(){
   session={type:'daily',modeKey:'mixed',gen:()=>genMixed(3),n:8,idx:0,results:[],combo:0,maxCombo:0,lives:99,livesMax:0,score:0};
