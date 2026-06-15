@@ -61,7 +61,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;b
 .hseat{position:absolute;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:3px;z-index:2}
 .hseat.top{top:6%}.hseat.bot{bottom:4%}
 .hseat .hcards{display:flex;gap:4px;margin-top:2px}
-.hseat .pav{width:46px;height:46px;border:2px solid #56badf}
+.hseat .pav{width:92px;height:92px;border:2px solid #56badf}
 .hseat .pav.hero{border-color:var(--gold)}
 .hseat .lastact{position:absolute;top:-13px;font-size:9px;font-weight:800;padding:2px 7px;border-radius:6px;white-space:nowrap}
 .handcta{margin:0 14px 6px;padding:14px;border-radius:16px;cursor:pointer;background:linear-gradient(135deg,#c2364a,#7b2233);box-shadow:0 6px 18px rgba(194,54,74,.3);position:relative;color:#fff}
@@ -477,7 +477,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;b
 .pf-oval{position:relative}
 .pf-oval .card{animation:deal .42s cubic-bezier(.2,.8,.3,1.1) backwards}
 .pseat{position:absolute;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:2px;width:80px;z-index:2;animation:seatIn .45s ease backwards}
-.pav{width:40px;height:40px;border-radius:50%;background:linear-gradient(180deg,#34407e,#1a2350);border:2px solid #56badf;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;color:#bfe6ff}
+.pav{width:80px;height:80px;border-radius:50%;background:linear-gradient(180deg,#34407e,#1a2350);border:2px solid #56badf;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;color:#bfe6ff}
+.t-dense .pav{width:64px;height:64px}
 .pseat.hero .pav{border-color:#34d17a;box-shadow:0 0 0 3px rgba(52,209,122,.22),0 0 16px rgba(52,209,122,.5);background:linear-gradient(180deg,#1f5a3a,#123a26)}
 .pseat.aggr .pav{border-color:#ff5b6e;box-shadow:0 0 0 3px rgba(255,91,110,.22),0 0 16px rgba(255,91,110,.5);background:linear-gradient(180deg,#5a1f28,#3a1219)}
 .pseat .pinfo{background:rgba(8,14,40,.82);border-radius:9px;padding:2px 8px;text-align:center;line-height:1.2}
@@ -924,6 +925,7 @@ VIEW.preflop=function(sp,stage){
   const tc=themeColors(profile.theme);tw.style.background='radial-gradient(120% 90% at 50% 42%,'+tc[0]+' 0%,'+tc[1]+' 45%,'+tc[2]+' 100%)';
   let N=sp.tableSize||6;let ORDER=(TABLE_SEATS[N]||TABLE_SEATS[6]).slice();
   if((sp.pos&&!ORDER.includes(sp.pos))||(sp.opener&&!ORDER.includes(sp.opener))){N=6;ORDER=TABLE_SEATS[6].slice();}
+  if(N>=8)tw.classList.add('t-dense');
   const SLOT=ringSlots(N);
   const heroIdx=ORDER.indexOf(sp.pos);
   const ACT=ACT_ORDER.filter(p=>ORDER.includes(p));const heroAct=ACT.indexOf(sp.pos);
