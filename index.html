@@ -1368,9 +1368,9 @@ function renderHand(){
   const tc=themeColors(profile.theme);tw.style.background='radial-gradient(120% 90% at 50% 42%,'+tc[0]+' 0%,'+tc[1]+' 45%,'+tc[2]+' 100%)';
   // villain seat (top), hero seat (bottom)
   const vshow=hand.done;
-  tw.innerHTML='<div class="hseat top"><div class="pav">'+avatarHTML('viktor')+'</div><div class="pinfo"><div class="ppos">Оппонент</div><div class="pstk">'+hand.villStack+'bb</div></div><div class="hcards" id="vc"></div>'+(hand.villAct&&!hand.done?'<div class="lastact la-'+(hand.villAct==='bet'?'bet':'check')+'">'+(hand.villAct==='bet'?'БЕТ '+hand.villSt+'bb':'ЧЕК')+'</div>':'')+'</div>'+
+  tw.innerHTML='<div class="hseat top"><div class="pav">'+posEmblem('BB')+'</div><div class="pinfo"><div class="ppos">Оппонент</div><div class="pstk">'+hand.villStack+'bb</div></div><div class="hcards" id="vc"></div>'+(hand.villAct&&!hand.done?'<div class="lastact la-'+(hand.villAct==='bet'?'bet':'check')+'">'+(hand.villAct==='bet'?'БЕТ '+hand.villSt+'bb':'ЧЕК')+'</div>':'')+'</div>'+
     '<div class="pot"><span class="lbl">POT</span>'+hand.pot+'bb</div><div class="board" id="hb"></div>'+
-    '<div class="hseat bot"><div class="hcards" id="hc"></div><div class="pav hero">'+avatarHTML(profile.avatar)+'</div><div class="pinfo"><div class="ppos" style="color:#7fe0a8">Ты · BTN</div><div class="pstk">'+hand.heroStack+'bb</div></div></div>';
+    '<div class="hseat bot"><div class="hcards" id="hc"></div><div class="pav hero">'+posEmblem('BTN')+'</div><div class="pinfo"><div class="ppos" style="color:#7fe0a8">Ты · BTN</div><div class="pstk">'+hand.heroStack+'bb</div></div></div>';
   st.appendChild(tw);
   const hb=tw.querySelector('#hb');hand.board.forEach(c=>hb.appendChild(cardEl(c,'tbl')));
   const hc=tw.querySelector('#hc');hand.hero.forEach(c=>hc.appendChild(cardEl(c,'sm')));
