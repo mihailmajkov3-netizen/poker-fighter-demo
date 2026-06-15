@@ -479,8 +479,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;b
 .pf-oval{position:relative}
 .pf-oval .card{animation:deal .42s cubic-bezier(.2,.8,.3,1.1) backwards}
 .pseat{position:absolute;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:2px;width:80px;z-index:2;animation:seatIn .45s ease backwards}
-.pav{width:clamp(58px,22.5cqw,132px);height:clamp(58px,22.5cqw,132px);border-radius:50%;background:linear-gradient(180deg,#34407e,#1a2350);border:2px solid #56badf;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;color:#bfe6ff}
-.t-dense .pav{width:clamp(48px,17cqw,104px);height:clamp(48px,17cqw,104px)}
+.pav{width:clamp(54px,18.5cqw,112px);height:clamp(54px,18.5cqw,112px);border-radius:50%;background:linear-gradient(180deg,#34407e,#1a2350);border:2px solid #56badf;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;color:#bfe6ff}
+.t-dense .pav{width:clamp(44px,14.5cqw,88px);height:clamp(44px,14.5cqw,88px)}
 .pseat.hero .pav{border-color:#34d17a;box-shadow:0 0 0 3px rgba(52,209,122,.22),0 0 16px rgba(52,209,122,.5);background:linear-gradient(180deg,#1f5a3a,#123a26)}
 .pseat.aggr .pav{border-color:#ff5b6e;box-shadow:0 0 0 3px rgba(255,91,110,.22),0 0 16px rgba(255,91,110,.5);background:linear-gradient(180deg,#5a1f28,#3a1219)}
 .pseat .pinfo{background:rgba(8,14,40,.82);border-radius:9px;padding:2px 8px;text-align:center;line-height:1.2}
@@ -947,11 +947,11 @@ VIEW.preflop=function(sp,stage){
     if(pos==='BTN'){const L=Math.hypot(50-x,50-y)||1,px=-(50-y)/L,py=(50-x)/L;const d=document.createElement('div');d.className='pdealer';d.style.left=(x+(50-x)*0.07+px*13)+'%';d.style.top=(y+(50-y)*0.07+py*13)+'%';d.textContent='D';tw.appendChild(d);}
   });
   const betSeat={};if(sp.opener)betSeat[sp.opener]=1;if(sp.is3bet)betSeat[sp.pos]=1;
-  function chip(pos,txt,delay,frac){const xy=seatByPos[pos];const x=xy[0],y=xy[1];const f=frac||0.58;const cx=x+(50-x)*f,cy=y+(50-y)*f;const c=document.createElement('div');c.className='pchip';c.style.left=cx+'%';c.style.top=cy+'%';c.style.animationDelay=delay+'s';c.innerHTML='<span class="pd"></span>'+txt;tw.appendChild(c);}
+  function chip(pos,txt,delay,frac){const xy=seatByPos[pos];const x=xy[0],y=xy[1];const f=frac||0.6;const cx=x+(50-x)*f,cy=y+(50-y)*f;const c=document.createElement('div');c.className='pchip';c.style.left=cx+'%';c.style.top=cy+'%';c.style.animationDelay=delay+'s';c.innerHTML='<span class="pd"></span>'+txt;tw.appendChild(c);}
   if(!betSeat['SB'])chip('SB','0.5bb',0.55);
   if(!betSeat['BB'])chip('BB','1bb',0.62);
   if(sp.opener)chip(sp.opener,sp.is3bet?'8bb':'2.5bb',0.95);
-  if(sp.is3bet)chip(sp.pos,'2.5bb',0.82,0.58);
+  if(sp.is3bet)chip(sp.pos,'2.5bb',0.82,0.6);
   col.appendChild(tw);
   const banner=document.createElement('div');banner.className='pf-banner';banner.innerHTML='<b style="color:var(--gold);font-size:18px">'+sp.hand.code+'</b><br>'+sp.prompt;
   col.appendChild(banner);
