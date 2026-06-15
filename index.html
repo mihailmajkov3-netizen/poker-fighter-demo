@@ -224,7 +224,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;b
 .fb .nextbtn{margin-top:12px;width:100%;border:none;border-radius:12px;padding:13px;font-weight:800;font-size:15px;color:#fff;background:linear-gradient(180deg,#4f8cff,#3567d6);cursor:pointer}
 
 .gridwrap{display:flex;flex-direction:column;align-items:center;margin:6px 0}
-.grid13{display:grid;grid-template-columns:repeat(13,1fr);gap:2px;width:100%;max-width:330px}
+.grid13{display:grid;grid-template-columns:repeat(13,1fr);gap:2px;width:100%;max-width:330px;position:relative}
+.gs-emb{position:absolute;width:46%;aspect-ratio:1;opacity:.5;pointer-events:none;z-index:1;mix-blend-mode:screen}
+.gs-emb-att{left:-3%;bottom:-3%}.gs-emb-def{right:-3%;top:-3%}
 .gc{aspect-ratio:1;border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700;background:#1a2350;color:#5a6aa8;position:relative}
 .gc.in{background:linear-gradient(180deg,#e0a532,#c2841d);color:#241a00}.gc.in3{background:linear-gradient(180deg,#d05cff,#9b3cdf);color:#fff}.gc.incall{background:linear-gradient(180deg,#2f9d68,#1f7a4d);color:#fff}
 .gc.hl{box-shadow:0 0 0 2px #fff,0 0 8px rgba(255,255,255,.7);z-index:2}
@@ -990,12 +992,13 @@ VIEW.table=function(sp,stage){
 function combosOf(code){return code.length===2?6:(code[2]==='s'?4:12);}
 function comboSum(set){let n=0;if(set)set.forEach(c=>n+=combosOf(c));return n;}
 function pctOf(combos){return Math.round(combos/1326*100);}
-function gridHTML(sets,hl,rl,bare){
+function gridHTML(sets,hl,rl,bare,sides){
   let h='<div class="gridwrap"><div class="grid13">';
   for(let r=0;r<13;r++)for(let c=0;c<13;c++){let code,disp;
     if(r===c){code=RANKS[r]+RANKS[c];disp=code;}else if(r<c){code=RANKS[r]+RANKS[c]+'s';disp=RANKS[r]+RANKS[c];}else{code=RANKS[c]+RANKS[r]+'o';disp=RANKS[c]+RANKS[r];}
     let cls='gc'+(r>c?' of':r===c?' pr':'');if(sets.three&&sets.three.has(code))cls+=' in3';else if(sets.call&&sets.call.has(code))cls+=' incall';else if(sets.in&&sets.in.has(code))cls+=' in';
     if(hl&&code===hl)cls+=' hl';h+='<div class="'+cls+'">'+disp+'</div>';}
+  if(sides){if(sides.att)h+='<div class="gs-emb gs-emb-att">'+posEmblem(sides.att)+'</div>';if(sides.def)h+='<div class="gs-emb gs-emb-def">'+posEmblem(sides.def)+'</div>';}
   h+='</div>';
   if(bare)return h+'</div>';
   if(sets.three){
@@ -1058,7 +1061,7 @@ function genRFI(forcePos,tableSize){
     actions:[{key:'fold',label:'FOLD',cls:'fold'},{key:'raise',label:'RAISE',cls:'raise'}],
     grade(key){const ca=inR?'raise':'fold';const ok=key===ca;
       this.coach=ok?(inR?hand.code+' достойна открыть бой с '+pos+' ('+pct+'%). Сильный бьёт уверенно, ученик.':'Терпение. '+hand.code+' слаба для '+pos+' — мудрый ждёт лучшего часа.'):(inR?'Ты дрогнул. '+hand.code+' ВХОДИТ в диапазон '+pos+' — воин не прячет силу.':'Поспешил. '+hand.code+' слишком слаба для '+pos+' ('+pct+'%). Жадность — слабость.');
-      return {correct:ok,body:gridHTML({in:range},hand.code)};}};
+      return {correct:ok,body:gridHTML({in:range},hand.code,null,false,{att:pos})};}};
 }
 function genVsOpen(heroPos){
   const pool=heroPos?VS_RAW.filter(m=>m.hero===heroPos):VS_RAW;const m=oneOf(pool.length?pool:VS_RAW);const hand=dealHand();let ca='fold';if(m.tbS.has(hand.code))ca='threebet';else if(m.clS.has(hand.code))ca='call';
@@ -1067,7 +1070,7 @@ function genVsOpen(heroPos){
     actions:[{key:'fold',label:'FOLD',cls:'fold'},{key:'call',label:'CALL',cls:'call'},{key:'threebet',label:'3-BET',cls:'threebet'}],
     grade(key){const ok=key===ca;const meh=!ok&&((ca==='call'&&key==='threebet')||(ca==='threebet'&&key==='call'));
       const nmm={threebet:'3-бет',call:'колл',fold:'фолд'};this.coach=posAnimal(m.opener)+' ('+m.opener+') открыл бой. '+hand.code+' → '+nmm[ca]+'.'+(ca==='threebet'?' Контратакуй — 3-бет ставит его в тупик.':ca==='call'?' Достойна боя, но не атаки. Колл.':' Слаба против него — отступи без сожалений.');
-      return {correct:ok,meh,body:gridHTML({three:m.tbS,call:m.clS},hand.code)};}};
+      return {correct:ok,meh,body:gridHTML({three:m.tbS,call:m.clS},hand.code,null,false,{att:m.opener,def:m.hero})};}};
 }
 function genVs3bet(heroPos){
   const pool=heroPos?VS3_RAW.filter(m=>m.hero===heroPos):VS3_RAW;const m=oneOf(pool.length?pool:VS3_RAW);const hand=handFromRange(RFI[m.hero]);let ca='fold';if(m.fbS.has(hand.code))ca='fourbet';else if(m.clS.has(hand.code))ca='call';
@@ -1076,7 +1079,7 @@ function genVs3bet(heroPos){
     actions:[{key:'fold',label:'FOLD',cls:'fold'},{key:'call',label:'CALL',cls:'call'},{key:'fourbet',label:'4-BET',cls:'threebet'}],
     grade(key){const ok=key===ca;const meh=!ok&&((ca==='call'&&key==='fourbet')||(ca==='fourbet'&&key==='call'));
       const nmm={fourbet:'4-бет',call:'колл',fold:'фолд'};this.coach=posAnimal(m.threebettor)+' ('+m.threebettor+') ответил 3-бетом. '+hand.code+' → '+nmm[ca]+'.'+(ca==='fourbet'?' Сильна для контрудара — 4-бет.':ca==='call'?' Достаточно крепка, чтобы принять бой. Колл.':' Слаба против его силы — отступи.');
-      return {correct:ok,meh,body:gridHTML({three:m.fbS,call:m.clS},hand.code,'4-бет')};}};
+      return {correct:ok,meh,body:gridHTML({three:m.fbS,call:m.clS},hand.code,'4-бет',false,{att:m.threebettor,def:m.hero})};}};
 }
 
 /* ===== POSTFLOP ARCHETYPES (procedural) ===== */
@@ -1532,7 +1535,7 @@ function gsInfo(sp){
 }
 function renderGridSpot(sp,stage){
   const inf=gsInfo(sp);const w=document.createElement('div');w.className='gridspot';
-  w.innerHTML='<div class="gs-hand">'+sp.hand.code+'</div><div class="gs-ctx">'+inf.ctx+'</div>'+gridHTML({},sp.hand.code,null,true)+'<div class="gs-q">'+inf.q+'</div>';
+  w.innerHTML='<div class="gs-hand">'+sp.hand.code+'</div><div class="gs-ctx">'+inf.ctx+'</div>'+gridHTML({},sp.hand.code,null,true,{att:sp.opener||sp.pos,def:sp.opener?sp.pos:null})+'<div class="gs-q">'+inf.q+'</div>';
   stage.appendChild(w);
 }
 /* exam per-decision timer */
