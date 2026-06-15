@@ -477,7 +477,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;b
 .pf-oval{position:relative}
 .pf-oval .card{animation:deal .42s cubic-bezier(.2,.8,.3,1.1) backwards}
 .pseat{position:absolute;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:2px;width:80px;z-index:2;animation:seatIn .45s ease backwards}
-.pav{width:80px;height:80px;border-radius:50%;background:linear-gradient(180deg,#34407e,#1a2350);border:2px solid #56badf;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;color:#bfe6ff}
+.pav{width:clamp(80px,21.5vmin,180px);height:clamp(80px,21.5vmin,180px);border-radius:50%;background:linear-gradient(180deg,#34407e,#1a2350);border:2px solid #56badf;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;color:#bfe6ff}
 .t-dense .pav{width:64px;height:64px}
 .pseat.hero .pav{border-color:#34d17a;box-shadow:0 0 0 3px rgba(52,209,122,.22),0 0 16px rgba(52,209,122,.5);background:linear-gradient(180deg,#1f5a3a,#123a26)}
 .pseat.aggr .pav{border-color:#ff5b6e;box-shadow:0 0 0 3px rgba(255,91,110,.22),0 0 16px rgba(255,91,110,.5);background:linear-gradient(180deg,#5a1f28,#3a1219)}
