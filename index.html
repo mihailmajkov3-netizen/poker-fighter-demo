@@ -946,11 +946,11 @@ VIEW.preflop=function(sp,stage){
     if(pos==='BTN'){const L=Math.hypot(50-x,50-y)||1,px=-(50-y)/L,py=(50-x)/L;const d=document.createElement('div');d.className='pdealer';d.style.left=(x+(50-x)*0.07+px*13)+'%';d.style.top=(y+(50-y)*0.07+py*13)+'%';d.textContent='D';tw.appendChild(d);}
   });
   const betSeat={};if(sp.opener)betSeat[sp.opener]=1;if(sp.is3bet)betSeat[sp.pos]=1;
-  function chip(pos,txt,delay,frac){const xy=seatByPos[pos];const x=xy[0],y=xy[1];const f=frac||0.36;const cx=x+(50-x)*f,cy=y+(50-y)*f;const c=document.createElement('div');c.className='pchip';c.style.left=cx+'%';c.style.top=cy+'%';c.style.animationDelay=delay+'s';c.innerHTML='<span class="pd"></span>'+txt;tw.appendChild(c);}
+  function chip(pos,txt,delay,frac){const xy=seatByPos[pos];const x=xy[0],y=xy[1];const f=frac||0.58;const cx=x+(50-x)*f,cy=y+(50-y)*f;const c=document.createElement('div');c.className='pchip';c.style.left=cx+'%';c.style.top=cy+'%';c.style.animationDelay=delay+'s';c.innerHTML='<span class="pd"></span>'+txt;tw.appendChild(c);}
   if(!betSeat['SB'])chip('SB','0.5bb',0.55);
   if(!betSeat['BB'])chip('BB','1bb',0.62);
   if(sp.opener)chip(sp.opener,sp.is3bet?'8bb':'2.5bb',0.95);
-  if(sp.is3bet)chip(sp.pos,'2.5bb',0.82,0.47);
+  if(sp.is3bet)chip(sp.pos,'2.5bb',0.82,0.58);
   col.appendChild(tw);
   const banner=document.createElement('div');banner.className='pf-banner';banner.innerHTML='<b style="color:var(--gold);font-size:18px">'+sp.hand.code+'</b><br>'+sp.prompt;
   col.appendChild(banner);
