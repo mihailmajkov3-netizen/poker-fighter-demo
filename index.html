@@ -501,6 +501,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;b
 /* avatar SVG fill */
 .seat .av,.pav,.phead .ava,.pf-card .ava,.hof-row .av,#onb .avopt,.sitem .se{overflow:hidden}
 .seat .av>svg,.pav>svg,.phead .ava>svg,.pf-card .ava>svg,.hof-row .av>svg,#onb .avopt>svg,#onb .oic>svg,.sitem .se>svg{display:block;width:100%;height:100%}
+.pav>img.posemb{display:block;width:100%;height:100%;object-fit:cover}
+.gs-emb>img.posemb{display:block;width:100%;height:100%;object-fit:cover;-webkit-mask:radial-gradient(circle at 50% 48%,#000 48%,transparent 70%);mask:radial-gradient(circle at 50% 48%,#000 48%,transparent 70%)}
 #onb .oic{width:96px;height:96px;border-radius:50%;overflow:hidden;display:flex;align-items:center;justify-content:center;margin:0 auto}
 .sitem .se{width:54px;height:54px;border-radius:50%;margin:0 auto 4px}
 .sitem .sname{font-size:11px;font-weight:700;color:var(--txt)}
@@ -1040,8 +1042,9 @@ const EMB_GLYPH={
  'Богомол':b=>'<path d="M50,29 L43,40 L57,40 Z" fill="#f0c25a"/><circle cx="46" cy="35" r="1.7" fill="'+b+'"/><circle cx="54" cy="35" r="1.7" fill="'+b+'"/><path d="M48,29 L44,22 M52,29 L56,22" stroke="#f0c25a" stroke-width="1.7" stroke-linecap="round"/><path d="M50,40 L50,67" stroke="#f0c25a" stroke-width="5" stroke-linecap="round"/><path d="M50,47 Q35,45 33,55 Q32,61 40,59" fill="none" stroke="#f0c25a" stroke-width="3.6" stroke-linecap="round"/><path d="M50,47 Q65,45 67,55 Q68,61 60,59" fill="none" stroke="#f0c25a" stroke-width="3.6" stroke-linecap="round"/><path d="M50,59 L43,67 M50,63 L57,71" stroke="#f0c25a" stroke-width="2.2" stroke-linecap="round"/>'
 };
 const EMB_BG={'Дракон':['#0e3b34','#06201c'],'Тигр':['#3d1216','#1a0608'],'Журавль':['#15234a','#0a1330'],'Обезьяна':['#3a2a10','#1a1206'],'Змея':['#2a1340','#140822'],'Богомол':['#14301a','#07180c']};
-function posEmblem(pos){const a=posAnimal(pos),g=EMB_GLYPH[a],bg=EMB_BG[a];if(!g)return avatarHTML('alex');
- return '<svg viewBox="0 0 100 100" width="100%" height="100%"><defs><radialGradient id="pe'+a+'" cx=".5" cy=".42" r=".75"><stop offset="0" stop-color="'+bg[0]+'"/><stop offset="1" stop-color="'+bg[1]+'"/></radialGradient></defs><circle cx="50" cy="50" r="48" fill="url(#pe'+a+')" stroke="#e8b44a" stroke-width="3"/><circle cx="50" cy="50" r="41.5" fill="none" stroke="#e8b44a" stroke-width="1" opacity=".4"/>'+g(bg[1])+'</svg>';
+const EMB_FILE={'Дракон':'utg','Тигр':'mp','Журавль':'co','Змея':'sb','Обезьяна':'btn','Богомол':'bb'};
+function posEmblem(pos){const a=posAnimal(pos),f=EMB_FILE[a];if(!f)return avatarHTML('alex');
+ return '<img class="posemb" src="emb/'+f+'.jpg?v=1" alt="'+a+'">';
 }
 function rfiRange(pos){return RFI[pos]||(pos==='LJ'?RFI.HJ:RFI.UTG);}
 function rfiPct(pos){return Math.round(comboCount(rfiRange(pos))/1326*100);}
