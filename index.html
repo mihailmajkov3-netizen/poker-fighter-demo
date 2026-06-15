@@ -1044,7 +1044,7 @@ const EMB_GLYPH={
 const EMB_BG={'Дракон':['#0e3b34','#06201c'],'Тигр':['#3d1216','#1a0608'],'Журавль':['#15234a','#0a1330'],'Обезьяна':['#3a2a10','#1a1206'],'Змея':['#2a1340','#140822'],'Богомол':['#14301a','#07180c']};
 const EMB_FILE={'Дракон':'utg','Тигр':'mp','Журавль':'co','Змея':'sb','Обезьяна':'btn','Богомол':'bb'};
 function posEmblem(pos){const a=posAnimal(pos),f=EMB_FILE[a];if(!f)return avatarHTML('alex');
- return '<img class="posemb" src="emb/'+f+'.jpg?v=1" alt="'+a+'">';
+ return '<img class="posemb" src="emb/'+f+'.jpg?v=2" alt="'+a+'">';
 }
 function rfiRange(pos){return RFI[pos]||(pos==='LJ'?RFI.HJ:RFI.UTG);}
 function rfiPct(pos){return Math.round(comboCount(rfiRange(pos))/1326*100);}
