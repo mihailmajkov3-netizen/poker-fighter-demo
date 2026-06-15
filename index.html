@@ -58,6 +58,15 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;b
 .bigcta small{font-weight:700;opacity:.85;font-size:12px}
 .bigcta .arrow{position:absolute;right:16px;top:50%;transform:translateY(-50%);font-size:26px}
 .daily{margin:0 14px 6px;padding:14px;border-radius:16px;cursor:pointer;background:linear-gradient(135deg,#7b5cff,#4f8cff);box-shadow:0 6px 18px rgba(79,140,255,.3);position:relative}
+.hseat{position:absolute;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:3px;z-index:2}
+.hseat.top{top:6%}.hseat.bot{bottom:4%}
+.hseat .hcards{display:flex;gap:4px;margin-top:2px}
+.hseat .pav{width:46px;height:46px;border:2px solid #56badf}
+.hseat .pav.hero{border-color:var(--gold)}
+.hseat .lastact{position:absolute;top:-13px;font-size:9px;font-weight:800;padding:2px 7px;border-radius:6px;white-space:nowrap}
+.handcta{margin:0 14px 6px;padding:14px;border-radius:16px;cursor:pointer;background:linear-gradient(135deg,#c2364a,#7b2233);box-shadow:0 6px 18px rgba(194,54,74,.3);position:relative;color:#fff}
+.handcta:active{transform:scale(.985)}
+.handcta .tag{font-size:11px;font-weight:800;letter-spacing:1px;opacity:.85}.handcta h3{font-size:19px;font-weight:900;margin:2px 0 2px}.handcta small{font-weight:700;opacity:.85;font-size:12px}.handcta .arrow{position:absolute;right:16px;top:50%;transform:translateY(-50%);font-size:24px}
 .cashcta{margin:0 14px 6px;padding:14px;border-radius:16px;cursor:pointer;background:linear-gradient(135deg,#2f9d68,#1f7a4d);box-shadow:0 6px 18px rgba(47,157,104,.3);position:relative;color:#fff}
 .cashcta:active{transform:scale(.985)}
 .cashcta .tag{font-size:11px;font-weight:800;letter-spacing:1px;opacity:.85}.cashcta h3{font-size:19px;font-weight:900;margin:2px 0 2px}.cashcta small{font-weight:700;opacity:.85;font-size:12px}.cashcta .arrow{position:absolute;right:16px;top:50%;transform:translateY(-50%);font-size:24px}
@@ -517,6 +526,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;b
         <div class="bigcta" onclick="nav('career')"><div class="tag">🪜 КАРЬЕРА</div><h3 id="ctaStake">NL2 · Микролимит</h3><small id="ctaSub">Поднимайся по лимитам</small><div class="arrow">›</div></div>
         <div class="daily" onclick="startDaily()"><div class="tag">⚡ ЕЖЕДНЕВНЫЙ ВЫЗОВ</div><h3>Daily Fight</h3><small id="dailySub">8 спотов · бонус к рейтингу</small><div class="arrow">›</div></div>
         <div class="cashcta" onclick="chooseCash()"><div class="tag">💵 КЭШ-СТОЛ · 5–9 MAX</div><h3>Сессия 100bb</h3><small>Выбери размер стола, веди стек в плюс</small><div class="arrow">›</div></div>
+        <div class="handcta" onclick="startHand()"><div class="tag">🎬 СЫГРАЙ РУКУ ЦЕЛИКОМ</div><h3>Хедз-ап розыгрыш</h3><small>Префлоп → флоп → тёрн → ривер → вскрытие</small><div class="arrow">›</div></div>
         <div class="quests" onclick="nav('quests')"><div class="qh"><span>🎯 Задания дня</span><span class="badge" id="qBadge">0/3</span></div><div id="qMini" style="margin-top:8px"></div></div>
         <div class="section-h">Свободная тренировка</div>
         <div class="modes" id="modeList"></div>
@@ -899,7 +909,7 @@ function nav(s){
   else if(s==='shop'){show('shop');setTitle('Магазин');renderShop();}
   else if(s==='settings'){show('settings');setTitle('Настройки');renderSettings();}
 }
-function quitGame(){if(session&&session.type==='cash'){cashSummary();return;}if(confirm('Выйти из забега? Рейтинг по сыгранным рукам сохранится.')){clearExamTimer();clearTimeout(gridAdv);nav('home');}}
+function quitGame(){if(!session&&hand){hand=null;nav('home');return;}if(session&&session.type==='cash'){cashSummary();return;}if(confirm('Выйти из забега? Рейтинг по сыгранным рукам сохранится.')){clearExamTimer();clearTimeout(gridAdv);nav('home');}}
 
 /* ===== CARD VIEWS ===== */
 const VIEW={};
@@ -1014,6 +1024,8 @@ function handFromRange(set){return handFromCode(oneOf([...set]));}
 /* table formats: positions per size, mapped to existing range profiles */
 const TABLE_SEATS={5:['BTN','SB','BB','UTG','CO'],6:['BTN','SB','BB','UTG','HJ','CO'],7:['BTN','SB','BB','UTG','LJ','HJ','CO'],8:['BTN','SB','BB','UTG','UTG1','LJ','HJ','CO'],9:['BTN','SB','BB','UTG','UTG1','UTG2','LJ','HJ','CO']};
 const ACT_ORDER=['UTG','UTG1','UTG2','LJ','HJ','CO','BTN','SB','BB'];
+const POS_ANIMAL={UTG:'Дракон',UTG1:'Дракон',UTG2:'Дракон',LJ:'Тигр',HJ:'Тигр',MP:'Тигр',CO:'Журавль',BTN:'Обезьяна',SB:'Змея',BB:'Богомол'};
+function posAnimal(p){return POS_ANIMAL[p]||p;}
 function rfiRange(pos){return RFI[pos]||(pos==='LJ'?RFI.HJ:RFI.UTG);}
 function rfiPct(pos){return Math.round(comboCount(rfiRange(pos))/1326*100);}
 function rfiOpeners(N){return (TABLE_SEATS[N]||TABLE_SEATS[6]).filter(p=>p!=='BB');}
@@ -1031,7 +1043,7 @@ function genRFI(forcePos,tableSize){
     prompt:rfiPrompt(pos),
     actions:[{key:'fold',label:'FOLD',cls:'fold'},{key:'raise',label:'RAISE',cls:'raise'}],
     grade(key){const ca=inR?'raise':'fold';const ok=key===ca;
-      this.coach=ok?(inR?hand.code+' входит в диапазон '+pos+' ('+pct+'%). Прибыльный опен.':hand.code+' вне диапазона '+pos+'. Фолд верный.'):(inR?hand.code+' ВХОДИТ в диапазон '+pos+' — фолд теряет EV.':hand.code+' слишком слаб для '+pos+' ('+pct+'%). Рейз — лик.');
+      this.coach=ok?(inR?hand.code+' достойна открыть бой с '+pos+' ('+pct+'%). Сильный бьёт уверенно, ученик.':'Терпение. '+hand.code+' слаба для '+pos+' — мудрый ждёт лучшего часа.'):(inR?'Ты дрогнул. '+hand.code+' ВХОДИТ в диапазон '+pos+' — воин не прячет силу.':'Поспешил. '+hand.code+' слишком слаба для '+pos+' ('+pct+'%). Жадность — слабость.');
       return {correct:ok,body:gridHTML({in:range},hand.code)};}};
 }
 function genVsOpen(heroPos){
@@ -1040,7 +1052,7 @@ function genVsOpen(heroPos){
     prompt:'<b>'+m.label+' рейз 2.5bb</b>. Ты на '+m.hero+'. Что делаешь?',
     actions:[{key:'fold',label:'FOLD',cls:'fold'},{key:'call',label:'CALL',cls:'call'},{key:'threebet',label:'3-BET',cls:'threebet'}],
     grade(key){const ok=key===ca;const meh=!ok&&((ca==='call'&&key==='threebet')||(ca==='threebet'&&key==='call'));
-      const nmm={threebet:'3-бет',call:'колл',fold:'фолд'};this.coach=hand.code+' против '+m.opener+' → '+nmm[ca]+'.'+(ca==='threebet'?' Сильна/подходит как 3-бет.':ca==='call'?' Хороша для колла, но не 3-бета.':' Слишком слаба.');
+      const nmm={threebet:'3-бет',call:'колл',fold:'фолд'};this.coach=posAnimal(m.opener)+' ('+m.opener+') открыл бой. '+hand.code+' → '+nmm[ca]+'.'+(ca==='threebet'?' Контратакуй — 3-бет ставит его в тупик.':ca==='call'?' Достойна боя, но не атаки. Колл.':' Слаба против него — отступи без сожалений.');
       return {correct:ok,meh,body:gridHTML({three:m.tbS,call:m.clS},hand.code)};}};
 }
 function genVs3bet(heroPos){
@@ -1049,7 +1061,7 @@ function genVs3bet(heroPos){
     prompt:'<b>Ты открыл рейз с '+m.hero+', '+m.threebettor+' делает 3-бет.</b> Что делаешь?',
     actions:[{key:'fold',label:'FOLD',cls:'fold'},{key:'call',label:'CALL',cls:'call'},{key:'fourbet',label:'4-BET',cls:'threebet'}],
     grade(key){const ok=key===ca;const meh=!ok&&((ca==='call'&&key==='fourbet')||(ca==='fourbet'&&key==='call'));
-      const nmm={fourbet:'4-бет',call:'колл',fold:'фолд'};this.coach=hand.code+' против 3-бета от '+m.threebettor+' → '+nmm[ca]+'.'+(ca==='fourbet'?' Сильна для велью или подходит как 4-бет-блеф.':ca==='call'?' Достаточно сильна для колла, но не для 4-бета.':' Слишком слаба, чтобы продолжать против 3-бета.');
+      const nmm={fourbet:'4-бет',call:'колл',fold:'фолд'};this.coach=posAnimal(m.threebettor)+' ('+m.threebettor+') ответил 3-бетом. '+hand.code+' → '+nmm[ca]+'.'+(ca==='fourbet'?' Сильна для контрудара — 4-бет.':ca==='call'?' Достаточно крепка, чтобы принять бой. Колл.':' Слаба против его силы — отступи.');
       return {correct:ok,meh,body:gridHTML({three:m.fbS,call:m.clS},hand.code,'4-бет')};}};
 }
 
@@ -1264,11 +1276,10 @@ function chooseCash(){
   $('pickSheet').innerHTML=h;$('pickMask').classList.add('show');
 }
 function cashSpot(N){const r=Math.random();let sp;
-  if(r<0.46)sp=genRFI(null,N);
-  else if(r<0.63)sp=genVsOpen();
-  else if(r<0.75)sp=genVs3bet();
-  else sp=genPostflop(2);
-  if(sp.view==='preflop'&&!sp.tableSize)sp.tableSize=N;
+  if(r<0.55)sp=genRFI(null,N);
+  else if(r<0.80)sp=genVsOpen();
+  else sp=genVs3bet();
+  if(!sp.tableSize)sp.tableSize=N;
   return sp;
 }
 function startCash(size){
@@ -1304,6 +1315,121 @@ function cashSummary(){
   $('resStats').innerHTML='<div class="s"><div class="v g">'+acc+'%</div><div class="l">Точность</div></div><div class="s"><div class="v gold">'+session.peak+'</div><div class="l">Пик</div></div><div class="s"><div class="v">'+hands+'</div><div class="l">Рук</div></div>';
   $('resList').innerHTML='';
   ACT.innerHTML='<button class="again" onclick="startCash('+(session.tableSize||6)+')">Сесть снова</button><button class="home" onclick="nav(\'home\')">В меню</button>';
+}
+/* ===== FULL HAND (heads-up play-out) ===== */
+function mkScore(cat,r){let s=cat;for(let i=0;i<5;i++)s=s*13+((r[i]||0)+1);return s;}
+function best5score(cards){
+  const byR={},byS={};cards.forEach(c=>{const v=RVAL[c.r];byR[v]=(byR[v]||0)+1;(byS[c.s.c]=byS[c.s.c]||[]).push(v);});
+  const allv=cards.map(c=>RVAL[c.r]);
+  function strHigh(vs){const s=new Set(vs);if(s.has(12))s.add(-1);for(let hi=12;hi>=3;hi--){let ok=true;for(let k=0;k<5;k++)if(!s.has(hi-k)){ok=false;break;}if(ok)return hi;}return -1;}
+  const fSuit=Object.keys(byS).find(s=>byS[s].length>=5);
+  if(fSuit){const sf=strHigh(byS[fSuit]);if(sf>=0)return mkScore(8,[sf]);}
+  const groups=Object.keys(byR).map(v=>[+v,byR[v]]).sort((a,b)=>b[1]-a[1]||b[0]-a[0]);
+  const c0=groups[0][1],c1=groups[1]?groups[1][1]:0;
+  const sv=[...new Set(allv)].sort((a,b)=>b-a);
+  const kick=(ex,n)=>sv.filter(v=>!ex.includes(v)).slice(0,n);
+  if(c0===4)return mkScore(7,[groups[0][0],...kick([groups[0][0]],1)]);
+  if(c0>=3&&c1>=2)return mkScore(6,[groups[0][0],groups[1][0]]);
+  if(fSuit)return mkScore(5,byS[fSuit].sort((a,b)=>b-a).slice(0,5));
+  const sh=strHigh(allv);if(sh>=0)return mkScore(4,[sh]);
+  if(c0===3)return mkScore(3,[groups[0][0],...kick([groups[0][0]],2)]);
+  if(c0===2&&c1===2)return mkScore(2,[groups[0][0],groups[1][0],...kick([groups[0][0],groups[1][0]],1)]);
+  if(c0===2)return mkScore(1,[groups[0][0],...kick([groups[0][0]],3)]);
+  return mkScore(0,sv.slice(0,5));
+}
+function dealCard(d){for(let i=0;i<300;i++){const r=oneOf(RANKS),c=oneOf(['s','h','d','c']);if(!d.used.has(r+c))return d.card(r,c);}return d.takeRank(oneOf(RANKS));}
+let hand=null;
+function startHand(){
+  session=null;clearExamTimer&&clearExamTimer();
+  const d=newDeck();
+  hand={d,hero:[d.takeRank(oneOf(RANKS)),d.takeRank(oneOf(RANKS))],vill:[d.takeRank(oneOf(RANKS)),d.takeRank(oneOf(RANKS))],
+    board:[],street:'preflop',pot:0,heroStack:100,villStack:100,heroSt:0,villSt:0,villAct:null,msg:'',done:false,result:null,toCall:0};
+  putIn('hero',0.5);putIn('vill',1);hand.heroSt=0.5;hand.villSt=1;hand.toCall=0.5; // hero faces 0.5 to call BB
+  show('game');setTitle('Игра');$('gMode').textContent='🎬 Рука · хедз-ап';
+  renderHand();
+}
+function putIn(who,amt){amt=Math.round(amt*10)/10;if(who==='hero'){hand.heroStack-=amt;hand.heroSt+=amt;}else{hand.villStack-=amt;hand.villSt+=amt;}hand.pot=Math.round((hand.pot+amt)*10)/10;}
+function villMade(){return evalMade(hand.vill.concat(hand.board)).cat;}
+function streetName(s){return {preflop:'Префлоп',flop:'Флоп',turn:'Тёрн',river:'Ривер'}[s]||s;}
+function renderHand(){
+  const st=$('stage');st.innerHTML='';
+  const tw=document.createElement('div');tw.className='table-wrap pf-oval';
+  const tc=themeColors(profile.theme);tw.style.background='radial-gradient(120% 90% at 50% 42%,'+tc[0]+' 0%,'+tc[1]+' 45%,'+tc[2]+' 100%)';
+  // villain seat (top), hero seat (bottom)
+  const vshow=hand.done;
+  tw.innerHTML='<div class="hseat top"><div class="pav">'+avatarHTML('viktor')+'</div><div class="pinfo"><div class="ppos">Оппонент</div><div class="pstk">'+hand.villStack+'bb</div></div><div class="hcards" id="vc"></div>'+(hand.villAct&&!hand.done?'<div class="lastact la-'+(hand.villAct==='bet'?'bet':'check')+'">'+(hand.villAct==='bet'?'БЕТ '+hand.villSt+'bb':'ЧЕК')+'</div>':'')+'</div>'+
+    '<div class="pot"><span class="lbl">POT</span>'+hand.pot+'bb</div><div class="board" id="hb"></div>'+
+    '<div class="hseat bot"><div class="hcards" id="hc"></div><div class="pav hero">'+avatarHTML(profile.avatar)+'</div><div class="pinfo"><div class="ppos" style="color:#7fe0a8">Ты · BTN</div><div class="pstk">'+hand.heroStack+'bb</div></div></div>';
+  st.appendChild(tw);
+  const hb=tw.querySelector('#hb');hand.board.forEach(c=>hb.appendChild(cardEl(c,'tbl')));
+  const hc=tw.querySelector('#hc');hand.hero.forEach(c=>hc.appendChild(cardEl(c,'sm')));
+  const vc=tw.querySelector('#vc');if(vshow)hand.vill.forEach(c=>vc.appendChild(cardEl(c,'sm')));else{vc.innerHTML='<div class="cardback"></div><div class="cardback"></div>';}
+  const banner=document.createElement('div');banner.className='pf-banner';banner.innerHTML=hand.msg||('<b style="color:var(--gold)">'+streetName(hand.street)+'</b> · твоё решение');
+  st.appendChild(banner);
+  renderHandActions();
+}
+function renderHandActions(){
+  const bar=$('actionbar');bar.innerHTML='';
+  if(hand.done){bar.innerHTML='<button class="abtn adv" onclick="startHand()">Новая рука 🎬</button><button class="abtn fold" onclick="nav(\'home\')">Выйти</button>';return;}
+  const btn=(key,label,cls)=>{const b=document.createElement('button');b.className='abtn '+cls;b.textContent=label;b.onclick=()=>heroDo(key);bar.appendChild(b);};
+  if(hand.toCall>0){btn('fold','FOLD','fold');btn('call','CALL '+hand.toCall+'bb','call');btn('raise',hand.street==='preflop'?'RAISE':'RAISE','raise');}
+  else{btn('check','CHECK','call');btn('bet','BET','raise');}
+}
+function endHand(winner,reason){
+  hand.done=true;
+  if(winner==='hero')hand.heroStack+=hand.pot;else if(winner==='vill')hand.villStack+=hand.pot;else{hand.heroStack+=hand.pot/2;hand.villStack+=hand.pot/2;}
+  const net=Math.round((hand.heroStack-100)*10)/10;
+  const hs=evalMade(hand.hero.concat(hand.board)),vs=evalMade(hand.vill.concat(hand.board));
+  let m='<div class="verdict '+(net>0?'ok':net<0?'bad':'meh')+'">'+(net>0?'+'+net+'bb 🟢':net<0?net+'bb 🔴':'± сплит')+'</div>';
+  m+='<div class="cashres '+(net>=0?'win':'loss')+'">'+reason+'</div>';
+  if(hand.board.length>=3)m+='<div class="sub">Ты: '+hs.name+' · Оппонент: '+vs.name+'</div>';
+  hand.msg=m;
+  renderHand();
+}
+/* villain heuristics */
+function villOpenAct(){const s=villMade();const r=Math.random();if(s>=2)return r<0.72?'bet':'check';if(s===1)return r<0.42?'bet':'check';return r<0.2?'bet':'check';}
+function villVsBet(){const s=villMade();const r=Math.random();if(s>=3)return r<0.35?'raise':'call';if(s>=1)return r<0.74?'call':'fold';return r<0.16?'call':'fold';}
+function villPreCall(){const r=Math.random();return r<0.62;} // calls hero open 62%
+function nextStreet(){
+  hand.heroSt=0;hand.villSt=0;hand.toCall=0;hand.villAct=null;hand.msg='';
+  if(hand.street==='preflop'){hand.street='flop';hand.board=[dealCard(hand.d),dealCard(hand.d),dealCard(hand.d)];}
+  else if(hand.street==='flop'){hand.street='turn';hand.board.push(dealCard(hand.d));}
+  else if(hand.street==='turn'){hand.street='river';hand.board.push(dealCard(hand.d));}
+  else{return showdownHand();}
+  villainFirst();
+}
+function villainFirst(){
+  const a=villOpenAct();
+  if(a==='bet'){const b=Math.max(1,Math.round(hand.pot*0.66*2)/2);putIn('vill',b);hand.villAct='bet';hand.toCall=b;}
+  else{hand.villAct='check';hand.toCall=0;}
+  renderHand();
+}
+function showdownHand(){
+  const hsc=best5score(hand.hero.concat(hand.board)),vsc=best5score(hand.vill.concat(hand.board));
+  if(hsc>vsc)endHand('hero','Вскрытие — ты сильнее!');else if(vsc>hsc)endHand('vill','Вскрытие — оппонент сильнее.');else endHand('split','Вскрытие — сплит.');
+}
+function heroDo(key){
+  SND.tick();
+  if(hand.street==='preflop'){
+    if(key==='fold'){endHand('vill','Сбросил префлоп.');return;}
+    if(key==='call'){putIn('hero',hand.toCall);hand.heroSt=1;nextStreet();return;}
+    if(key==='raise'){const to=3;putIn('hero',to-hand.heroSt);hand.heroSt=to;hand.toCall=0;
+      if(villPreCall()){putIn('vill',to-hand.villSt);hand.villSt=to;nextStreet();}else endHand('hero','Оппонент сбросил на префлопе.');
+      return;}
+  }
+  // postflop
+  if(hand.toCall>0){ // facing a bet
+    if(key==='fold'){endHand('vill','Сбросил против бета.');return;}
+    if(key==='call'){putIn('hero',hand.toCall);hand.heroSt=hand.villSt;hand.toCall=0;nextStreet();return;}
+    if(key==='raise'){const to=Math.round(hand.villSt*2.5*2)/2;putIn('hero',to-hand.heroSt);hand.heroSt=to;
+      const v=villVsBet();if(v==='call'){putIn('vill',to-hand.villSt);hand.villSt=to;nextStreet();}else endHand('hero','Оппонент спасовал на твой рейз.');return;}
+  } else { // villain checked
+    if(key==='check'){nextStreet();return;}
+    if(key==='bet'){const b=Math.max(1,Math.round(hand.pot*0.66*2)/2);putIn('hero',b);hand.heroSt=b;
+      const v=villVsBet();if(v==='call'){putIn('vill',b-hand.villSt);hand.villSt=b;nextStreet();}
+      else if(v==='raise'){const to=Math.round(b*2.6*2)/2;putIn('vill',to-hand.villSt);hand.villSt=to;hand.toCall=to-hand.heroSt;hand.villAct='bet';renderHand();}
+      else endHand('hero','Оппонент сбросил на твой бет.');return;}
+  }
 }
 function startReview(){
   const q=profile.mistakes.slice(0,10);
@@ -1476,7 +1602,7 @@ function showFeedback(sp,g,delta,bust){
     h+='<div class="cashres '+cr.kind+'">'+cr.txt+'</div>';
     h+='<div class="sub">Стек <b>'+session.stack+'bb</b> · сессия <span class="rd '+(net<0?'neg':'')+'">'+(net>=0?'+':'')+net+'bb</span></div>';
     if(g.body)h+=g.body;
-    if(sp.coach)h+='<div class="coach"><b>Тренер:</b> '+sp.coach+'</div>';
+    if(sp.coach)h+='<div class="coach"><b>🥋 Шифу:</b> '+sp.coach+'</div>';
     fb.innerHTML=h;fb.classList.add('show');
     const bar=$('actionbar');
     if(bust)bar.innerHTML='<button class="abtn lose" onclick="cashRebuy()">↺ Сесть заново (100bb)</button><button class="abtn fold" onclick="cashSummary()">Встать</button>';
@@ -1486,7 +1612,7 @@ function showFeedback(sp,g,delta,bust){
   let html='<div class="verdict '+vcls+'">'+vtxt+(g.correct&&session.combo>=2?' · x'+Math.min(session.combo,9)+' комбо':'')+'</div>';
   html+='<div class="sub">Рейтинг <span class="rd '+(delta<0?'neg':'')+'">'+(delta>=0?'+':'')+delta+'</span> → '+profile.rating+'</div>';
   if(g.body&&(!session.exam||session.gridMode))html+=g.body;
-  if(sp.coach)html+='<div class="coach"><b>Тренер:</b> '+sp.coach+'</div>';
+  if(sp.coach)html+='<div class="coach"><b>🥋 Шифу:</b> '+sp.coach+'</div>';
   fb.innerHTML=html;fb.classList.add('show');
   const bar=$('actionbar');
   clearTimeout(gridAdv);
