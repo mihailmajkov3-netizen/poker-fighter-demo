@@ -479,6 +479,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;b
 .pseat.hero .pav{border-color:#34d17a;box-shadow:0 0 0 3px rgba(52,209,122,.22),0 0 16px rgba(52,209,122,.5);background:linear-gradient(180deg,#1f5a3a,#123a26)}
 .pseat.aggr .pav{border-color:#ff5b6e;box-shadow:0 0 0 3px rgba(255,91,110,.22),0 0 16px rgba(255,91,110,.5);background:linear-gradient(180deg,#5a1f28,#3a1219)}
 .pseat .pinfo{background:rgba(8,14,40,.82);border-radius:9px;padding:2px 8px;text-align:center;line-height:1.2}
+.pseat .pan{font-size:9px;font-weight:700;color:#e8c46a;line-height:1.1;letter-spacing:.3px}
 .pseat .ppos{font-size:11px;font-weight:800}.pseat .pstk{font-size:9px;color:var(--gold)}
 .pseat.hero .ppos{color:#7fe0a8}.pseat.aggr .ppos{color:#ff97a4}
 .pseat.folded{opacity:.5}
@@ -923,14 +924,15 @@ VIEW.preflop=function(sp,stage){
   const heroIdx=ORDER.indexOf(sp.pos);
   const ACT=ACT_ORDER.filter(p=>ORDER.includes(p));const heroAct=ACT.indexOf(sp.pos);
   const seatByPos={};for(let i=0;i<N;i++){seatByPos[ORDER[(heroIdx+i+N)%N]]=SLOT[i];}
-  const botPool=shuffle(CHAR_IDS.filter(id=>id!==profile.avatar)),botAv={};let bi=0;
   ORDER.forEach(pos=>{
     const isHero=pos===sp.pos,isAggr=pos===sp.opener;const xy=seatByPos[pos],x=xy[0],y=xy[1];
     const folded=!isHero&&!isAggr&&(sp.is3bet||ACT.indexOf(pos)<heroAct);
     const ord=(ORDER.indexOf(pos)-heroIdx+N)%N;
     const seat=document.createElement('div');seat.className='pseat'+(isHero?' hero':'')+(isAggr?' aggr':'')+(folded?' folded':'');
     seat.style.left=x+'%';seat.style.top=y+'%';seat.style.animationDelay=(ord*0.07)+'s';
-    seat.innerHTML=(isAggr?'<div class="praisetag" style="animation-delay:.95s">'+(sp.is3bet?'3-BET':'RAISE')+'</div>':'')+((sp.is3bet&&isHero)?'<div class="praisetag hopen" style="animation-delay:1.1s">OPEN</div>':'')+'<div class="pav">'+avatarHTML(isHero?profile.avatar:(botAv[pos]||(botAv[pos]=botPool[(bi++)%botPool.length])))+'</div><div class="pinfo"><div class="ppos">'+pos+'</div><div class="pstk">100bb</div></div>';
+    const avHTML=isHero?avatarHTML(profile.avatar):posEmblem(pos);
+    const labelHTML=isHero?('<div class="ppos">'+pos+'</div>'):('<div class="pan">'+posAnimal(pos)+'</div><div class="ppos">'+pos+'</div>');
+    seat.innerHTML=(isAggr?'<div class="praisetag" style="animation-delay:.95s">'+(sp.is3bet?'3-BET':'RAISE')+'</div>':'')+((sp.is3bet&&isHero)?'<div class="praisetag hopen" style="animation-delay:1.1s">OPEN</div>':'')+'<div class="pav">'+avHTML+'</div><div class="pinfo">'+labelHTML+'<div class="pstk">100bb</div></div>';
     if(isHero){const hc=document.createElement('div');hc.style.cssText='display:flex;gap:3px;margin-top:2px';hc.appendChild(cardEl(sp.hand.c1,'sm'));hc.appendChild(cardEl(sp.hand.c2,'sm'));[...hc.children].forEach((c,ci)=>c.style.animationDelay=(1.0+ci*0.1)+'s');seat.appendChild(hc);}
     else{const bk=document.createElement('div');bk.style.cssText='display:flex;gap:3px;margin-top:2px';bk.innerHTML='<div class="cardback"></div><div class="cardback"></div>';seat.appendChild(bk);}
     tw.appendChild(seat);
@@ -1026,6 +1028,18 @@ const TABLE_SEATS={5:['BTN','SB','BB','UTG','CO'],6:['BTN','SB','BB','UTG','HJ',
 const ACT_ORDER=['UTG','UTG1','UTG2','LJ','HJ','CO','BTN','SB','BB'];
 const POS_ANIMAL={UTG:'Дракон',UTG1:'Дракон',UTG2:'Дракон',LJ:'Тигр',HJ:'Тигр',MP:'Тигр',CO:'Журавль',BTN:'Обезьяна',SB:'Змея',BB:'Богомол'};
 function posAnimal(p){return POS_ANIMAL[p]||p;}
+const EMB_GLYPH={
+ 'Дракон':b=>'<path d="M41,30 Q34,17 27,13 Q33,23 37,33 Z" fill="#f0c25a"/><path d="M59,30 Q66,17 73,13 Q67,23 63,33 Z" fill="#f0c25a"/><path d="M47,29 L50,21 L53,29 Z" fill="#f0c25a"/><path d="M34,34 Q50,27 66,34 Q73,43 66,51 L34,51 Q27,43 34,34 Z" fill="#f0c25a"/><path d="M40,41 L48,38 L47,45 L40,45 Z" fill="'+b+'"/><path d="M60,41 L52,38 L53,45 L60,45 Z" fill="'+b+'"/><path d="M42,51 Q50,49 58,51 Q61,60 50,65 Q39,60 42,51 Z" fill="#f0c25a"/><circle cx="45.5" cy="55" r="1.3" fill="'+b+'"/><circle cx="54.5" cy="55" r="1.3" fill="'+b+'"/><path d="M45,64 L47,70 L49,64 Z" fill="#f0c25a"/><path d="M51,64 L53,70 L55,64 Z" fill="#f0c25a"/><path d="M34,49 Q21,51 23,62" stroke="#f0c25a" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M66,49 Q79,51 77,62" stroke="#f0c25a" stroke-width="2" fill="none" stroke-linecap="round"/>',
+ 'Тигр':b=>'<path d="M30,42 L33,29 L42,40 Z" fill="#f0c25a"/><path d="M70,42 L67,29 L58,40 Z" fill="#f0c25a"/><path d="M31,42 Q31,31 50,31 Q69,31 69,42 L69,55 Q69,71 50,71 Q31,71 31,55 Z" fill="#f0c25a"/><path d="M38,47 L47,45 L46,51 L38,50 Z" fill="'+b+'"/><path d="M62,47 L53,45 L54,51 L62,50 Z" fill="'+b+'"/><rect x="48.5" y="33" width="3" height="11" fill="'+b+'"/><path d="M42.5,36 l2,7" stroke="'+b+'" stroke-width="2.4" stroke-linecap="round"/><path d="M57.5,36 l-2,7" stroke="'+b+'" stroke-width="2.4" stroke-linecap="round"/><path d="M45,57 L55,57 L50,63 Z" fill="'+b+'"/><path d="M50,63 L50,67 M43,66 L50,64 M57,66 L50,64" stroke="'+b+'" stroke-width="1.8" stroke-linecap="round"/>',
+ 'Журавль':b=>'<ellipse cx="45" cy="59" rx="14" ry="9" fill="#f0c25a"/><path d="M50,53 Q39,41 46,30 Q48,25 53,28" fill="none" stroke="#f0c25a" stroke-width="5" stroke-linecap="round"/><path d="M52,27 L63,25 L52,33 Z" fill="#f0c25a"/><circle cx="50.5" cy="29.5" r="1.6" fill="'+b+'"/><path d="M42,67 L40,75 M49,68 L49,76" stroke="#f0c25a" stroke-width="2.2" stroke-linecap="round"/>',
+ 'Обезьяна':b=>'<circle cx="33" cy="44" r="8.5" fill="#f0c25a"/><circle cx="67" cy="44" r="8.5" fill="#f0c25a"/><circle cx="33" cy="44" r="4" fill="'+b+'"/><circle cx="67" cy="44" r="4" fill="'+b+'"/><path d="M35,38 Q50,28 65,38 Q71,49 64,61 Q50,71 36,61 Q29,49 35,38 Z" fill="#f0c25a"/><path d="M41,52 Q50,46 59,52 Q61,63 50,65 Q39,63 41,52 Z" fill="'+b+'"/><circle cx="44" cy="46" r="2.6" fill="'+b+'"/><circle cx="56" cy="46" r="2.6" fill="'+b+'"/>',
+ 'Змея':b=>'<path d="M40,71 Q60,65 47,52 Q35,42 52,34 Q61,30 56,23" fill="none" stroke="#f0c25a" stroke-width="6" stroke-linecap="round"/><path d="M56,23 L49,17 L63,19 L59,28 Z" fill="#f0c25a"/><circle cx="55" cy="22" r="1.4" fill="'+b+'"/><path d="M58,17 L60,12 M60,17 L64,13" stroke="#f0c25a" stroke-width="1.5" stroke-linecap="round"/>',
+ 'Богомол':b=>'<path d="M50,29 L43,40 L57,40 Z" fill="#f0c25a"/><circle cx="46" cy="35" r="1.7" fill="'+b+'"/><circle cx="54" cy="35" r="1.7" fill="'+b+'"/><path d="M48,29 L44,22 M52,29 L56,22" stroke="#f0c25a" stroke-width="1.7" stroke-linecap="round"/><path d="M50,40 L50,67" stroke="#f0c25a" stroke-width="5" stroke-linecap="round"/><path d="M50,47 Q35,45 33,55 Q32,61 40,59" fill="none" stroke="#f0c25a" stroke-width="3.6" stroke-linecap="round"/><path d="M50,47 Q65,45 67,55 Q68,61 60,59" fill="none" stroke="#f0c25a" stroke-width="3.6" stroke-linecap="round"/><path d="M50,59 L43,67 M50,63 L57,71" stroke="#f0c25a" stroke-width="2.2" stroke-linecap="round"/>'
+};
+const EMB_BG={'Дракон':['#0e3b34','#06201c'],'Тигр':['#3d1216','#1a0608'],'Журавль':['#15234a','#0a1330'],'Обезьяна':['#3a2a10','#1a1206'],'Змея':['#2a1340','#140822'],'Богомол':['#14301a','#07180c']};
+function posEmblem(pos){const a=posAnimal(pos),g=EMB_GLYPH[a],bg=EMB_BG[a];if(!g)return avatarHTML('alex');
+ return '<svg viewBox="0 0 100 100" width="100%" height="100%"><defs><radialGradient id="pe'+a+'" cx=".5" cy=".42" r=".75"><stop offset="0" stop-color="'+bg[0]+'"/><stop offset="1" stop-color="'+bg[1]+'"/></radialGradient></defs><circle cx="50" cy="50" r="48" fill="url(#pe'+a+')" stroke="#e8b44a" stroke-width="3"/><circle cx="50" cy="50" r="41.5" fill="none" stroke="#e8b44a" stroke-width="1" opacity=".4"/>'+g(bg[1])+'</svg>';
+}
 function rfiRange(pos){return RFI[pos]||(pos==='LJ'?RFI.HJ:RFI.UTG);}
 function rfiPct(pos){return Math.round(comboCount(rfiRange(pos))/1326*100);}
 function rfiOpeners(N){return (TABLE_SEATS[N]||TABLE_SEATS[6]).filter(p=>p!=='BB');}
