@@ -588,7 +588,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;b
         <div class="mem-live" id="memLive"></div>
         <div class="mem-result" id="memResult"></div>
       </div>
-      <div class="mem-actions"><button class="clear" onclick="memClear()">Очистить</button><button class="reveal" onclick="memReveal()">Показать GTO</button><button class="check" onclick="memCheck()">Проверить</button><button class="check" id="memProceed" style="display:none;flex-basis:100%;background:linear-gradient(180deg,#e0a532,#c2841d)" onclick="careerDrawDone()">К раздачам ×20 ›</button></div>
+      <div class="mem-actions"><button class="clear" onclick="memClear()">Очистить</button><button class="reveal" onclick="memReveal()">Показать GTO</button><button class="check" onclick="memCheck()">Проверить</button><button class="check" id="memSaveCustom" style="background:linear-gradient(180deg,#34d17a,#1f9d5a);color:#062012" onclick="saveCustomRange()">💾 Свой</button><button class="check" id="memProceed" style="display:none;flex-basis:100%;background:linear-gradient(180deg,#e0a532,#c2841d)" onclick="careerDrawDone()">К раздачам ×20 ›</button></div>
     </div>
 
     <div class="screen" id="screen-node">
@@ -829,10 +829,10 @@ const VS3_RAW=[
 ].map(m=>({...m,fbS:buildRange(m.fb),clS:buildRange(m.cl)}));
 
 /* ===== PROFILE ===== */
-const MODE_NAMES={rfi:'Preflop RFI',vsopen:'vs Open',vs3:'vs 3-бет',postflop:'Postflop',potodds:'Pot Odds',memorize:'Range Trainer',mixed:'Микс'};
+const MODE_NAMES={rfi:'Preflop RFI',vsopen:'vs Open',vs3:'vs 3-бет',postflop:'Postflop',potodds:'Pot Odds',memorize:'Range Trainer',mixed:'Микс',custom:'Свой диапазон'};
 let profile=loadProfile();
 function loadProfile(){let p={};try{p=JSON.parse(localStorage.getItem('pf_profile_v2'))||{};}catch(e){}
-  const o=Object.assign({rating:1000,xp:0,hands:0,correct:0,streak:0,bestStreak:0,byMode:{},byConcept:{},career:{stake:0,stars:{}},achievements:[],mistakes:[],lastDaily:null,dailyStreak:0,quests:null,surBest:0,name:'Игрок',avatar:'alex',onboarded:false,coins:0,owned:['alex'],ownedThemes:['green'],theme:'green',soundOn:true,hapticsOn:true,lessonsRead:[]},p);
+  const o=Object.assign({rating:1000,xp:0,hands:0,correct:0,streak:0,bestStreak:0,byMode:{},byConcept:{},career:{stake:0,stars:{}},achievements:[],mistakes:[],lastDaily:null,dailyStreak:0,quests:null,surBest:0,name:'Игрок',avatar:'alex',onboarded:false,coins:0,owned:['alex'],ownedThemes:['green'],theme:'green',soundOn:true,hapticsOn:true,lessonsRead:[],customRanges:[]},p);
   if(!CHAR_BY_ID[o.avatar])o.avatar='alex';
   o.owned=(o.owned||[]).filter(x=>CHAR_BY_ID[x]);if(!o.owned.includes(o.avatar))o.owned.push(o.avatar);
   o.career=o.career||{};if(typeof o.career.node!=='number')o.career.node=0;o.career.stars=o.career.stars||{};
@@ -880,6 +880,7 @@ const MODES_META=[
   {key:'postflop',ic:'🃏',nm:'Postflop',ds:'Линии на флопе и тёрне'},
   {key:'potodds',ic:'🧮',nm:'Pot Odds & EV',ds:'Шансы банка и эквити'},
   {key:'memorize',ic:'🧠',nm:'Range Trainer',ds:'Построй диапазон на сетке'},
+  {key:'custom',ic:'🛠️',nm:'Мои диапазоны',ds:'Создай свой ренж и тренируй по нему'},
   {key:'review',ic:'🔁',nm:'Работа над ошибками',ds:'Повтор сложных спотов'}
 ];
 function renderHome(){
@@ -896,7 +897,7 @@ function renderHome(){
     const bm=profile.byMode[m.key==='review'?'mixed':m.key];const acc=bm&&bm.played?Math.round(bm.correct/bm.played*100)+'%':'—';
     const isReview=m.key==='review';const mistakes=profile.mistakes.length;
     const el=document.createElement('div');el.className='mode'+(isReview&&!mistakes?' locked':'');
-    el.onclick=()=>{if(isReview){if(!mistakes){toast('Ошибок нет — сыграй и возвращайся');return;}startReview();}else if(m.key==='memorize')openMemorize();else if(['rfi','vsopen','vs3'].includes(m.key))chooseMode(m.key);else startDrill(m.key);};
+    el.onclick=()=>{if(isReview){if(!mistakes){toast('Ошибок нет — сыграй и возвращайся');return;}startReview();}else if(m.key==='custom')openCustom();else if(m.key==='memorize')openMemorize();else if(['rfi','vsopen','vs3'].includes(m.key))chooseMode(m.key);else startDrill(m.key);};
     el.innerHTML='<div class="ic">'+m.ic+'</div><div class="tx"><div class="nm">'+m.nm+'</div><div class="ds">'+m.ds+'</div></div>'+
       (isReview?(mistakes?'<div class="badge">'+mistakes+'</div><div class="go">›</div>':'<div class="go">🔒</div>'):'<div class="acc">'+acc+'<small>точность</small></div><div class="go">›</div>');
     wrap.appendChild(el);
@@ -1293,6 +1294,45 @@ function chooseMode(key){
 function startPick(key,pos){$('pickMask').classList.remove('show');startDrill(key,pos||undefined);}
 function startPickSpot(key,pos,opener){$('pickMask').classList.remove('show');startDrill(key,pos||undefined,opener||undefined);}
 function closePick(e){if(e.target.id==='pickMask')$('pickMask').classList.remove('show');}
+/* ===== CUSTOM RANGES — свои диапазоны ===== */
+function saveCustomRange(){
+  if(memMode!=='rfi'){toast('Свой ренж строится во вкладке «Открытие» — переключи её');return;}
+  if(!memSel.size){toast('Сначала отметь руки на сетке');return;}
+  const nm=(prompt('Название диапазона:','Мой ренж '+((profile.customRanges||[]).length+1))||'').trim();
+  if(!nm)return;
+  profile.customRanges=profile.customRanges||[];
+  profile.customRanges.push({name:nm.slice(0,24),pos:memPos,combos:[...memSel]});
+  saveProfile();toast('Сохранён: '+nm.slice(0,24));
+}
+function openCustom(){
+  const list=profile.customRanges||[];
+  let h='<h3>🛠️ Мои диапазоны</h3><div class="psub">Создай свой ренж и тренируй по нему</div>';
+  if(!list.length){
+    h+='<div class="psub" style="margin:4px 0 14px;line-height:1.4">Пока пусто. Жми «Создать» → построй ренж на сетке → кнопка «💾 Свой».</div>';
+  }else{
+    h+='<div style="display:flex;flex-direction:column;gap:8px;margin-bottom:12px">';
+    list.forEach((r,i)=>{const pct=Math.round(comboCount(new Set(r.combos))/1326*100);const nm=(r.name||'ренж').replace(/[<>"]/g,'');
+      h+='<div style="display:flex;gap:8px;align-items:stretch"><div class="pickbtn" style="flex:1;text-align:left;display:flex;align-items:center" onclick="playCustom('+i+')">▶ '+nm+' <span style="color:var(--muted);font-weight:600;margin-left:6px">· '+r.pos+' · '+pct+'%</span></div><div class="pickbtn" style="flex:0 0 50px;background:#5a1f28;border-color:#7a2f3a" onclick="delCustom('+i+')">✕</div></div>';
+    });
+    h+='</div>';
+  }
+  h+='<div class="pickgrid"><div class="pickbtn rand" onclick="document.getElementById(\'pickMask\').classList.remove(\'show\');openMemorize();toast(\'Построй ренж и жми «💾 Свой»\')">➕ Создать новый</div></div>';
+  $('pickSheet').innerHTML=h;$('pickMask').classList.add('show');
+}
+function delCustom(i){if(!confirm('Удалить диапазон?'))return;profile.customRanges.splice(i,1);saveProfile();openCustom();}
+function playCustom(i){const r=(profile.customRanges||[])[i];if(!r)return;$('pickMask').classList.remove('show');startCustomDrill(r);}
+function genCustom(range){const set=new Set(range.combos);const hand=dealHand();const inR=set.has(hand.code);
+  return {view:'preflop',mode:'custom',concept:'Свой диапазон',pos:range.pos||'BTN',opener:null,hand,oppR:1050,tableSize:6,
+    prompt:'<b>'+(range.name||'').replace(/[<>]/g,'')+'</b> · '+range.pos+'. '+hand.code+' — входишь или фолд?',
+    actions:[{key:'fold',label:'FOLD',cls:'fold'},{key:'raise',label:'RAISE',cls:'raise'}],
+    grade(key){const ca=inR?'raise':'fold';const ok=key===ca;
+      this.coach=ok?(inR?hand.code+' в твоём диапазоне — входим.':hand.code+' вне диапазона — фолд, верно.'):(inR?hand.code+' ВХОДИТ в твой диапазон, а ты сбросил.':hand.code+' НЕ в твоём диапазоне — лишний вход.');
+      return {correct:ok,body:gridHTML({in:set},hand.code)};}};
+}
+function startCustomDrill(range){
+  session={type:'drill',modeKey:'custom',gen:()=>genCustom(range),n:12,idx:0,results:[],combo:0,maxCombo:0,lives:99,livesMax:0,score:0};
+  beginSession('Свой диапазон · '+(range.name||'').slice(0,20));
+}
 function startDaily(){
   session={type:'daily',modeKey:'mixed',gen:()=>genMixed(3),n:8,idx:0,results:[],combo:0,maxCombo:0,lives:99,livesMax:0,score:0};
   beginSession('⚡ Daily Fight');
