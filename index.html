@@ -1295,14 +1295,27 @@ function startPick(key,pos){$('pickMask').classList.remove('show');startDrill(ke
 function startPickSpot(key,pos,opener){$('pickMask').classList.remove('show');startDrill(key,pos||undefined,opener||undefined);}
 function closePick(e){if(e.target.id==='pickMask')$('pickMask').classList.remove('show');}
 /* ===== CUSTOM RANGES — свои диапазоны ===== */
+let _cstPending=null;
 function saveCustomRange(){
   if(memMode!=='rfi'){toast('Свой ренж строится во вкладке «Открытие» — переключи её');return;}
   if(!memSel.size){toast('Сначала отметь руки на сетке');return;}
-  const nm=(prompt('Название диапазона:','Мой ренж '+((profile.customRanges||[]).length+1))||'').trim();
-  if(!nm)return;
+  _cstPending={combos:[...memSel],pos:memPos};
+  const pct=Math.round(comboCount(memSel)/1326*100);
+  let h='<h3>💾 Сохранить диапазон</h3><div class="psub">'+memPos+' · '+pct+'% · '+memSel.size+' комбо</div>';
+  h+='<input id="cstName" class="nameinp" maxlength="24" placeholder="Название" value="Ренж '+((profile.customRanges||[]).length+1)+'" style="width:100%;margin:6px 0 12px">';
+  h+='<div class="pickgrid"><div class="pickbtn rand" onclick="commitCustomRange()">Сохранить</div></div>';
+  $('pickSheet').innerHTML=h;$('pickMask').classList.add('show');
+  setTimeout(function(){var i=document.getElementById('cstName');if(i){i.focus();i.select();}},60);
+}
+function commitCustomRange(){
+  if(!_cstPending)return;
+  const inp=document.getElementById('cstName');
+  let nm=((inp&&inp.value)||'').trim();if(!nm)nm='Ренж '+((profile.customRanges||[]).length+1);
   profile.customRanges=profile.customRanges||[];
-  profile.customRanges.push({name:nm.slice(0,24),pos:memPos,combos:[...memSel]});
-  saveProfile();toast('Сохранён: '+nm.slice(0,24));
+  profile.customRanges.push({name:nm.slice(0,24),pos:_cstPending.pos,combos:_cstPending.combos});
+  saveProfile();_cstPending=null;
+  $('pickMask').classList.remove('show');
+  toast('Сохранён: '+nm.slice(0,24));
 }
 function openCustom(){
   const list=profile.customRanges||[];
