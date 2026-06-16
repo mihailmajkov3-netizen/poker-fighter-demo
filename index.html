@@ -1296,13 +1296,22 @@ function startPickSpot(key,pos,opener){$('pickMask').classList.remove('show');st
 function closePick(e){if(e.target.id==='pickMask')$('pickMask').classList.remove('show');}
 /* ===== CUSTOM RANGES — свои диапазоны ===== */
 let _cstPending=null;
+function cstPct(r){const n=(r.mode&&r.mode!=='rfi')?(comboCount(new Set(r.three||[]))+comboCount(new Set(r.call||[]))):comboCount(new Set(r.combos||[]));return Math.round(n/1326*100);}
+function cstCtx(r){if(!r.mode||r.mode==='rfi')return (r.pos||'?')+' open';return r.hero+(r.mode==='vs3'?' vs '+r.opener+' 3б':' vs '+r.opener);}
 function saveCustomRange(){
-  if(memMode!=='rfi'){toast('Свой ренж строится во вкладке «Открытие» — переключи её');return;}
-  if(!memSel.size){toast('Сначала отметь руки на сетке');return;}
-  _cstPending={combos:[...memSel],pos:memPos};
-  const pct=Math.round(comboCount(memSel)/1326*100);
-  let h='<h3>💾 Сохранить диапазон</h3><div class="psub">'+memPos+' · '+pct+'% · '+memSel.size+' комбо</div>';
-  h+='<input id="cstName" class="nameinp" maxlength="24" placeholder="Название" value="Ренж '+((profile.customRanges||[]).length+1)+'" style="width:100%;margin:6px 0 12px">';
+  let p;
+  if(memMode==='rfi'){
+    if(!memSel.size){toast('Сначала отметь руки на сетке');return;}
+    p={mode:'rfi',pos:memPos,combos:[...memSel]};
+  }else{
+    if(!mem3.size&&!memCall.size){toast('Раскрась 3-бет/колл на сетке');return;}
+    const m=memData();
+    p={mode:(memMode==='vs3'?'vs3':'vsopen'),hero:m.hero,opener:(memMode==='vs3'?m.threebettor:m.opener),three:[...mem3],call:[...memCall]};
+  }
+  _cstPending=p;
+  const ctx=cstCtx(p),pct=cstPct(p);
+  let h='<h3>💾 Сохранить диапазон</h3><div class="psub">'+ctx+' · '+pct+'% · '+(p.mode==='rfi'?p.combos.length:(p.three.length+p.call.length))+' комбо</div>';
+  h+='<input id="cstName" class="nameinp" maxlength="24" placeholder="Название" value="'+ctx.replace(/"/g,'')+'" style="width:100%;margin:6px 0 12px">';
   h+='<div class="pickgrid"><div class="pickbtn rand" onclick="commitCustomRange()">Сохранить</div></div>';
   $('pickSheet').innerHTML=h;$('pickMask').classList.add('show');
   setTimeout(function(){var i=document.getElementById('cstName');if(i){i.focus();i.select();}},60);
@@ -1311,36 +1320,50 @@ function commitCustomRange(){
   if(!_cstPending)return;
   const inp=document.getElementById('cstName');
   let nm=((inp&&inp.value)||'').trim();if(!nm)nm='Ренж '+((profile.customRanges||[]).length+1);
+  _cstPending.name=nm.slice(0,24);
   profile.customRanges=profile.customRanges||[];
-  profile.customRanges.push({name:nm.slice(0,24),pos:_cstPending.pos,combos:_cstPending.combos});
-  saveProfile();_cstPending=null;
+  profile.customRanges.push(_cstPending);
+  saveProfile();const sv=_cstPending.name;_cstPending=null;
   $('pickMask').classList.remove('show');
-  toast('Сохранён: '+nm.slice(0,24));
+  toast('Сохранён: '+sv);
 }
 function openCustom(){
   const list=profile.customRanges||[];
-  let h='<h3>🛠️ Мои диапазоны</h3><div class="psub">Создай свой ренж и тренируй по нему</div>';
+  let h='<h3>🛠️ Мои диапазоны</h3><div class="psub">Создай свой ренж (открытие / vs опен / vs 3-бет) и тренируй по нему</div>';
   if(!list.length){
-    h+='<div class="psub" style="margin:4px 0 14px;line-height:1.4">Пока пусто. Жми «Создать» → построй ренж на сетке → кнопка «💾 Свой».</div>';
+    h+='<div class="psub" style="margin:4px 0 14px;line-height:1.4">Пока пусто. Жми «Создать» → выбери вкладку и раскрась сетку → кнопка «💾 Свой».</div>';
   }else{
     h+='<div style="display:flex;flex-direction:column;gap:8px;margin-bottom:12px">';
-    list.forEach((r,i)=>{const pct=Math.round(comboCount(new Set(r.combos))/1326*100);const nm=(r.name||'ренж').replace(/[<>"]/g,'');
-      h+='<div style="display:flex;gap:8px;align-items:stretch"><div class="pickbtn" style="flex:1;text-align:left;display:flex;align-items:center" onclick="playCustom('+i+')">▶ '+nm+' <span style="color:var(--muted);font-weight:600;margin-left:6px">· '+r.pos+' · '+pct+'%</span></div><div class="pickbtn" style="flex:0 0 50px;background:#5a1f28;border-color:#7a2f3a" onclick="delCustom('+i+')">✕</div></div>';
+    list.forEach((r,i)=>{const pct=cstPct(r);const nm=(r.name||'ренж').replace(/[<>"]/g,'');
+      h+='<div style="display:flex;gap:8px;align-items:stretch"><div class="pickbtn" style="flex:1;text-align:left;display:flex;align-items:center" onclick="playCustom('+i+')">▶ '+nm+' <span style="color:var(--muted);font-weight:600;margin-left:6px">· '+cstCtx(r)+' · '+pct+'%</span></div><div class="pickbtn" style="flex:0 0 50px;background:#5a1f28;border-color:#7a2f3a" onclick="delCustom('+i+')">✕</div></div>';
     });
     h+='</div>';
   }
-  h+='<div class="pickgrid"><div class="pickbtn rand" onclick="document.getElementById(\'pickMask\').classList.remove(\'show\');openMemorize();toast(\'Построй ренж и жми «💾 Свой»\')">➕ Создать новый</div></div>';
+  h+='<div class="pickgrid"><div class="pickbtn rand" onclick="document.getElementById(\'pickMask\').classList.remove(\'show\');openMemorize();toast(\'Выбери вкладку, раскрась сетку и жми «💾 Свой»\')">➕ Создать новый</div></div>';
   $('pickSheet').innerHTML=h;$('pickMask').classList.add('show');
 }
 function delCustom(i){if(!confirm('Удалить диапазон?'))return;profile.customRanges.splice(i,1);saveProfile();openCustom();}
 function playCustom(i){const r=(profile.customRanges||[])[i];if(!r)return;$('pickMask').classList.remove('show');startCustomDrill(r);}
-function genCustom(range){const set=new Set(range.combos);const hand=dealHand();const inR=set.has(hand.code);
-  return {view:'preflop',mode:'custom',concept:'Свой диапазон',pos:range.pos||'BTN',opener:null,hand,oppR:1050,tableSize:6,
-    prompt:'<b>'+(range.name||'').replace(/[<>]/g,'')+'</b> · '+range.pos+'. '+hand.code+' — входишь или фолд?',
-    actions:[{key:'fold',label:'FOLD',cls:'fold'},{key:'raise',label:'RAISE',cls:'raise'}],
-    grade(key){const ca=inR?'raise':'fold';const ok=key===ca;
-      this.coach=ok?(inR?hand.code+' в твоём диапазоне — входим.':hand.code+' вне диапазона — фолд, верно.'):(inR?hand.code+' ВХОДИТ в твой диапазон, а ты сбросил.':hand.code+' НЕ в твоём диапазоне — лишний вход.');
-      return {correct:ok,body:gridHTML({in:set},hand.code)};}};
+function genCustom(range){const nm=(range.name||'').replace(/[<>]/g,'');const hand=dealHand();
+  if(!range.mode||range.mode==='rfi'){
+    const set=new Set(range.combos||[]);const inR=set.has(hand.code);
+    return {view:'preflop',mode:'custom',concept:'Свой диапазон',pos:range.pos||'BTN',opener:null,hand,oppR:1050,tableSize:6,
+      prompt:'<b>'+nm+'</b> · '+(range.pos||'')+'. '+hand.code+' — входишь или фолд?',
+      actions:[{key:'fold',label:'FOLD',cls:'fold'},{key:'raise',label:'RAISE',cls:'raise'}],
+      grade(key){const ca=inR?'raise':'fold';const ok=key===ca;
+        this.coach=ok?(inR?hand.code+' в твоём диапазоне — входим.':hand.code+' вне диапазона — фолд, верно.'):(inR?hand.code+' ВХОДИТ в твой диапазон, а ты сбросил.':hand.code+' НЕ в твоём диапазоне — лишний вход.');
+        return {correct:ok,body:gridHTML({in:set},hand.code)};}};
+  }
+  const threeS=new Set(range.three||[]),callS=new Set(range.call||[]);
+  const is3=range.mode==='vs3',rl=is3?'4-бет':'3-бет',rkey=is3?'fourbet':'threebet';
+  let ca='fold';if(threeS.has(hand.code))ca=rkey;else if(callS.has(hand.code))ca='call';
+  const nmm={call:'колл',fold:'фолд'};nmm[rkey]=rl;
+  return {view:'preflop',mode:'custom',concept:'Свой диапазон',pos:range.hero,opener:range.opener,is3bet:is3,hand,oppR:1050,tableSize:6,
+    prompt:'<b>'+nm+'</b> · '+range.opener+(is3?' 3-бет':' открыл')+', ты '+range.hero+'. '+hand.code+'?',
+    actions:[{key:'fold',label:'FOLD',cls:'fold'},{key:'call',label:'CALL',cls:'call'},{key:rkey,label:rl.toUpperCase(),cls:'threebet'}],
+    grade(key){const ok=key===ca;const meh=!ok&&((ca==='call'&&key===rkey)||(ca===rkey&&key==='call'));
+      this.coach=hand.code+' → по твоему ренжу '+nmm[ca]+'.'+(ok?' Верно.':' Ты выбрал '+(nmm[key]||key)+'.');
+      return {correct:ok,meh,body:gridHTML({three:threeS,call:callS},hand.code,rl)};}};
 }
 function startCustomDrill(range){
   session={type:'drill',modeKey:'custom',gen:()=>genCustom(range),n:12,idx:0,results:[],combo:0,maxCombo:0,lives:99,livesMax:0,score:0};
