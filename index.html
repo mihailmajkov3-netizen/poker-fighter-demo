@@ -51,6 +51,23 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;b
 .phead .chips{display:flex;gap:8px;margin-top:11px}
 .phead .chip{flex:1;background:#0e1640;border-radius:10px;padding:7px;text-align:center}
 .phead .chip .v{font-weight:800;font-size:14px}.phead .chip .l{font-size:9px;color:var(--muted);text-transform:uppercase;margin-top:2px}
+.hstats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:0 14px 12px}
+.statcard{position:relative;background:linear-gradient(160deg,#18225a,#0d1437);border:1px solid var(--line);border-radius:16px;padding:11px 13px 7px;overflow:hidden;box-shadow:0 6px 22px rgba(20,16,70,.45)}
+.statcard .glow{position:absolute;right:-14px;top:-14px;width:52px;height:52px;border-radius:50%;background:var(--sc,#4f8cff);filter:blur(24px);opacity:.4;pointer-events:none}
+.statcard .sv{position:relative;font-size:23px;font-weight:900;line-height:1.05;color:#fff}
+.statcard .sl{position:relative;font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin-top:3px}
+.statcard .spk{display:block;width:100%;height:26px;margin-top:5px}
+.statcard .spk polyline{stroke:var(--sc,#4f8cff)}
+.statcard .spk .fillz{fill:var(--sc,#4f8cff);opacity:.14}
+.phead{box-shadow:0 0 0 1px rgba(123,92,255,.18),0 8px 26px rgba(30,24,100,.4)}
+.ctas{display:flex;flex-direction:column}
+@media (min-width:680px){
+  #screen-home>.body{max-width:860px;margin:0 auto;width:100%}
+  .hstats{grid-template-columns:repeat(4,1fr)}
+  .ctas{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 14px}
+  .ctas .bigcta,.ctas .daily,.ctas .cashcta,.ctas .handcta{margin:0}
+  .modes{display:grid;grid-template-columns:1fr 1fr}
+}
 
 .bigcta{margin:0 14px 10px;padding:16px;border-radius:18px;cursor:pointer;background:linear-gradient(135deg,#e0a532,#c2841d);box-shadow:0 8px 22px rgba(224,165,50,.3);position:relative;color:#241a00}
 .bigcta:active{transform:scale(.985)}
@@ -550,12 +567,19 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;b
         <div class="phead">
           <div class="row1"><div class="ava" id="hAva">🦈</div><div class="who"><div class="nm" id="hName">Ты</div><div class="tier" id="hTier">Goldfish</div></div><div class="rt"><div class="v" id="hRating">1000</div><div class="l">Rating</div></div></div>
           <div class="xpwrap"><div class="xprow"><span id="hLevel">Уровень 1</span><span id="hXp">0 / 600 XP</span></div><div class="xp"><i id="hXpFill" style="width:0%"></i></div></div>
-          <div class="chips"><div class="chip"><div class="v" id="hHands">0</div><div class="l">Рук</div></div><div class="chip"><div class="v" id="hAcc">—</div><div class="l">Точность</div></div><div class="chip"><div class="v" id="hStreak">0🔥</div><div class="l">Рекорд</div></div></div>
         </div>
+        <div class="hstats">
+          <div class="statcard" style="--sc:#4f8cff"><div class="glow"></div><div class="sv" id="hHands">0</div><div class="sl">Рук сыграно</div><svg class="spk" viewBox="0 0 100 28" preserveAspectRatio="none"><polygon class="fillz" points="0,28 0,22 18,19 36,21 54,13 72,15 90,7 100,9 100,28"/><polyline points="0,22 18,19 36,21 54,13 72,15 90,7 100,9" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div class="statcard" style="--sc:#34d17a"><div class="glow"></div><div class="sv" id="hAcc">—</div><div class="sl">Точность</div><svg class="spk" viewBox="0 0 100 28" preserveAspectRatio="none"><polygon class="fillz" points="0,28 0,18 18,20 36,14 54,16 72,10 90,12 100,6 100,28"/><polyline points="0,18 18,20 36,14 54,16 72,10 90,12 100,6" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div class="statcard" style="--sc:#b06bff"><div class="glow"></div><div class="sv" id="hStreak">0</div><div class="sl">Рекорд 🔥</div><svg class="spk" viewBox="0 0 100 28" preserveAspectRatio="none"><polygon class="fillz" points="0,28 0,24 18,16 36,18 54,9 72,15 90,8 100,11 100,28"/><polyline points="0,24 18,16 36,18 54,9 72,15 90,8 100,11" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div class="statcard" style="--sc:#e0a532"><div class="glow"></div><div class="sv" id="hDays">0</div><div class="sl">Дней подряд</div><svg class="spk" viewBox="0 0 100 28" preserveAspectRatio="none"><polygon class="fillz" points="0,28 0,20 18,17 36,19 54,12 72,14 90,9 100,5 100,28"/><polyline points="0,20 18,17 36,19 54,12 72,14 90,9 100,5" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="ctas">
         <div class="bigcta" onclick="nav('career')"><div class="tag">🪜 КАРЬЕРА</div><h3 id="ctaStake">NL2 · Микролимит</h3><small id="ctaSub">Поднимайся по лимитам</small><div class="arrow">›</div></div>
         <div class="daily" onclick="startDaily()"><div class="tag">⚡ ЕЖЕДНЕВНЫЙ ВЫЗОВ</div><h3>Daily Fight</h3><small id="dailySub">8 спотов · бонус к рейтингу</small><div class="arrow">›</div></div>
         <div class="cashcta" onclick="chooseCash()"><div class="tag">💵 КЭШ-СТОЛ · 5–9 MAX</div><h3>Сессия 100bb</h3><small>Выбери размер стола, веди стек в плюс</small><div class="arrow">›</div></div>
         <div class="handcta" onclick="startHand()"><div class="tag">🎬 СЫГРАЙ РУКУ ЦЕЛИКОМ</div><h3>Хедз-ап розыгрыш</h3><small>Префлоп → флоп → тёрн → ривер → вскрытие</small><div class="arrow">›</div></div>
+        </div>
         <div class="quests" onclick="nav('quests')"><div class="qh"><span>🎯 Задания дня</span><span class="badge" id="qBadge">0/3</span></div><div id="qMini" style="margin-top:8px"></div></div>
         <div class="section-h">Свободная тренировка</div>
         <div class="modes" id="modeList"></div>
@@ -933,7 +957,7 @@ function renderHome(){
   $('hTier').textContent=tierName(profile.rating);
   const lvl=levelOf(profile.xp),xpIn=profile.xp%600;
   $('hLevel').textContent='Уровень '+lvl;$('hXp').textContent=xpIn+' / 600 XP';$('hXpFill').style.width=(xpIn/600*100)+'%';
-  $('hHands').textContent=profile.hands;$('hAcc').textContent=profile.hands?Math.round(profile.correct/profile.hands*100)+'%':'—';$('hStreak').textContent=profile.bestStreak+'🔥';
+  $('hHands').textContent=profile.hands;$('hAcc').textContent=profile.hands?Math.round(profile.correct/profile.hands*100)+'%':'—';$('hStreak').textContent=profile.bestStreak;$('hDays').textContent=(profile.dailyStreak||0);
   const cdone=profile.career.node>=CAREER.length,cn=Math.min(profile.career.node,CAREER.length-1),cnd=CAREER[cn];
   $('ctaStake').textContent=cdone?'Дорожка пройдена 🏆':(cnd.ic+' '+cnd.nm);
   $('ctaSub').textContent=cdone?'Вся база освоена':'Урок '+(cn+1)+'/'+CAREER.length+' — жми, чтобы продолжить';
