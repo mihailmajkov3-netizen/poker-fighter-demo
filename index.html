@@ -120,7 +120,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;b
 .ni-ctx{font-size:12.5px;color:var(--muted);line-height:1.45}.ni-ctx b{color:var(--gold)}
 .coachcard{display:flex;gap:12px;align-items:center;background:linear-gradient(135deg,#26307e,#171f50);border:1px solid var(--line);border-radius:16px;padding:12px;margin:4px 2px 8px}
 .cc-av{width:54px;height:54px;border-radius:50%;overflow:hidden;border:2px solid var(--gold);flex:0 0 auto}
-.cface{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:26px;background:radial-gradient(circle at 50% 35%,#2c3675,#131c46)}
+.cface{width:100%;height:100%;object-fit:cover;display:block}
 .cc-tx{flex:1;min-width:0}
 .cc-rank{font-weight:800;font-size:16px}.cc-rank .cc-prog{font-size:11px;color:var(--muted);font-weight:700;margin-left:4px}
 .cc-sub{font-size:11px;color:var(--muted);margin:3px 0 7px}
@@ -1737,7 +1737,7 @@ function openNode(i){
   if(nd.kind==='rfi'){html+='<div class="ni-h">Диапазон открытия '+nd.pos+' · '+RFI_PCT[nd.pos]+'%</div>'+gridHTML({in:RFI[nd.pos]},null);}
   else html+='<div class="ni-icon">'+nd.ic+'</div>';
   html+='<p class="ni-text">'+nd.learn+'</p>';
-  if(CAREER_COACH[nd.id])html+='<div class="ni-coach"><div class="ni-cav"><div class="cface">🥋</div></div><div class="ni-ctx"><b>Тренер Шифу</b><br>'+CAREER_COACH[nd.id]+'</div></div>';
+  if(CAREER_COACH[nd.id])html+='<div class="ni-coach"><div class="ni-cav"><img class="cface" src="emb/shifu.jpg" alt=""></div><div class="ni-ctx"><b>Тренер Шифу</b><br>'+CAREER_COACH[nd.id]+'</div></div>';
   const draw=nd.kind==='rfi';
   html+='<div class="ni-steps">'+(draw?'<span>1 · Нарисуй рендж 🎨</span><span>2 · Раздачи ×20 ⏱</span>':'<span>Раздачи ×20 ⏱</span>')+'</div>';
   $('nodeBody').innerHTML=html;
@@ -1884,7 +1884,7 @@ function renderLadder(){
   const belt=nx?Math.round((node-rank.min)/(nx.min-rank.min)*100):100;
   const sub=nx?('Ещё '+(nx.min-node)+' '+plural(nx.min-node,'узел','узла','узлов')+' до ранга «'+nx.ic+' '+nx.nm+'»'):'Высший ранг достигнут — ты Краш! 🏆';
   const cc=document.createElement('div');cc.className='coachcard';
-  cc.innerHTML='<div class="cc-av"><div class="cface">🥋</div></div><div class="cc-tx"><div class="cc-rank">'+rank.ic+' '+rank.nm+' <span class="cc-prog">'+Math.min(node,CAREER.length)+'/'+CAREER.length+'</span></div><div class="cc-sub">'+sub+'</div><div class="cc-belt"><i style="width:'+belt+'%"></i></div></div>';
+  cc.innerHTML='<div class="cc-av"><img class="cface" src="emb/shifu.jpg" alt=""></div><div class="cc-tx"><div class="cc-rank">'+rank.ic+' '+rank.nm+' <span class="cc-prog">'+Math.min(node,CAREER.length)+'/'+CAREER.length+'</span></div><div class="cc-sub">'+sub+'</div><div class="cc-belt"><i style="width:'+belt+'%"></i></div></div>';
   w.appendChild(cc);
   const hdr=document.createElement('div');hdr.className='phdr';
   hdr.innerHTML='<b>Тренер Шифу:</b> не прыгай через голову — знакомство → тренировка → экзамен на время ⏱';
