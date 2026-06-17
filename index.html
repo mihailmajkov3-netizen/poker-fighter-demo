@@ -264,6 +264,56 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;b
 .pcard b{font-size:25px;font-weight:800}
 .pcard span{font-size:18px;margin-top:3px}
 .pcard.red{color:#d62828}.pcard.blk{color:#1b1b22}
+.pt-intro{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 20px;gap:8px}
+.pt-emoji{font-size:46px}
+.pt-ttl{font-size:22px;font-weight:800;color:var(--txt)}
+.pt-sub{font-size:13px;color:var(--muted);line-height:1.55;max-width:330px}
+.pt-prev{font-size:13px;color:var(--gold);font-weight:700;margin-top:4px;line-height:1.5}
+.pt-start{margin-top:18px;border:none;border-radius:16px;padding:15px 32px;font-weight:800;font-size:16px;color:#fff;background:linear-gradient(180deg,#4f8cff,#3567d6);box-shadow:0 8px 22px rgba(79,140,255,.35);cursor:pointer}
+.pt-start:active{transform:scale(.97)}
+.pt-stage{flex:1;display:flex;flex-direction:column;justify-content:center;min-height:0;gap:12px}
+.pt-qmeta{display:flex;justify-content:space-between;align-items:center;font-size:13px;color:var(--muted);font-weight:700}
+.pt-cat{background:#1b2766;border:1px solid var(--line);border-radius:20px;padding:3px 12px;font-size:11px;color:#9fb4ff;text-transform:uppercase;letter-spacing:.5px}
+.pt-ctx{text-align:center;font-size:15px;line-height:1.5;color:var(--txt);font-weight:600;max-width:380px;margin:0 auto}
+.pt-pos{display:flex;flex-direction:column;align-items:center;gap:5px}
+.pt-emb{width:62px;height:62px;border-radius:50%;overflow:hidden;border:2px solid var(--gold)}
+.pt-emb img,.pt-emb svg{width:100%;height:100%;object-fit:cover;display:block}
+.pt-posname{font-size:12px;color:var(--muted);font-weight:700}
+.pt-actions{display:flex;gap:10px;justify-content:center;margin-top:6px;flex-wrap:wrap}
+.pt-actions button{flex:1;min-width:90px;max-width:150px;border:none;border-radius:14px;padding:15px 8px;font-weight:800;font-size:15px;color:#fff;cursor:pointer}
+.pt-actions button:active{transform:scale(.96)}
+.pt-a-fold{background:linear-gradient(180deg,#566077,#3a4258)}
+.pt-a-call{background:linear-gradient(180deg,#2f9d68,#1f7a4d)}
+.pt-a-raise{background:linear-gradient(180deg,#e0a532,#c2841d);color:#241a00}
+.pt-resultwrap{flex:1;overflow-y:auto;padding:6px 16px 20px}
+.pt-score{text-align:center;margin:8px 0 4px}
+.pt-score .big{font-size:48px;font-weight:900;line-height:1;color:var(--gold)}
+.pt-score .lbl{font-size:16px;font-weight:800;margin-top:4px}
+.pt-score .delta{font-size:13px;font-weight:700;margin-top:3px}
+.pt-cats{display:flex;flex-direction:column;gap:10px;margin:16px 0}
+.pt-catrow{display:flex;align-items:center;gap:10px}
+.pt-catrow .cn{width:80px;font-size:12px;color:var(--muted);font-weight:700;flex:0 0 auto}
+.pt-catbar{flex:1;height:18px;background:#0e1640;border-radius:9px;overflow:hidden;border:1px solid var(--line)}
+.pt-catbar i{display:block;height:100%;border-radius:9px;transition:width .6s ease}
+.pt-catrow .cv{width:42px;text-align:right;font-size:13px;font-weight:800;flex:0 0 auto}
+.pt-weak{background:#160e22;border:1px solid #3a2a52;border-radius:12px;padding:11px 13px;font-size:13px;color:#d9c7ee;line-height:1.5;margin-bottom:14px}
+.pt-weak b{color:#c79bff}
+.pt-review-h{font-size:12px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);font-weight:700;margin:6px 2px}
+.pt-rev{display:flex;align-items:center;gap:10px;background:#121a44;border:1px solid var(--line);border-radius:11px;padding:9px 11px;margin-bottom:7px}
+.pt-rev .okm{font-size:18px;flex:0 0 auto}
+.pt-rev .rh{flex:1;font-size:13px}.pt-rev .rh b{font-weight:800}
+.pt-rev .rh small{display:block;color:var(--muted);font-size:11px;margin-top:1px}
+.pt-rev .ra{font-size:11px;font-weight:700;text-align:right;flex:0 0 auto}
+.pt-rev .ra .good{color:#34d17a}.pt-rev .ra .bad{color:#ff6b6b}
+.pt-resbtns{display:flex;gap:10px;margin-top:14px}
+.pt-resbtns button{flex:1;border:none;border-radius:14px;padding:14px;font-weight:800;font-size:15px;cursor:pointer}
+.pt-resbtns .primary{background:linear-gradient(180deg,#4f8cff,#3567d6);color:#fff}
+.pt-resbtns .ghost{background:#1b2766;color:#cdd9ff;border:1px solid var(--line)}
+.pt-cta{margin:0 14px 12px;padding:14px 16px;border-radius:16px;cursor:pointer;background:linear-gradient(135deg,#3a2f7e,#241a4a);border:1px solid #4a3a8d;box-shadow:0 6px 18px rgba(80,50,160,.3);position:relative;display:flex;align-items:center;gap:12px}
+.pt-cta:active{transform:scale(.985)}
+.pt-cta .ic{font-size:26px;flex:0 0 auto}
+.pt-cta .tx{flex:1}.pt-cta .tx .nm{font-weight:800;font-size:15px;color:#fff}.pt-cta .tx .ds{font-size:12px;color:#c4b6e8;margin-top:2px}
+.pt-cta .arr{font-size:22px;color:#c4b6e8}
 .gs-emb{position:absolute;width:46%;aspect-ratio:1;opacity:.5;pointer-events:none;z-index:1;mix-blend-mode:screen}
 .gs-emb-att{left:-3%;bottom:-3%}.gs-emb-def{right:-3%;top:-3%}
 .gc{aspect-ratio:1;border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700;background:#1a2350;color:#5a6aa8;position:relative}
@@ -574,6 +624,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;b
           <div class="statcard" style="--sc:#b06bff"><div class="glow"></div><div class="sv" id="hStreak">0</div><div class="sl">Рекорд 🔥</div><svg class="spk" viewBox="0 0 100 28" preserveAspectRatio="none"><polygon class="fillz" points="0,28 0,24 18,16 36,18 54,9 72,15 90,8 100,11 100,28"/><polyline points="0,24 18,16 36,18 54,9 72,15 90,8 100,11" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
           <div class="statcard" style="--sc:#e0a532"><div class="glow"></div><div class="sv" id="hDays">0</div><div class="sl">Дней подряд</div><svg class="spk" viewBox="0 0 100 28" preserveAspectRatio="none"><polygon class="fillz" points="0,28 0,20 18,17 36,19 54,12 72,14 90,9 100,5 100,28"/><polyline points="0,20 18,17 36,19 54,12 72,14 90,9 100,5" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
         </div>
+        <div class="pt-cta" onclick="openPlacement()"><div class="ic">🎯</div><div class="tx"><div class="nm">Проверка префлоп-уровня</div><div class="ds" id="ptHomeDs">16 вопросов · узнай свой уровень</div></div><div class="arr">›</div></div>
         <div class="ctas">
         <div class="bigcta" onclick="nav('career')"><div class="tag">🪜 КАРЬЕРА</div><h3 id="ctaStake">NL2 · Микролимит</h3><small id="ctaSub">Поднимайся по лимитам</small><div class="arrow">›</div></div>
         <div class="daily" onclick="startDaily()"><div class="tag">⚡ ЕЖЕДНЕВНЫЙ ВЫЗОВ</div><h3>Daily Fight</h3><small id="dailySub">8 спотов · бонус к рейтингу</small><div class="arrow">›</div></div>
@@ -657,6 +708,30 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;b
         </div>
       </div>
       <div class="mem-actions"><button class="clear" onclick="nav('home')">Выйти</button><button class="check" id="fhAgain" style="display:none;background:linear-gradient(180deg,#e0a532,#c2841d);color:#241a06" onclick="openFindHand()">Ещё раз 🎯</button></div>
+    </div>
+
+    <div class="screen" id="screen-placement">
+      <div class="game-meta"><span class="hcount" id="ptHud">Тест</span><span class="mid">Проверка уровня</span><span class="x" onclick="nav('home')"><span class="ic">✕</span></span></div>
+      <div class="body" style="display:flex;flex-direction:column;min-height:0">
+        <div id="ptIntro" class="pt-intro">
+          <div class="pt-emoji">🎯</div>
+          <div class="pt-ttl">Проверка префлоп-уровня</div>
+          <div class="pt-sub">16 вопросов · RFI, vs Open, vs 3-бет · ~4 минуты. Без подсказок — разбор в конце. Это замер: рейтинг не меняется.</div>
+          <div id="ptPrev" class="pt-prev"></div>
+          <button class="pt-start" onclick="startPlacementQuiz()">Начать тест ›</button>
+        </div>
+        <div id="ptQuiz" style="display:none;flex:1;flex-direction:column;min-height:0">
+          <div id="ptProgWrap" style="height:7px;background:#1a2350;border-radius:4px;overflow:hidden;margin:2px 0 14px"><div id="ptProg" style="height:100%;width:0%;background:linear-gradient(90deg,#4f8cff,#7b5cff);transition:width .3s ease"></div></div>
+          <div class="pt-stage">
+            <div class="pt-qmeta"><span id="ptQn">1 / 16</span><span id="ptQcat" class="pt-cat">RFI</span></div>
+            <div id="ptCtx" class="pt-ctx"></div>
+            <div class="pt-pos"><div id="ptPosEmb" class="pt-emb"></div><div id="ptPosName" class="pt-posname"></div></div>
+            <div id="ptCards" class="fh-cards"></div>
+            <div id="ptActions" class="pt-actions"></div>
+          </div>
+        </div>
+        <div id="ptResult" class="pt-resultwrap" style="display:none"></div>
+      </div>
     </div>
 
     <div class="screen" id="screen-node">
@@ -958,6 +1033,7 @@ function renderHome(){
   const lvl=levelOf(profile.xp),xpIn=profile.xp%600;
   $('hLevel').textContent='Уровень '+lvl;$('hXp').textContent=xpIn+' / 600 XP';$('hXpFill').style.width=(xpIn/600*100)+'%';
   $('hHands').textContent=profile.hands;$('hAcc').textContent=profile.hands?Math.round(profile.correct/profile.hands*100)+'%':'—';$('hStreak').textContent=profile.bestStreak;$('hDays').textContent=(profile.dailyStreak||0);
+  {const pl=profile.placement,ph=$('ptHomeDs');if(ph)ph.textContent=(pl&&pl.history&&pl.history.length)?('Твой уровень: '+pl.history[pl.history.length-1].overall+'% · перепройти'):'16 вопросов · узнай свой уровень';}
   const cdone=profile.career.node>=CAREER.length,cn=Math.min(profile.career.node,CAREER.length-1),cnd=CAREER[cn];
   $('ctaStake').textContent=cdone?'Дорожка пройдена 🏆':(cnd.ic+' '+cnd.nm);
   $('ctaSub').textContent=cdone?'Вся база освоена':'Урок '+(cn+1)+'/'+CAREER.length+' — жми, чтобы продолжить';
@@ -1148,6 +1224,111 @@ function genVs3bet(heroPos,tbPos){
     grade(key){const ok=key===ca;const meh=!ok&&((ca==='call'&&key==='fourbet')||(ca==='fourbet'&&key==='call'));
       const nmm={fourbet:'4-бет',call:'колл',fold:'фолд'};this.coach=posAnimal(m.threebettor)+' ('+m.threebettor+') ответил 3-бетом. '+hand.code+' → '+nmm[ca]+'.'+(ca==='fourbet'?' Сильна для контрудара — 4-бет.':ca==='call'?' Достаточно крепка, чтобы принять бой. Колл.':' Слаба против его силы — отступи.');
       return {correct:ok,meh,body:gridHTML({three:m.fbS,call:m.clS},hand.code,'4-бет',false,{att:m.threebettor,def:m.hero})};}};
+}
+
+/* ===== PLACEMENT TEST — замер префлоп-уровня ===== */
+const PLACEMENT_Q=[
+  {cat:'rfi',pos:'UTG',code:'AA'},
+  {cat:'rfi',pos:'UTG',code:'ATo'},
+  {cat:'rfi',pos:'HJ',code:'KJo'},
+  {cat:'rfi',pos:'CO',code:'95o'},
+  {cat:'rfi',pos:'BTN',code:'75s'},
+  {cat:'rfi',pos:'SB',code:'Q6o'},
+  {cat:'vsopen',pos:'BB',opener:'BTN',code:'KQo'},
+  {cat:'vsopen',pos:'BTN',opener:'CO',code:'A5s'},
+  {cat:'vsopen',pos:'BB',opener:'UTG',code:'Q8o'},
+  {cat:'vsopen',pos:'CO',opener:'UTG',code:'TT'},
+  {cat:'vsopen',pos:'SB',opener:'BTN',code:'72o'},
+  {cat:'vs3',pos:'BTN',opener:'BB',code:'AKo'},
+  {cat:'vs3',pos:'CO',opener:'BTN',code:'JJ'},
+  {cat:'vs3',pos:'HJ',opener:'BTN',code:'A9s'},
+  {cat:'vs3',pos:'CO',opener:'BB',code:'KJo'},
+  {cat:'vs3',pos:'SB',opener:'BB',code:'A5s'}
+];
+const PT_LABELS={fold:'FOLD',call:'CALL',raise:'RAISE',threebet:'3-BET',fourbet:'4-BET'};
+const PT_CATNAME={rfi:'RFI · открытие',vsopen:'vs Open',vs3:'vs 3-бет'};
+function ptCorrect(q){
+  if(q.cat==='rfi')return rfiRange(q.pos).has(q.code)?'raise':'fold';
+  if(q.cat==='vsopen'){const m=VS_RAW.find(x=>x.hero===q.pos&&x.opener===q.opener);if(!m)return 'fold';return m.tbS.has(q.code)?'threebet':m.clS.has(q.code)?'call':'fold';}
+  const m=VS3_RAW.find(x=>x.hero===q.pos&&x.threebettor===q.opener);if(!m)return 'fold';return m.fbS.has(q.code)?'fourbet':m.clS.has(q.code)?'call':'fold';
+}
+function ptActions(cat){
+  if(cat==='rfi')return [['fold','pt-a-fold'],['raise','pt-a-raise']];
+  if(cat==='vsopen')return [['fold','pt-a-fold'],['call','pt-a-call'],['threebet','pt-a-raise']];
+  return [['fold','pt-a-fold'],['call','pt-a-call'],['fourbet','pt-a-raise']];
+}
+function ptCtx(q){
+  if(q.cat==='rfi')return 'Все сбросили до тебя. Ты на <b>'+q.pos+'</b>, 100bb. Открываешь рейзом или фолд?';
+  if(q.cat==='vsopen')return '<b>'+q.opener+'</b> открыл рейз 2.5bb. Ты на <b>'+q.pos+'</b>. Твоё решение?';
+  return 'Ты открыл рейз с <b>'+q.pos+'</b>, <b>'+q.opener+'</b> отвечает 3-бетом. Что делаешь?';
+}
+function ptCards(code){
+  const r1=code[0],r2=code[1],suited=code[2]==='s';let s1,s2;
+  if(suited){s1=FH_SUITS[Math.floor(Math.random()*4)];s2=s1;}
+  else{const blk=FH_SUITS[Math.floor(Math.random()*2)],red=FH_SUITS[2+Math.floor(Math.random()*2)];if(Math.random()<0.5){s1=blk;s2=red;}else{s1=red;s2=blk;}}
+  return fhCard(r1,s1)+fhCard(r2,s2);
+}
+function ptToday(){const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+function ptLevelLabel(p){if(p>=85)return 'Крашер';if(p>=70)return 'Регуляр';if(p>=50)return 'Любитель';return 'Рыба';}
+let pt=null;
+function openPlacement(){
+  pt={i:0,answers:[]};
+  show('placement');setTitle('Проверка уровня');
+  $('ptIntro').style.display='';$('ptQuiz').style.display='none';$('ptResult').style.display='none';
+  $('ptHud').textContent='Тест';
+  const pl=profile.placement;
+  $('ptPrev').innerHTML=(pl&&pl.history&&pl.history.length)?('Прошлый результат: <b>'+pl.history[pl.history.length-1].overall+'%</b> — перепройди и сравни прогресс'):'';
+}
+function startPlacementQuiz(){
+  pt={i:0,answers:[]};
+  $('ptIntro').style.display='none';$('ptResult').style.display='none';$('ptQuiz').style.display='flex';
+  ptRender();
+}
+function ptRender(){
+  const q=PLACEMENT_Q[pt.i];
+  $('ptProg').style.width=Math.round(pt.i/PLACEMENT_Q.length*100)+'%';
+  $('ptQn').textContent=(pt.i+1)+' / '+PLACEMENT_Q.length;
+  $('ptQcat').textContent=PT_CATNAME[q.cat];
+  $('ptHud').textContent='Вопрос '+(pt.i+1)+'/'+PLACEMENT_Q.length;
+  $('ptCtx').innerHTML=ptCtx(q);
+  $('ptPosEmb').innerHTML=posEmblem(q.pos);
+  $('ptPosName').textContent=posAnimal(q.pos)+' · '+q.pos;
+  $('ptCards').innerHTML=ptCards(q.code);
+  $('ptActions').innerHTML=ptActions(q.cat).map(a=>'<button class="'+a[1]+'" onclick="ptAnswer(\''+a[0]+'\')">'+PT_LABELS[a[0]]+'</button>').join('');
+}
+function ptAnswer(key){
+  const q=PLACEMENT_Q[pt.i];
+  pt.answers.push({q,pick:key,correct:ptCorrect(q)});
+  pt.i++;
+  if(pt.i>=PLACEMENT_Q.length)ptFinish();else ptRender();
+}
+function ptFinish(){
+  $('ptProg').style.width='100%';
+  const by={rfi:[0,0],vsopen:[0,0],vs3:[0,0]};
+  pt.answers.forEach(a=>{const c=a.q.cat;by[c][1]++;if(a.pick===a.correct)by[c][0]++;});
+  const tot=pt.answers.length,cor=pt.answers.filter(a=>a.pick===a.correct).length;
+  const pct=v=>v[1]?Math.round(v[0]/v[1]*100):0;
+  const res={date:ptToday(),overall:Math.round(cor/tot*100),rfi:pct(by.rfi),vsopen:pct(by.vsopen),vs3:pct(by.vs3)};
+  if(!profile.placement)profile.placement={baseline:null,history:[]};
+  const prev=profile.placement.history.length?profile.placement.history[profile.placement.history.length-1]:null;
+  if(!profile.placement.baseline)profile.placement.baseline=res;
+  profile.placement.history.push(res);saveProfile();
+  ptRenderResult(res,prev);
+}
+function ptRenderResult(res,prev){
+  $('ptQuiz').style.display='none';$('ptResult').style.display='block';$('ptHud').textContent='Результат';
+  let dh='';
+  if(prev){const d=res.overall-prev.overall;dh='<div class="delta" style="color:'+(d>=0?'#34d17a':'#ff6b6b')+'">'+(d>=0?'▲ +':'▼ ')+d+'% к прошлому ('+prev.overall+'% → '+res.overall+'%)</div>';}
+  const catRow=(nm,v,prevV,color)=>{const dd=prevV!=null?(v-prevV):null;return '<div class="pt-catrow"><div class="cn">'+nm+'</div><div class="pt-catbar"><i style="width:'+v+'%;background:linear-gradient(90deg,'+color+',rgba(255,255,255,.15))"></i></div><div class="cv">'+v+'%'+(dd!=null&&dd!==0?'<small style="color:'+(dd>0?'#34d17a':'#ff6b6b')+';font-weight:700"> '+(dd>0?'+':'')+dd+'</small>':'')+'</div></div>';};
+  const cats=[['RFI · открытие',res.rfi],['Игра vs Open',res.vsopen],['Защита vs 3-бет',res.vs3]];
+  const weak=cats.slice().sort((a,b)=>a[1]-b[1])[0];
+  let html='<div class="pt-score"><div class="big">'+res.overall+'%</div><div class="lbl">Уровень: '+ptLevelLabel(res.overall)+'</div>'+dh+'</div>';
+  html+='<div class="pt-cats">'+catRow('RFI',res.rfi,prev?prev.rfi:null,'#4f8cff')+catRow('vs Open',res.vsopen,prev?prev.vsopen:null,'#2f9d68')+catRow('vs 3-бет',res.vs3,prev?prev.vs3:null,'#b06bff')+'</div>';
+  html+='<div class="pt-weak">Слабее всего — <b>'+weak[0]+'</b> ('+weak[1]+'%). Подтяни этот блок в «Свободной тренировке».</div>';
+  html+='<div class="pt-review-h">Разбор ответов</div>';
+  pt.answers.forEach(a=>{const ok=a.pick===a.correct;html+='<div class="pt-rev"><div class="okm">'+(ok?'✅':'❌')+'</div><div class="rh"><b>'+a.q.code+'</b> · '+PT_CATNAME[a.q.cat]+(a.q.opener?' vs '+a.q.opener:'')+'<small>'+posAnimal(a.q.pos)+' · '+a.q.pos+'</small></div><div class="ra">'+(ok?'<span class="good">'+PT_LABELS[a.pick]+'</span>':'<span class="bad">'+PT_LABELS[a.pick]+'</span> → <span class="good">'+PT_LABELS[a.correct]+'</span>')+'</div></div>';});
+  html+='<div class="pt-resbtns"><button class="primary" onclick="nav(\'home\')">Готово</button><button class="ghost" onclick="startPlacementQuiz()">Перепройти</button></div>';
+  $('ptResult').innerHTML=html;$('ptResult').scrollTop=0;
 }
 
 /* ===== POSTFLOP ARCHETYPES (procedural) ===== */
