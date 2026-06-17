@@ -226,7 +226,21 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;b
 
 .gridwrap{display:flex;flex-direction:column;align-items:center;margin:6px 0}
 .grid13{display:grid;grid-template-columns:repeat(13,1fr);gap:2px;width:100%;max-width:330px;position:relative}
-#screen-findhand .gridwrap{padding:0 14px}#screen-findhand #fhGrid{max-width:none}
+#screen-findhand .gridwrap{padding:0 14px;width:100%}
+#screen-findhand #fhGrid{max-width:none;font-size:13px;gap:3px}
+#screen-findhand #fhGrid .gc{font-size:inherit;border-radius:5px}
+#fhGrid .gc.su{background:#15324d;color:#88bcd8}
+#fhGrid .gc.of{background:#3a2336;color:#d49cb4;filter:none}
+#fhGrid .gc.pr{background:linear-gradient(180deg,#2c3566,#232b57);color:#f2d289;font-weight:800;box-shadow:inset 0 0 0 1.5px rgba(224,165,50,.55)}
+.fh-stage{flex:1;display:flex;flex-direction:column;justify-content:center;min-height:0}
+.fh-setup{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 18px;gap:6px}
+.fh-setup-ttl{font-size:20px;font-weight:800;color:var(--txt)}
+.fh-setup-sub{font-size:13px;color:var(--muted);line-height:1.5;max-width:300px;margin-bottom:10px}
+.fh-presets{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;width:100%;max-width:360px}
+.fh-presets button{flex:1;min-width:88px;display:flex;flex-direction:column;align-items:center;gap:2px;padding:16px 10px;border:1px solid var(--line);border-radius:16px;background:linear-gradient(180deg,#1b2766,#141d4a);color:#fff;cursor:pointer}
+.fh-presets button b{font-size:26px;color:var(--gold)}
+.fh-presets button span{font-size:11px;color:var(--muted)}
+.fh-presets button:active{transform:scale(.96)}
 .gs-emb{position:absolute;width:46%;aspect-ratio:1;opacity:.5;pointer-events:none;z-index:1;mix-blend-mode:screen}
 .gs-emb-att{left:-3%;bottom:-3%}.gs-emb-def{right:-3%;top:-3%}
 .gc{aspect-ratio:1;border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700;background:#1a2350;color:#5a6aa8;position:relative}
@@ -592,14 +606,27 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;b
       <div class="mem-actions"><button class="clear" onclick="memClear()">Очистить</button><button class="reveal" onclick="memReveal()">Показать GTO</button><button class="check" onclick="memCheck()">Проверить</button><button class="check" id="memSaveCustom" style="background:linear-gradient(180deg,#34d17a,#1f9d5a);color:#062012" onclick="saveCustomRange()">💾 Свой</button><button class="check" id="memProceed" style="display:none;flex-basis:100%;background:linear-gradient(180deg,#e0a532,#c2841d)" onclick="careerDrawDone()">К раздачам ×20 ›</button></div>
     </div>
     <div class="screen" id="screen-findhand">
-      <div class="game-meta"><span class="hcount" id="fhHud">🎯 0</span><span class="mid">Игра диапазонов</span><span class="x" onclick="nav('home')"><span class="ic">✕</span></span></div>
+      <div class="game-meta"><span class="hcount" id="fhHud">🎯</span><span class="mid">Игра диапазонов</span><span class="x" onclick="nav('home')"><span class="ic">✕</span></span></div>
       <div class="body" style="display:flex;flex-direction:column;min-height:0">
-        <div id="fhTimerWrap" style="height:7px;background:#1a2350;border-radius:4px;overflow:hidden;margin:2px 0 12px"><div id="fhTimer" style="height:100%;width:100%;background:linear-gradient(90deg,#34d17a,#e0a532)"></div></div>
-        <div id="fhTarget" style="text-align:center;font-size:15px;color:var(--muted);margin-bottom:12px">Найди руку</div>
-        <div class="gridwrap"><div class="grid13" id="fhGrid"></div></div>
-        <div id="fhMsg" style="text-align:center;font-weight:800;margin-top:12px;min-height:24px;font-size:16px"></div>
+        <div id="fhSetup" class="fh-setup">
+          <div class="fh-setup-ttl">Сколько рук в тренировке?</div>
+          <div class="fh-setup-sub">Найди заданную руку в сетке. Без таймера — играешь все руки, в конце увидишь точность.</div>
+          <div class="fh-presets">
+            <button onclick="startFindGame(30)"><b>30</b><span>разминка</span></button>
+            <button onclick="startFindGame(50)"><b>50</b><span>стандарт</span></button>
+            <button onclick="startFindGame(100)"><b>100</b><span>марафон</span></button>
+          </div>
+        </div>
+        <div id="fhPlay" style="display:none;flex:1;flex-direction:column;min-height:0">
+          <div id="fhProgWrap" style="height:7px;background:#1a2350;border-radius:4px;overflow:hidden;margin:2px 0 12px"><div id="fhProg" style="height:100%;width:0%;background:linear-gradient(90deg,#34d17a,#e0a532);transition:width .3s ease"></div></div>
+          <div class="fh-stage">
+            <div id="fhTarget" style="text-align:center;font-size:15px;color:var(--muted);margin-bottom:12px">Найди руку</div>
+            <div class="gridwrap"><div class="grid13" id="fhGrid"></div></div>
+            <div id="fhMsg" style="text-align:center;font-weight:800;margin-top:12px;min-height:24px;font-size:16px"></div>
+          </div>
+        </div>
       </div>
-      <div class="mem-actions"><button class="clear" onclick="nav('home')">Выйти</button><button class="check" id="fhAgain" style="display:none;background:linear-gradient(180deg,#e0a532,#c2841d);color:#241a06" onclick="startFindGame()">Ещё раз 🎯</button></div>
+      <div class="mem-actions"><button class="clear" onclick="nav('home')">Выйти</button><button class="check" id="fhAgain" style="display:none;background:linear-gradient(180deg,#e0a532,#c2841d);color:#241a06" onclick="openFindHand()">Ещё раз 🎯</button></div>
     </div>
 
     <div class="screen" id="screen-node">
@@ -909,7 +936,7 @@ function renderHome(){
     const bm=profile.byMode[m.key==='review'?'mixed':m.key];const acc=bm&&bm.played?Math.round(bm.correct/bm.played*100)+'%':'—';
     const isReview=m.key==='review';const mistakes=profile.mistakes.length;
     const el=document.createElement('div');el.className='mode'+(isReview&&!mistakes?' locked':'');
-    el.onclick=()=>{if(isReview){if(!mistakes){toast('Ошибок нет — сыграй и возвращайся');return;}startReview();}else if(m.key==='custom')openCustom();else if(m.key==='findhand')startFindGame();else if(m.key==='memorize')openMemorize();else if(['rfi','vsopen','vs3'].includes(m.key))chooseMode(m.key);else startDrill(m.key);};
+    el.onclick=()=>{if(isReview){if(!mistakes){toast('Ошибок нет — сыграй и возвращайся');return;}startReview();}else if(m.key==='custom')openCustom();else if(m.key==='findhand')openFindHand();else if(m.key==='memorize')openMemorize();else if(['rfi','vsopen','vs3'].includes(m.key))chooseMode(m.key);else startDrill(m.key);};
     el.innerHTML='<div class="ic">'+m.ic+'</div><div class="tx"><div class="nm">'+m.nm+'</div><div class="ds">'+m.ds+'</div></div>'+
       (isReview?(mistakes?'<div class="badge">'+mistakes+'</div><div class="go">›</div>':'<div class="go">🔒</div>'):'<div class="acc">'+acc+'<small>точность</small></div><div class="go">›</div>');
     wrap.appendChild(el);
@@ -1384,78 +1411,81 @@ function startCustomDrill(range){
 /* ===== FIND-THE-HAND — игра диапазонов «на ощупь» ===== */
 let fh={playing:false};
 function fhLabelsHidden(){return fh.streak>=5;}
-function startFindGame(){
+function openFindHand(){
   session=null;
-  fh={score:0,streak:0,maxStreak:0,lives:3,target:null,timer:null,expire:null,timeLeft:0,playing:true};
+  fh={total:0,played:0,correct:0,streak:0,maxStreak:0,score:0,target:null,playing:false};
   show('findhand');setTitle('Игра диапазонов');
+  $('fhAgain').style.display='none';
+  $('fhPlay').style.display='none';
+  $('fhSetup').style.display='';
+  $('fhHud').innerHTML='🎯';
+}
+function startFindGame(total){
+  session=null;
+  fh={total:total||30,played:0,correct:0,streak:0,maxStreak:0,score:0,target:null,playing:true};
+  $('fhSetup').style.display='none';
+  $('fhPlay').style.display='flex';
   $('fhAgain').style.display='none';
   nextFind();
 }
+function fhProgress(){$('fhProg').style.width=(fh.total?Math.round(fh.played/fh.total*100):0)+'%';}
 function nextFind(){
-  fhClearTimer();
+  if(fh.played>=fh.total){endFind();return;}
   const r=Math.floor(Math.random()*13),c=Math.floor(Math.random()*13);
   fh.target=cellCode(r,c);
   const suf=r===c?'':(r<c?' <span style="color:#56badf">s</span>':' <span style="color:#ff97a4">o</span>');
   $('fhTarget').innerHTML='Найди: <b style="color:var(--gold);font-size:28px">'+cellDisp(r,c)+'</b>'+suf+(fhLabelsHidden()?' <span style="color:#ff97a4;font-size:12px">· вслепую</span>':'');
   $('fhMsg').textContent='';
+  fh.playing=true;
   fhRenderGrid(null);
-  fhUpdateHud();
-  fhStartTimer();
+  fhUpdateHud();fhProgress();
 }
 function fhRenderGrid(reveal){
   const g=$('fhGrid');g.innerHTML='';const hide=fhLabelsHidden();
   for(let r=0;r<13;r++)for(let c=0;c<13;c++){const code=cellCode(r,c);
-    const cell=document.createElement('div');cell.className='gc'+(r>c?' of':r===c?' pr':'');
+    const cell=document.createElement('div');cell.className='gc'+(r>c?' of':r===c?' pr':' su');
     if(!hide)cell.textContent=cellDisp(r,c);
     if(reveal&&code===reveal){cell.style.cssText='background:linear-gradient(180deg,#34d17a,#1f9d5a);color:#062012;box-shadow:0 0 0 2px #fff';}
     cell.onclick=()=>fhPick(code,cell);
     g.appendChild(cell);}
+  if(g.clientWidth>0)g.style.fontSize=Math.max(11,Math.round(g.clientWidth/13*0.36))+'px';
 }
-function fhStartTimer(){
-  const ms=4500,bar=$('fhTimer');bar.style.transition='none';bar.style.width='100%';void bar.offsetWidth;
-  bar.style.transition='width '+ms+'ms linear';bar.style.width='0%';
-  const t0=Date.now();fh.timeLeft=ms/1000;
-  fh.timer=setInterval(()=>{fh.timeLeft=Math.max(0,(ms-(Date.now()-t0))/1000);},90);
-  fh.expire=setTimeout(()=>{if(fh.playing)fhMiss(null);},ms);
-}
-function fhClearTimer(){if(fh.timer)clearInterval(fh.timer);if(fh.expire)clearTimeout(fh.expire);fh.timer=fh.expire=null;}
 function fhPick(code,cell){
   if(!fh.playing)return;
   if(code===fh.target){
-    fhClearTimer();
-    const pts=10+Math.round((fh.timeLeft||0)*4)+(fhLabelsHidden()?10:0);
-    fh.score+=pts;fh.streak++;fh.maxStreak=Math.max(fh.maxStreak,fh.streak);
+    fh.playing=false;
+    const pts=10+(fhLabelsHidden()?10:0);
+    fh.score+=pts;fh.correct++;fh.streak++;fh.maxStreak=Math.max(fh.maxStreak,fh.streak);
     cell.style.cssText='background:linear-gradient(180deg,#34d17a,#1f9d5a);color:#062012';
     if(window.SND&&SND.correct)SND.correct();if(window.vibe)vibe(15);
-    $('fhMsg').innerHTML='<span style="color:#34d17a">+'+pts+(fhLabelsHidden()?' 🔥':'')+'</span>';
-    fhUpdateHud();
-    setTimeout(()=>{if(fh.playing)nextFind();},380);
+    $('fhMsg').innerHTML='<span style="color:#34d17a">Верно!'+(fhLabelsHidden()?' 🔥':'')+'</span>';
+    fh.played++;fhUpdateHud();fhProgress();
+    setTimeout(nextFind,420);
   }else{
     fhMiss(code,cell);
   }
 }
 function fhMiss(picked,cell){
-  fhClearTimer();fh.playing=false;
-  fh.lives--;fh.streak=0;
+  fh.playing=false;fh.streak=0;
   if(window.SND&&SND.wrong)SND.wrong();if(window.vibe)vibe([30,20,30]);
   if(cell)cell.style.cssText='background:#7a3a3a;color:#ffc0c0';
   fhRenderGrid(fh.target);
   $('fhMsg').innerHTML='<span style="color:#ff6b6b">✗ '+fh.target+' — вот тут</span>';
-  fhUpdateHud();
-  setTimeout(()=>{if(fh.lives<=0){endFind();}else{fh.playing=true;nextFind();}},1200);
+  fh.played++;fhUpdateHud();fhProgress();
+  setTimeout(nextFind,1300);
 }
 function fhUpdateHud(){
-  $('fhHud').innerHTML='🎯 '+fh.score+' · 🔥'+fh.streak;
-  const tg=$('fhTarget');
+  $('fhHud').innerHTML='🎯 '+fh.played+'/'+fh.total+' · ✓'+fh.correct+(fh.streak>1?' · 🔥'+fh.streak:'');
 }
 function endFind(){
-  fhClearTimer();fh.playing=false;
-  const prev=profile.findBest||0,best=Math.max(prev,fh.score);
-  if(fh.score>prev){profile.findBest=fh.score;saveProfile();}
-  $('fhTarget').innerHTML='<b style="color:var(--gold);font-size:22px">Игра окончена</b>';
+  fh.playing=false;
+  const acc=fh.total?Math.round(fh.correct/fh.total*100):0;
+  const prev=profile.fhAccBest||0,best=Math.max(prev,acc);
+  if(acc>prev){profile.fhAccBest=acc;saveProfile();}
+  $('fhTarget').innerHTML='<b style="color:var(--gold);font-size:22px">Тренировка завершена</b>';
   $('fhGrid').innerHTML='';
-  $('fhMsg').innerHTML='Счёт <b style="color:var(--gold)">'+fh.score+'</b> · серия '+fh.maxStreak+' · рекорд '+best+(fh.score>prev&&fh.score>0?' 🏆 НОВЫЙ!':'');
-  $('fhTimer').style.width='0%';
+  $('fhMsg').innerHTML='✓ <b style="color:#34d17a">'+fh.correct+'</b> из '+fh.total+' · точность <b style="color:var(--gold)">'+acc+'%</b> · серия '+fh.maxStreak+(acc>=prev&&acc>0?' 🏆':'');
+  $('fhProg').style.width='100%';
   $('fhAgain').style.display='';
 }
 function startDaily(){
