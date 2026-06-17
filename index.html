@@ -241,6 +241,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;b
 .fh-presets button b{font-size:26px;color:var(--gold)}
 .fh-presets button span{font-size:11px;color:var(--muted)}
 .fh-presets button:active{transform:scale(.96)}
+.fh-cards{display:flex;justify-content:center;gap:7px}
+.pcard{display:inline-flex;flex-direction:column;align-items:center;justify-content:center;width:46px;height:64px;background:linear-gradient(180deg,#fff,#eef0f6);border-radius:8px;box-shadow:0 3px 8px rgba(0,0,0,.45);line-height:1;border:1px solid #c8ccda}
+.pcard b{font-size:25px;font-weight:800}
+.pcard span{font-size:18px;margin-top:3px}
+.pcard.red{color:#d62828}.pcard.blk{color:#1b1b22}
 .gs-emb{position:absolute;width:46%;aspect-ratio:1;opacity:.5;pointer-events:none;z-index:1;mix-blend-mode:screen}
 .gs-emb-att{left:-3%;bottom:-3%}.gs-emb-def{right:-3%;top:-3%}
 .gc{aspect-ratio:1;border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700;background:#1a2350;color:#5a6aa8;position:relative}
@@ -1411,6 +1416,18 @@ function startCustomDrill(range){
 /* ===== FIND-THE-HAND — игра диапазонов «на ощупь» ===== */
 let fh={playing:false};
 function fhLabelsHidden(){return fh.streak>=5;}
+const FH_SUITS=[['♠','blk'],['♣','blk'],['♥','red'],['♦','red']];
+function fhCard(rank,suit){return '<span class="pcard '+suit[1]+'"><b>'+rank+'</b><span>'+suit[0]+'</span></span>';}
+function fhTargetCards(r,c){
+  const hi=RANKS[Math.min(r,c)],lo=RANKS[Math.max(r,c)];
+  let s1,s2;
+  if(r<c){s1=FH_SUITS[Math.floor(Math.random()*4)];s2=s1;} // suited — одна масть
+  else{ // offsuit / пара — разные масти разного цвета для наглядности
+    const blk=FH_SUITS[Math.floor(Math.random()*2)],red=FH_SUITS[2+Math.floor(Math.random()*2)];
+    if(Math.random()<0.5){s1=blk;s2=red;}else{s1=red;s2=blk;}
+  }
+  return '<div style="color:var(--muted);font-size:14px;margin-bottom:9px">Найди руку</div><div class="fh-cards">'+fhCard(hi,s1)+fhCard(lo,s2)+'</div>';
+}
 function openFindHand(){
   session=null;
   fh={total:0,played:0,correct:0,streak:0,maxStreak:0,score:0,target:null,playing:false};
@@ -1433,8 +1450,7 @@ function nextFind(){
   if(fh.played>=fh.total){endFind();return;}
   const r=Math.floor(Math.random()*13),c=Math.floor(Math.random()*13);
   fh.target=cellCode(r,c);
-  const suf=r===c?'':(r<c?' <span style="color:#56badf">s</span>':' <span style="color:#ff97a4">o</span>');
-  $('fhTarget').innerHTML='Найди: <b style="color:var(--gold);font-size:28px">'+cellDisp(r,c)+'</b>'+suf+(fhLabelsHidden()?' <span style="color:#ff97a4;font-size:12px">· вслепую</span>':'');
+  $('fhTarget').innerHTML=fhTargetCards(r,c)+(fhLabelsHidden()?'<div style="color:#ff97a4;font-size:12px;margin-top:6px">· вслепую</div>':'');
   $('fhMsg').textContent='';
   fh.playing=true;
   fhRenderGrid(null);
