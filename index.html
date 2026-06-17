@@ -1047,11 +1047,11 @@ function handFromRange(set){return handFromCode(oneOf([...set]));}
 /* table formats: positions per size, mapped to existing range profiles */
 const TABLE_SEATS={5:['BTN','SB','BB','UTG','CO'],6:['BTN','SB','BB','UTG','HJ','CO'],7:['BTN','SB','BB','UTG','LJ','HJ','CO'],8:['BTN','SB','BB','UTG','UTG1','LJ','HJ','CO'],9:['BTN','SB','BB','UTG','UTG1','UTG2','LJ','HJ','CO']};
 const ACT_ORDER=['UTG','UTG1','UTG2','LJ','HJ','CO','BTN','SB','BB'];
-const POS_ANIMAL={UTG:'Дракон',UTG1:'Дракон',UTG2:'Дракон',LJ:'Тигр',HJ:'Тигр',MP:'Тигр',CO:'Журавль',BTN:'Обезьяна',SB:'Змея',BB:'Богомол'};
+const POS_ANIMAL={UTG:'Дракон',UTG1:'Дракон',UTG2:'Дракон',LJ:'Медведь',MP:'Медведь',HJ:'Медведь',CO:'Тигр',BTN:'Обезьяна',SB:'Змея',BB:'Орёл'};
 function posAnimal(p){return POS_ANIMAL[p]||p;}
-const EMB_FILE={'Дракон':'utg','Тигр':'mp','Журавль':'co','Змея':'sb','Обезьяна':'btn','Богомол':'bb'};
+const EMB_FILE={'Дракон':'utg','Медведь':'bear','Тигр':'mp','Обезьяна':'btn','Змея':'sb','Орёл':'bb'};
 function posEmblem(pos){const a=posAnimal(pos),f=EMB_FILE[a];if(!f)return avatarHTML('alex');
- return '<img class="posemb" src="emb/'+f+'.jpg?v=4" alt="'+a+'">';
+ return '<img class="posemb" src="emb/'+f+'.jpg?v=5" alt="'+a+'">';
 }
 function rfiRange(pos){return RFI[pos]||(pos==='LJ'?RFI.HJ:RFI.UTG);}
 function rfiPct(pos){return Math.round(comboCount(rfiRange(pos))/1326*100);}
