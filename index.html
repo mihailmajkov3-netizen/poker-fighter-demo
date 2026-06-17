@@ -120,6 +120,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;b
 .ni-ctx{font-size:12.5px;color:var(--muted);line-height:1.45}.ni-ctx b{color:var(--gold)}
 .coachcard{display:flex;gap:12px;align-items:center;background:linear-gradient(135deg,#26307e,#171f50);border:1px solid var(--line);border-radius:16px;padding:12px;margin:4px 2px 8px}
 .cc-av{width:54px;height:54px;border-radius:50%;overflow:hidden;border:2px solid var(--gold);flex:0 0 auto}
+.cface{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:26px;background:radial-gradient(circle at 50% 35%,#2c3675,#131c46)}
 .cc-tx{flex:1;min-width:0}
 .cc-rank{font-weight:800;font-size:16px}.cc-rank .cc-prog{font-size:11px;color:var(--muted);font-weight:700;margin-left:4px}
 .cc-sub{font-size:11px;color:var(--muted);margin:3px 0 7px}
@@ -1103,7 +1104,7 @@ function genRFI(forcePos,tableSize){
     prompt:rfiPrompt(pos),
     actions:[{key:'fold',label:'FOLD',cls:'fold'},{key:'raise',label:'RAISE',cls:'raise'}],
     grade(key){const ca=inR?'raise':'fold';const ok=key===ca;
-      this.coach=ok?(inR?hand.code+' достойна открыть бой с '+pos+' ('+pct+'%). Сильный бьёт уверенно, ученик.':'Терпение. '+hand.code+' слаба для '+pos+' — мудрый ждёт лучшего часа.'):(inR?'Ты дрогнул. '+hand.code+' ВХОДИТ в диапазон '+pos+' — воин не прячет силу.':'Поспешил. '+hand.code+' слишком слаба для '+pos+' ('+pct+'%). Жадность — слабость.');
+      this.coach=ok?(inR?hand.code+' — в диапазоне '+pos+' ('+pct+'%). Открыл правильно, ученик. Так и держи.':''+hand.code+' слаба для '+pos+' — терпение. Мудрый не лезет в бой с хламом.'):(inR?'Дрогнул! '+hand.code+' — это диапазон '+pos+'. Воин не прячет силу, особенно когда она есть.':''+hand.code+' слишком слаба для '+pos+' ('+pct+'%). Жадность — дорогое удовольствие. Фолдишь такое.');
       return {correct:ok,body:gridHTML({in:range},hand.code,null,false,{att:pos})};}};
 }
 function genVsOpen(heroPos,openerPos){
@@ -1148,82 +1149,82 @@ function aceBoard(d){const lows=RANKS.filter(r=>RVAL[r]<10&&r!=='A');let a=oneOf
 const ARCH=[
   {id:'overpair_dry',concept:'Велью бет оверпарой',diff:1,facing:false,best:'raise',handLabel:'Оверпара',boardLabel:'сухой низкий',
    build(d){const pr=oneOf(['JJ','QQ','KK','AA']);const h=[d.takeRank(pr[0]),d.takeRank(pr[0])];const board=dryLowBoard(d,RVAL[pr[0]]);return {hero:h,board};},
-   coach:'Оверпара на сухом борде — лучшая рука. Бет за велью: платят младшие пары и оверкарты. Чек теряет деньги.'},
+   coach:'Оверпара на сухом борде — ты тут король. Ставь за велью, младшие пары приползут платить. Чек — это оставить деньги на столе, не позорься.'},
   {id:'tptk',concept:'Велью топ-парой',diff:1,facing:false,best:'raise',handLabel:'Топ-пара, топ-кикер',boardLabel:'сухой',
    build(d){const top=oneOf(['A','K','Q']);const kick=oneOf(RANKS.filter(r=>RVAL[r]>=8&&r!==top));const h=[d.takeRank(top),d.takeRank(kick)];const board=topBoard(d,top);return {hero:h,board};},
-   coach:'Топ-пара с хорошим кикером на сухом борде. Тонкое велью — платят младшие пары и худшие топ-пары.'},
+   coach:'TPTK на сухом борде — это не повод скромничать. Тонкое велью: младшие пары и слабейшие топ-пары охотно заплатят.'},
   {id:'set_wet',concept:'Велью сетом на мокром',diff:1,facing:true,best:'raise',handLabel:'Сет',boardLabel:'мокрый',
    build(d){const pr=oneOf(['77','88','99','TT','JJ']);const suit=oneOf(['s','h','d','c']);const board=wetTwoTone(d,suit);
      // ensure set rank present on board
      board[2]=d.takeRank(pr[0]);const h=[d.takeRank(pr[0]),d.takeRank(pr[0])];return {hero:h,board};},
-   coach:'Сет на мокром борде. Рейзи за велью и защиту: куча дро у оппонента заплатит, нельзя давать бесплатные карты.'},
+   coach:'Сет на мокром борде — деньги есть, но борд ждать не будет. Рейзи: дро заплатят сейчас. Дашь бесплатную карту — сам виноват.'},
   {id:'twopair',concept:'Велью двумя парами',diff:2,facing:true,best:'raise',handLabel:'Две пары',boardLabel:'координированный',
    build(d){const r1=oneOf(['A','K','Q','J']),r2=oneOf(RANKS.filter(r=>RVAL[r]<RVAL[r1]&&RVAL[r]>=5));const h=[d.takeRank(r1),d.takeRank(r2)];
      const low=oneOf(RANKS.filter(r=>r!==r1&&r!==r2&&RVAL[r]<RVAL[r2]));const su=shuffle(['s','h','d','c']);const board=[d.takeRC(r1,su[0]),d.takeRC(r2,su[1]),d.takeRC(low,su[2])];return {hero:h,board};},
-   coach:'Две пары — сильное велью. Рейзи: тебя оплатят топ-пары и дро, а ты ещё уязвим к дро — раздувай банк сейчас.'},
+   coach:'Две пары — сильно, но борд угрожает. Рейзи и раздувай банк сейчас: топ-пары и дро заплатят, а ждать тёрна — риск.'},
   {id:'nfd_oop',concept:'Полублеф флеш-дро',diff:2,facing:true,best:'raise',handLabel:'Натсовое флеш-дро',boardLabel:'мокрый',
    build(d){const suit=oneOf(['s','h','d','c']);const low=RANKS.filter(r=>RVAL[r]<8);
      const h=[d.takeRC('A',suit),d.takeSuit(suit,['Q','J','T','9'])];
      const board=[d.takeSuit(suit,low),d.takeSuit(suit,low),d.takeOffSuit(suit,RANKS.filter(r=>RVAL[r]<6))];return {hero:h,board,oop:true};},
-   coach:'Натсовое флеш-дро + оверкарта. Семи-блеф рейзом: fold equity сейчас плюс топ эквити, если флеш зайдёт.'},
+   coach:'Натсовое флеш-дро с оверкартой — это не дро, это оружие. Рейзи: fold equity сейчас, натс на будущее. Пассивность тебя не спасёт.'},
   {id:'oesd_ip',concept:'Полублеф со стрит-дро',diff:2,facing:false,best:'raise',handLabel:'Двусторонний стрит-дро',boardLabel:'координированный',
    build(d){const base=oneOf([9,8,7,6]);const h=[d.takeRank(RCHAR[base]),d.takeRank(RCHAR[base-1])];
      const su=shuffle(['s','h','d','c']);const board=[d.takeRC(RCHAR[base-2],su[0]),d.takeRC(RCHAR[base+1]||'A',su[1]),d.takeRC(oneOf(['A','K','2','3']),su[2])];return {hero:h,board,oop:false};},
-   coach:'Двусторонний стрит-дро в позиции. Бет/семи-блеф — 8 аутов + fold equity. Бесплатная карта не нужна.'},
+   coach:'OESD в позиции — 8 аутов и право давить. Бет: fold equity сейчас, стрит потом. Дашь бесплатную карту — выбросишь рычаг.'},
   {id:'fd_call',concept:'Колл с дро по шансам',diff:2,facing:true,best:'call',handLabel:'Флеш-дро',boardLabel:'мокрый',
    build(d){const suit=oneOf(['s','h','d','c']);const h=[d.takeSuit(suit,['K','Q','J']),d.takeSuit(suit,['9','8','7'])];
      const board=[d.takeSuit(suit,['A','K','Q']),d.takeSuit(suit,RANKS.filter(r=>RVAL[r]<7)),d.takeOffSuit(suit,RANKS.filter(r=>RVAL[r]<7))];return {hero:h,board,oop:true};},
-   coach:'Флеш-дро без сильной fold equity против ставки. Колл по шансам банка/имплайду; рейз раздул бы банк без надобности.'},
+   coach:'Флеш-дро против ставки, fold equity нет — не геройствуй рейзом. Колл по шансам банка и имплайду. Скромность здесь добродетель.'},
   {id:'midpair_call',concept:'Контроль средней парой',diff:2,facing:true,best:'call',handLabel:'Средняя пара',boardLabel:'сухой',
    build(d){const mid=oneOf(['9','8','7','T']);const top=oneOf(RANKS.filter(r=>RVAL[r]>RVAL[mid]+1));const kick=oneOf(RANKS.filter(r=>RVAL[r]>=9&&r!==mid&&r!==top));const h=[d.takeRank(mid),d.takeRank(kick)];
      const low=oneOf(RANKS.filter(r=>RVAL[r]<RVAL[mid]));const su=shuffle(['s','h','d','c']);const board=[d.takeRC(top,su[0]),d.takeRC(mid,su[1]),d.takeRC(low,su[2])];return {hero:h,board,oop:true};},
-   coach:'Средняя пара — рука для контроля банка. Колл/чек-колл против одной ставки; рейз превратил бы её в блеф против лучшего.'},
+   coach:'Средняя пара — не герой, но и не мусор. Контролируй банк: колл-чек-колл. Рейз превратит её в дорогой блеф против сильнее.'},
   {id:'overpair_scary',concept:'Пот-контроль на тёрне',diff:3,facing:false,best:'call',handLabel:'Оверпара (уязвима)',boardLabel:'тёрн дал оверкарту',
    build(d){const pr=oneOf(['TT','JJ','QQ']);const h=[d.takeRank(pr[0]),d.takeRank(pr[0])];const board=dryLowBoard(d,RVAL[pr[0]]);board.push(d.takeRank(oneOf(['A','K'])));return {hero:h,board,oop:false};},
-   coach:'Оверпара стала уязвимой: оверкарта на тёрне бьёт диапазон чек-колла оппонента. Чек назад — контроль банка.'},
+   coach:'Оверкарта на тёрне — король слез с трона. Чек: тёрн ударил по твоему диапазону, гнать банк сейчас себе дороже.'},
   {id:'air_akq_fold',concept:'Фолд воздуха',diff:1,facing:true,best:'fold',handLabel:'Воздух (нет пары/дро)',boardLabel:'A-high, бьёт агрессора',
    build(d){const h=[d.takeRank(oneOf(['7','6','5'])),d.takeRank(oneOf(['4','3','2']))];const board=aceBoard(d);return {hero:h,board,oop:true};},
-   coach:'Ни пары, ни дро на A-high борде — это ядро диапазона агрессора. Нет ни эквити, ни fold equity. Чистый фолд.'},
+   coach:'Воздух на A-high борде против ставки — это уже не смелость, это расточительство. Ни эквити, ни fold equity. Фолд, не думай.'},
   {id:'overcards_fold',concept:'Фолд оверкарт',diff:2,facing:true,best:'fold',handLabel:'Две оверкарты, без дро',boardLabel:'связанный, мокрый',
    build(d){const h=[d.takeRank('A'),d.takeRank(oneOf(['K','Q']))];const suit=oneOf(['s','h','d','c']);const r1=oneOf(['9','8','7']),r2=RCHAR[RVAL[r1]-1],r3=RCHAR[RVAL[r1]-2];const board=[d.takeRC(r1,suit),d.takeRC(r2,suit),d.takeRC(r3,oneOf(['s','h','d','c'].filter(c=>c!==suit)))];return {hero:h,board,oop:true};},
-   coach:'Две оверкарты без дро на связанном мокром борде против ставки — слишком мало эквити. Фолд лучше пассивного колла.'},
+   coach:'Две оверкарты, дро нет, борд мокрый — это надежда, не рука. Против ставки эквити нищенское. Фолд достойнее пассивного колла.'},
   {id:'underpair_fold',concept:'Фолд андерпары',diff:2,facing:true,best:'fold',handLabel:'Андерпара',boardLabel:'две оверкарты',
    build(d){const pr=oneOf(['55','66','77']);const h=[d.takeRank(pr[0]),d.takeRank(pr[0])];const highs=shuffle(['A','K','Q','J']).slice(0,2);const low=oneOf(RANKS.filter(r=>RVAL[r]<RVAL[pr[0]]));const su=shuffle(['s','h','d','c']);const board=[d.takeRC(highs[0],su[0]),d.takeRC(highs[1],su[1]),d.takeRC(low,su[2])];return {hero:h,board,oop:true};},
-   coach:'Маленькая пара ниже двух оверкарт на борде. Против ставки почти всегда позади. Фолд — нет смысла платить.'},
+   coach:'Андерпара с двумя оверкартами на борде — ты уже, скорее всего, позади. Платить за это удовольствие смысла нет. Фолд.'},
   {id:'tp_face_raise',concept:'Велью топ-парой в банк',diff:2,facing:true,best:'call',handLabel:'Топ-пара',boardLabel:'сухой',
    build(d){const top=oneOf(['K','Q','J']);const kick=oneOf(RANKS.filter(r=>RVAL[r]>=7&&r!==top));const h=[d.takeRank(top),d.takeRank(kick)];const board=topBoard(d,top);return {hero:h,board,oop:false};},
-   coach:'Топ-пара против ставки на сухом борде — комфортный колл. Рейз изолировал бы тебя против более сильных рук.'},
+   coach:'Топ-пара против ставки на сухом борде — это колл, не война. Рейз загонит тебя в угол против рук, которые тебя бьют.'},
   {id:'combo_raise',concept:'Полублеф комбо-дро',diff:3,facing:true,best:'raise',handLabel:'Флеш-дро + стрит-дро',boardLabel:'очень мокрый',
    build(d){const suit=oneOf(['s','h','d','c']);const base=oneOf([10,9,8]);const h=[d.takeRC(RCHAR[base],suit),d.takeRC(RCHAR[base-1],suit)];
      const board=[d.takeRC(RCHAR[base-2],suit),d.takeRC(RCHAR[base+1],suit),d.takeOffSuit(suit,['2','3','4'])];return {hero:h,board,oop:true};},
-   coach:'Комбо-дро (флеш + стрит) — ~15 аутов, часто фаворит против одной пары. Рейзи: максимум fold equity + огромное эквити.'},
+   coach:'Комбо-дро — ~15 аутов, ты сам часто фаворит. Рейзи без сомнений: fold equity сейчас плюс мощнейшее эквити в запасе.'},
   {id:'trips_value',concept:'Велью трипсом',diff:2,facing:false,best:'raise',handLabel:'Трипс',boardLabel:'парный',
    build(d){const X=oneOf(['Q','J','T','9','8']);const k=oneOf(RANKS.filter(r=>RVAL[r]>=9&&r!==X));const h=[d.takeRank(X),d.takeRank(k)];const low=oneOf(RANKS.filter(r=>RVAL[r]<RVAL[X]&&r!==k));const su=shuffle(['s','h','d','c']);const board=[d.takeRC(X,su[0]),d.takeRC(X,su[1]),d.takeRC(low,su[2])];return {hero:h,board,oop:false};},
-   coach:'Трипс на парном борде — сильное велью. Ставь: оплатят топ-пары и дро, рука почти всегда впереди.'},
+   coach:'Трипс на парном борде — ты почти всегда лучший. Ставь: топ-пары и дро охотно заплатят. Чек — потерянные деньги.'},
   {id:'flush_made',concept:'Велью флешем',diff:2,facing:true,best:'raise',handLabel:'Флеш',boardLabel:'три одной масти',
    build(d){const su=oneOf(['s','h','d','c']);const h=[d.takeSuit(su,['A','K','Q']),d.takeSuit(su,['J','T','9','8'])];const board=[d.takeSuit(su,['7','6','5','4','3','2']),d.takeSuit(su,['7','6','5','4','3','2']),d.takeSuit(su,['9','8','7','6','5'])];return {hero:h,board,oop:true};},
-   coach:'Собранный флеш — почти натс. Рейзи за велью: оплатят сеты, две пары и младшие флеши.'},
+   coach:'Флеш готов — почти натс, что ещё надо. Рейзи: сеты, две пары и младшие флеши с удовольствием заплатят.'},
   {id:'straight_made',concept:'Велью стритом',diff:2,facing:true,best:'raise',handLabel:'Стрит',boardLabel:'связанный',
    build(d){const base=oneOf([9,10,11]);const h=[d.takeRank(RCHAR[base]),d.takeRank(RCHAR[base-1])];const su=shuffle(['s','h','d','c']);const board=[d.takeRC(RCHAR[base-2],su[0]),d.takeRC(RCHAR[base-3],su[1]),d.takeRC(RCHAR[base-4],su[2])];return {hero:h,board,oop:false};},
-   coach:'Готовый стрит на связанном борде. Велью-рейз: платят две пары, сеты и младшие дро.'},
+   coach:'Стрит готов — деньги ждут. Рейзи: две пары, сеты и дро заплатят. Стесняться нечего.'},
   {id:'bluffcatch_call',concept:'Колл блефкэтчером',diff:3,facing:true,best:'call',handLabel:'Топ-пара (блефкэтчер)',boardLabel:'ривер, страшный',
    build(d){const top=oneOf(['K','Q','J']);const kick=oneOf(RANKS.filter(r=>RVAL[r]>=8&&r!==top));const h=[d.takeRank(top),d.takeRank(kick)];const board=topBoard(d,top);board.push(d.takeRank(oneOf(['2','3','4','5'])));board.push(d.takeRank(oneOf(['6','7','8'])));return {hero:h,board,oop:true};},
-   coach:'На ривере топ-пара — блефкэтчер. Оппонент поляризован: фолд отдаёт банк блефам, рейз — самоубийство. Колл.'},
+   coach:'Ривер, топ-пара — ты теперь блефкэтчер. Оппонент поляризован: фолд отдаёт банк блефам, рейз — сам себя убьёшь. Только колл.'},
   {id:'river_fold',concept:'Фолд на ривере',diff:2,facing:true,best:'fold',handLabel:'Слабая пара',boardLabel:'ривер, крупная ставка',
    build(d){const mid=oneOf(['8','7','6']);const k=oneOf(['Q','J','T']);const h=[d.takeRank(mid),d.takeRank(k)];const su=shuffle(['s','h','d','c']);const board=[d.takeRC('A',su[0]),d.takeRC(oneOf(['K','Q']),su[1]),d.takeRC(mid,su[2]),d.takeRank(oneOf(['2','3','4'])),d.takeRank(oneOf(['9','5']))];return {hero:h,board,oop:true};},
-   coach:'Слабая пара против крупной ставки на ривере. Блефов тут мало — дисциплинированный фолд.'},
+   coach:'Слабая пара, ривер, крупная ставка — блефов здесь почти нет. Дисциплина дороже гордости. Фолд.'},
   {id:'checkraise',concept:'Чек-рейз велью',diff:3,facing:true,best:'raise',handLabel:'Две пары (OOP)',boardLabel:'мокрый',
    build(d){const r1=oneOf(['K','Q','J','T']),r2=oneOf(RANKS.filter(r=>RVAL[r]<RVAL[r1]&&RVAL[r]>=6));const h=[d.takeRank(r1),d.takeRank(r2)];const low=oneOf(RANKS.filter(r=>r!==r1&&r!==r2&&RVAL[r]<RVAL[r2]));const su=shuffle(['s','h','d','c']);const board=[d.takeRC(r1,su[0]),d.takeRC(r2,su[1]),d.takeRC(low,su[2])];return {hero:h,board,oop:true};},
-   coach:'Две пары вне позиции на мокром борде. Чек-рейз: набиваешь банк и защищаешься от дро.'},
+   coach:'Две пары OOP на мокром борде — чек-рейз. Набиваешь банк и перекрываешь дро. Дашь сыграть бесплатно — пожалеешь.'},
   {id:'turn_barrel',concept:'Второй ствол на тёрне',diff:2,facing:false,best:'raise',handLabel:'Топ-пара',boardLabel:'тёрн, безопасный',
    build(d){const top=oneOf(['A','K','Q']);const kick=oneOf(RANKS.filter(r=>RVAL[r]>=9&&r!==top));const h=[d.takeRank(top),d.takeRank(kick)];const board=topBoard(d,top);board.push(d.takeRank(oneOf(['2','3','4','5'])));return {hero:h,board,oop:false};},
-   coach:'Топ-пара, тёрн не изменил борд. Второй ствол за велью: у оппонента куча худших пар и дро.'},
+   coach:'Тёрн безопасен, топ-пара держится. Второй ствол: оппонент полон худших пар и дро, которые охотно заплатят.'},
   {id:'gutshot_fold',concept:'Фолд гатшота',diff:1,facing:true,best:'fold',handLabel:'Гатшот, без пары',boardLabel:'против крупной ставки',
    build(d){const h=[d.takeRank(oneOf(['K','Q'])),d.takeRank(oneOf(['J','T']))];const su=shuffle(['s','h','d','c']);const board=[d.takeRC('A',su[0]),d.takeRC(oneOf(['9','8']),su[1]),d.takeRC(oneOf(['5','4','3']),su[2])];return {hero:h,board,oop:true};},
-   coach:'Голый гатшот (4 аута) против крупной ставки не получает шансов банка. Без имплайда — фолд.'},
+   coach:'Голый гатшот — 4 аута, против крупной ставки математика против тебя. Без имплайда — это не колл, это подарок оппоненту. Фолд.'},
   {id:'set_river',concept:'Велью сетом на ривере',diff:2,facing:false,best:'raise',handLabel:'Сет',boardLabel:'ривер',
    build(d){const pr=oneOf(['66','77','88','99','TT']);const h=[d.takeRank(pr[0]),d.takeRank(pr[0])];const board=dryLowBoard(d,RVAL[pr[0]]);board[2]=d.takeRank(pr[0]);board.push(d.takeRank(oneOf(['A','K'])));board.push(d.takeRank(oneOf(['2','3','4'])));return {hero:h,board,oop:false};},
-   coach:'Сет на ривере — почти всегда лучшая рука. Ставь за велью: чек упустит ценность от топ-пар и две пары.'}
+   coach:'Сет на ривере — почти всегда номер один. Ставь: топ-пары и две пары заплатят. Чек — это оставить деньги лежать на столе.'}
 ];
 /* real hand evaluator — guarantees built cards match the archetype's category */
 function evalMade(cards){
@@ -1716,15 +1717,15 @@ function plural(n,one,few,many){const m10=n%10,m100=n%100;return m10===1&&m100!=
 function careerRank(n){let r=CAREER_RANKS[0];for(const x of CAREER_RANKS)if(n>=x.min)r=x;return r;}
 function careerNextRank(n){for(const x of CAREER_RANKS)if(x.min>n)return x;return null;}
 const CAREER_COACH={
-  utg:'С UTG не геройствуй. Дисциплина — твой главный навык на этой позиции.',
-  hj:'Чуть свободнее, но без фанатизма. Расширяй диапазон с умом.',
-  co:'Позиция пошла работать на тебя. Открывай увереннее.',
-  btn:'Баттон — золотая жила. Дави на блайнды и забирай банки.',
-  sb:'Без позиции — осторожнее. Не влюбляйся в каждую руку.',
-  vsopen:'Открыли против тебя? Сначала пойми: кто и с какой позиции. Отвечай по ситуации.',
-  vs3:'Тебя 3-бетят — продолжай только тем, чем открывал. Без эмоций.',
-  potodds:'Математика не врёт. Посчитай шансы — и колл сам себя подскажет.',
-  postflop:'Флоп — начало истории. Читай борд и выбирай линию хладнокровно.'
+  utg:'UTG — не место для подвигов, герой. Играй крепко и скучно. Геройствовать будешь на баттоне.',
+  hj:'Чуть больше свободы — не повод сходить с ума. Расширяй аккуратно, дерево видит всё.',
+  co:'Позиция начала работать на тебя. Осталось научить тебя ею пользоваться.',
+  btn:'Баттон — трон. Дави блайнды, забирай банки. Не трон — позор.',
+  sb:'Вне позиции на всех улицах — скромнее, ученик. Влюбляться в руки тут дорого стоит.',
+  vsopen:'Против тебя открыли? Не паникуй. Сначала пойми — кто атакует и откуда. Потом отвечай.',
+  vs3:'3-бет — это не конец света. Держись тем, чем открывал. Без паники, без мести.',
+  potodds:'Математика не сочувствует. Посчитай шансы банка — колл либо есть, либо его нет.',
+  postflop:'Флоп врать не умеет. Читай борд, выбирай линию — и не выдумывай то, чего нет.'
 };
 let currentNodeIdx=0;
 function openNode(i){
@@ -1736,7 +1737,7 @@ function openNode(i){
   if(nd.kind==='rfi'){html+='<div class="ni-h">Диапазон открытия '+nd.pos+' · '+RFI_PCT[nd.pos]+'%</div>'+gridHTML({in:RFI[nd.pos]},null);}
   else html+='<div class="ni-icon">'+nd.ic+'</div>';
   html+='<p class="ni-text">'+nd.learn+'</p>';
-  if(CAREER_COACH[nd.id])html+='<div class="ni-coach"><div class="ni-cav">'+avatarHTML('viktor')+'</div><div class="ni-ctx"><b>Тренер Виктор</b><br>'+CAREER_COACH[nd.id]+'</div></div>';
+  if(CAREER_COACH[nd.id])html+='<div class="ni-coach"><div class="ni-cav"><div class="cface">🥋</div></div><div class="ni-ctx"><b>Тренер Шифу</b><br>'+CAREER_COACH[nd.id]+'</div></div>';
   const draw=nd.kind==='rfi';
   html+='<div class="ni-steps">'+(draw?'<span>1 · Нарисуй рендж 🎨</span><span>2 · Раздачи ×20 ⏱</span>':'<span>Раздачи ×20 ⏱</span>')+'</div>';
   $('nodeBody').innerHTML=html;
@@ -1883,10 +1884,10 @@ function renderLadder(){
   const belt=nx?Math.round((node-rank.min)/(nx.min-rank.min)*100):100;
   const sub=nx?('Ещё '+(nx.min-node)+' '+plural(nx.min-node,'узел','узла','узлов')+' до ранга «'+nx.ic+' '+nx.nm+'»'):'Высший ранг достигнут — ты Краш! 🏆';
   const cc=document.createElement('div');cc.className='coachcard';
-  cc.innerHTML='<div class="cc-av">'+avatarHTML('viktor')+'</div><div class="cc-tx"><div class="cc-rank">'+rank.ic+' '+rank.nm+' <span class="cc-prog">'+Math.min(node,CAREER.length)+'/'+CAREER.length+'</span></div><div class="cc-sub">'+sub+'</div><div class="cc-belt"><i style="width:'+belt+'%"></i></div></div>';
+  cc.innerHTML='<div class="cc-av"><div class="cface">🥋</div></div><div class="cc-tx"><div class="cc-rank">'+rank.ic+' '+rank.nm+' <span class="cc-prog">'+Math.min(node,CAREER.length)+'/'+CAREER.length+'</span></div><div class="cc-sub">'+sub+'</div><div class="cc-belt"><i style="width:'+belt+'%"></i></div></div>';
   w.appendChild(cc);
   const hdr=document.createElement('div');hdr.className='phdr';
-  hdr.innerHTML='<b>Тренер Виктор:</b> проходи узлы по порядку — знакомство → тренировка → экзамен на время ⏱';
+  hdr.innerHTML='<b>Тренер Шифу:</b> не прыгай через голову — знакомство → тренировка → экзамен на время ⏱';
   w.appendChild(hdr);
   CAREER.forEach((nd,i)=>{
     const isDone=i<profile.career.node,cur=i===profile.career.node,unlocked=i<=profile.career.node;
@@ -1929,7 +1930,7 @@ function endSession(bust){
       const allDone=profile.career.node>=CAREER.length;
       queueModal({ic:stars===3?'🏆':'🎓',tag:'Узел пройден',name:nd.nm+' ✓',desc:'Получено '+stars+'★. '+(allDone?'Вся дорожка пройдена — база освоена!':'Открыт следующий узел дорожки!'),reward:'+12 рейтинга'});
       const rb=careerRank(prevNode),ra=careerRank(profile.career.node);
-      if(wasCur&&ra.nm!==rb.nm){addCoins(30,true);saveProfile();queueModal({ic:ra.ic,tag:'Новый ранг',name:ra.nm,desc:'Тренер Виктор жмёт тебе руку. Ты вырос — двигаемся дальше!',reward:'+30 🪙'});}
+      if(wasCur&&ra.nm!==rb.nm){addCoins(30,true);saveProfile();queueModal({ic:ra.ic,tag:'Новый ранг',name:ra.nm,desc:'Шифу доволен. Растёшь — и это не комплимент, это факт. Вперёд.',reward:'+30 🪙'});}
       checkAch();_flawlessFlag=false;
       const nextI=session.nodeIdx+1;
       ACT.innerHTML=((!allDone&&nextI<CAREER.length)?'<button class="next" onclick="openNode('+nextI+')">Следующий узел ›</button>':'')+'<button class="home" onclick="nav(\'career\')">К дорожке</button>';
