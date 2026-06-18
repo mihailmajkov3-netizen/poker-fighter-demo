@@ -257,6 +257,7 @@ body{
 .coachcard{display:flex;gap:12px;align-items:center;background:linear-gradient(135deg,#26307e,#171f50);border:1px solid var(--line);border-radius:16px;padding:12px;margin:4px 2px 8px}
 .cc-av{width:54px;height:54px;border-radius:50%;overflow:hidden;border:2px solid var(--gold);flex:0 0 auto}
 .cface{width:100%;height:100%;object-fit:cover;display:block}
+.avimg{width:100%;height:100%;object-fit:cover;display:block;border-radius:inherit}
 .cc-tx{flex:1;min-width:0}
 .cc-rank{font-weight:800;font-size:16px}.cc-rank .cc-prog{font-size:11px;color:var(--muted);font-weight:700;margin-left:4px}
 .cc-sub{font-size:11px;color:var(--muted);margin:3px 0 7px}
@@ -1009,6 +1010,15 @@ function charSVG(c){const skin=c.skin,skinSh=shade(skin,-30),skinHi=shade(skin,1
  if(has('headphones')){s+=`<path d="M21,34 C21,15 59,15 59,34" fill="none" stroke="#23262f" stroke-width="3.5" stroke-linecap="round"/><rect x="18.5" y="31" width="6.5" height="11" rx="3" fill="#2c3140"/><rect x="55" y="31" width="6.5" height="11" rx="3" fill="#2c3140"/>`;}
  return s+`</svg>`;}
 const CHARS=[
+ {id:'warrior',nm:'Воительница',img:1},
+ {id:'monk',nm:'Монах',img:1},
+ {id:'knight',nm:'Рыцарь',img:1},
+ {id:'samurai',nm:'Самурай',img:1},
+ {id:'veteran',nm:'Ветеран',img:1},
+ {id:'prodigy',nm:'Вундеркинд',img:1},
+ {id:'rogue',nm:'Разбойник',img:1},
+ {id:'boxer',nm:'Боксёр',img:1},
+ {id:'queen',nm:'Королева',img:1},
  {id:'alex',nm:'Алекс',skin:'#f1c39d',hair:'#5a3b22',hairS:'short',cloth:'#3f74d9',bg:['#3a6fd0','#1b3566']},
  {id:'maya',nm:'Майя',skin:'#d3a074',hair:'#1d1b24',hairS:'long',cloth:'#8b3fd4',bg:['#9450d6','#3d1f63'],acc:['earring'],blush:1},
  {id:'viktor',nm:'Виктор',skin:'#7d5237',hair:'#2a2a2f',hairS:'buzz',cloth:'#2b3046',bg:['#566077','#23283a'],acc:['beard','glasses']},
@@ -1022,7 +1032,7 @@ const CHARS=[
 ];
 const CHAR_BY_ID={};CHARS.forEach(c=>CHAR_BY_ID[c.id]=c);
 const CHAR_IDS=CHARS.map(c=>c.id);
-function avatarHTML(id){const c=CHAR_BY_ID[id];if(c)return charSVG(c);return '<span class="avemoji">'+(id||'🦈')+'</span>';}
+function avatarHTML(id){const c=CHAR_BY_ID[id];if(c&&c.img)return '<img class="avimg" src="emb/fighter_'+id+'.jpg" alt="">';if(c)return charSVG(c);return '<span class="avemoji">'+(id||'🦈')+'</span>';}
 function charForName(n){let h=0;n=n||'';for(let i=0;i<n.length;i++)h=(h*31+n.charCodeAt(i))>>>0;return CHAR_IDS[h%CHAR_IDS.length];}
 
 /* ===== ranks / cards ===== */
@@ -1099,8 +1109,8 @@ const VS3_RAW=[
 const MODE_NAMES={rfi:'Preflop RFI',vsopen:'vs Open',vs3:'vs 3-бет',postflop:'Postflop',potodds:'Pot Odds',memorize:'Range Trainer',mixed:'Микс',custom:'Свой диапазон'};
 let profile=loadProfile();
 function loadProfile(){let p={};try{p=JSON.parse(localStorage.getItem('pf_profile_v2'))||{};}catch(e){}
-  const o=Object.assign({rating:1000,xp:0,hands:0,correct:0,streak:0,bestStreak:0,byMode:{},byConcept:{},career:{stake:0,stars:{}},achievements:[],mistakes:[],lastDaily:null,dailyStreak:0,quests:null,surBest:0,name:'Игрок',avatar:'alex',onboarded:false,coins:0,owned:['alex'],ownedThemes:['green'],theme:'green',soundOn:true,hapticsOn:true,lessonsRead:[],customRanges:[],findBest:0},p);
-  if(!CHAR_BY_ID[o.avatar])o.avatar='alex';
+  const o=Object.assign({rating:1000,xp:0,hands:0,correct:0,streak:0,bestStreak:0,byMode:{},byConcept:{},career:{stake:0,stars:{}},achievements:[],mistakes:[],lastDaily:null,dailyStreak:0,quests:null,surBest:0,name:'Игрок',avatar:'warrior',onboarded:false,coins:0,owned:['warrior'],ownedThemes:['green'],theme:'green',soundOn:true,hapticsOn:true,lessonsRead:[],customRanges:[],findBest:0},p);
+  if(!CHAR_BY_ID[o.avatar])o.avatar='warrior';
   o.owned=(o.owned||[]).filter(x=>CHAR_BY_ID[x]);if(!o.owned.includes(o.avatar))o.owned.push(o.avatar);
   o.career=o.career||{};if(typeof o.career.node!=='number')o.career.node=0;o.career.stars=o.career.stars||{};
   return o;}
@@ -2547,7 +2557,7 @@ function lessonNext(){SND.tick();if(lsPage<lsCur.pages.length-1){lsPage++;render
   nav('learn');}}
 
 /* ===== SHOP ===== */
-const SHOP_AV=[{id:'alex',p:0},{id:'lina',p:80},{id:'maya',p:100},{id:'dan',p:120},{id:'emma',p:140},{id:'sofi',p:160},{id:'kai',p:180},{id:'nina',p:200},{id:'viktor',p:240},{id:'rex',p:300}];
+const SHOP_AV=[{id:'warrior',p:0},{id:'monk',p:0},{id:'knight',p:80},{id:'samurai',p:100},{id:'veteran',p:120},{id:'prodigy',p:140},{id:'rogue',p:160},{id:'boxer',p:180},{id:'queen',p:220}];
 function renderShop(){updateCoins();
   const a=$('shopAv');a.innerHTML='';SHOP_AV.forEach(it=>{const owned=profile.owned.includes(it.id);const eq=profile.avatar===it.id;const el=document.createElement('div');el.className='sitem'+(eq?' equipped':'');el.onclick=()=>buyAvatar(it.id,it.p);
     el.innerHTML='<div class="se">'+avatarHTML(it.id)+'</div><div class="sname">'+CHAR_BY_ID[it.id].nm+'</div><div class="sp '+(eq?'eq':owned?'eq':it.p===0?'free':'')+'">'+(eq?'Надет':owned?'Выбрать':it.p===0?'Бесплатно':'🪙 '+it.p)+'</div>';a.appendChild(el);});
@@ -2578,7 +2588,7 @@ let onbIdx=0,onbAvatar='alex',onbNameVal='';
 function startOnboarding(){onbIdx=0;onbAvatar=CHAR_BY_ID[profile.avatar]?profile.avatar:'alex';onbNameVal=(profile.name&&profile.name!=='Игрок')?profile.name:'';$('onb').classList.add('show');renderOnb();}
 function renderOnb(){const s=ONB_SLIDES[onbIdx],o=$('onb');
   const dots='<div class="dots">'+ONB_SLIDES.map((_,i)=>'<i class="'+(i===onbIdx?'on':'')+'"></i>').join('')+'</div>';
-  if(s.type==='profile'){const avs=['alex','maya','lina','kai','dan','sofi'];
+  if(s.type==='profile'){const avs=['warrior','monk','knight','samurai','veteran','rogue'];
     o.innerHTML='<div class="oic">'+avatarHTML(onbAvatar)+'</div><h2>'+s.h+'</h2><p>'+s.p+'</p><input class="nameinp" id="onbName" maxlength="14" placeholder="Твоё имя" value="'+onbNameVal.replace(/"/g,'')+'" oninput="onbNameVal=this.value"><div class="avrow">'+avs.map(a=>'<div class="avopt'+(a===onbAvatar?' sel':'')+'" onclick="onbPickAv(\''+a+'\')">'+avatarHTML(a)+'</div>').join('')+'</div>'+dots+'<button class="obtn" onclick="finishOnboarding()">Поехали! 🚀</button>';
   }else{o.innerHTML='<div class="oic">'+s.ic+'</div><h2>'+s.h+'</h2><p>'+s.p+'</p>'+dots+'<button class="obtn" onclick="onbNext()">'+(onbIdx===0?'Начать':'Дальше')+' ›</button>'+(onbIdx===0?'<div class="skip" onclick="skipOnboarding()">Пропустить</div>':'');}
 }
