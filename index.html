@@ -14,16 +14,94 @@
 html,body{height:100%}
 body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:radial-gradient(85% 55% at 12% 0%,rgba(120,120,140,.16) 0%,transparent 55%),radial-gradient(80% 50% at 96% 6%,rgba(90,90,110,.13) 0%,transparent 52%),linear-gradient(180deg,#1b1b23 0%,#0b0b10 100%);color:var(--txt);overflow:hidden;user-select:none}
 #app{position:fixed;inset:0;max-width:520px;margin:0 auto;overflow:hidden;display:flex;flex-direction:column}
-/* ===== ГРАФИТОВАЯ ТЕМА — увод синих панелей в графит ===== */
-:root{--panel:#1e1e28;--line:#34343f;--bg2:#23232f}
-.topbar{background:linear-gradient(180deg,#1f1f2a,#15151d)!important}
-.bottomnav{background:linear-gradient(180deg,#17171f,#0c0c11)!important}
-.phead{background:linear-gradient(135deg,#24242f,#16161d)!important}
-.statcard{background:linear-gradient(160deg,#22222d,#131318)!important}
-.bigcta,.daily,.cashcta,.handcta{background:linear-gradient(155deg,#23232f,#131318)!important}
-.mode,.stake,.quests,.challengecard{background:linear-gradient(180deg,#20202a,#15151c)!important}
-.game-meta{background:linear-gradient(180deg,#1b1b24,#131319)!important}
-#screen-profile .statgrid .s,.modecard,.picksheet{background:linear-gradient(180deg,#20202a,#15151c)!important}
+/* ===== НЕОН-ПРЕМИУМ ТЕМА ===== */
+:root{
+  --panel:#0d1235;--line:#1e2d6a;--bg2:#111a4a;
+  --neon-blue:#4f8cff;--neon-purple:#7b5cff;--neon-gold:#ffcf4d;
+}
+body{
+  background:
+    radial-gradient(ellipse 70% 50% at 20% -10%, rgba(79,140,255,.22) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 85% 10%, rgba(123,92,255,.18) 0%, transparent 55%),
+    radial-gradient(ellipse 50% 60% at 50% 100%, rgba(79,60,160,.15) 0%, transparent 60%),
+    linear-gradient(180deg,#07091a 0%,#050812 100%) !important;
+}
+/* topbar */
+.topbar{background:linear-gradient(180deg,rgba(10,14,40,.98),rgba(5,8,22,.98)) !important;border-bottom:1px solid rgba(79,140,255,.2) !important;backdrop-filter:blur(10px)}
+/* логотип */
+.tb-title{background:linear-gradient(90deg,#ffcf4d,#ffe89a,#e0a532) !important;-webkit-background-clip:text !important;-webkit-text-fill-color:transparent !important;background-clip:text !important;font-weight:900 !important;letter-spacing:1.5px !important}
+/* bottomnav */
+.bottomnav{background:linear-gradient(180deg,rgba(10,14,40,.98),rgba(5,8,22,.99)) !important;border-top:1px solid rgba(79,140,255,.18) !important}
+.bottomnav .nv.active{color:#ffcf4d !important;text-shadow:0 0 8px rgba(255,207,77,.5)}
+.bottomnav .nv.active .ic{filter:drop-shadow(0 0 5px rgba(255,207,77,.7))}
+/* phead */
+.phead{
+  background:linear-gradient(135deg,rgba(20,30,90,.9),rgba(10,16,52,.95)) !important;
+  border:1px solid rgba(255,207,77,.35) !important;
+  box-shadow:0 0 0 1px rgba(255,207,77,.1), 0 8px 32px rgba(79,140,255,.2), inset 0 1px 0 rgba(255,255,255,.05) !important;
+}
+.phead .ava{
+  border:2.5px solid var(--neon-gold) !important;
+  box-shadow:0 0 0 3px rgba(255,207,77,.2), 0 0 16px rgba(255,207,77,.35) !important;
+}
+/* xp bar */
+.xp{background:rgba(5,8,30,.9) !important;border:1px solid rgba(255,207,77,.2) !important;box-shadow:inset 0 0 8px rgba(0,0,0,.5) !important}
+.xp i{background:linear-gradient(90deg,#c2841d,#ffcf4d,#ffe89a) !important;box-shadow:0 0 12px rgba(255,207,77,.6),0 0 4px rgba(255,207,77,.4) !important}
+/* statcards */
+.statcard{
+  background:linear-gradient(160deg,rgba(16,24,72,.9),rgba(8,12,40,.95)) !important;
+  border:1px solid rgba(var(--sc-r,79),var(--sc-g,140),var(--sc-b,255),.35) !important;
+  box-shadow:0 4px 20px rgba(0,0,0,.4), 0 0 0 1px rgba(255,255,255,.04) !important;
+}
+.statcard .glow{opacity:.6 !important;width:70px !important;height:70px !important;filter:blur(28px) !important}
+.statcard .spk polyline{stroke-width:2.6 !important;filter:drop-shadow(0 0 4px var(--sc,#4f8cff)) !important}
+.statcard .spk .fillz{opacity:.35 !important}
+/* стат-карточки — цветные рамки через box-shadow (нет var в border без хака) */
+.statcard[style*="--sc:#4f8cff"]{box-shadow:0 4px 20px rgba(0,0,0,.4),0 0 0 1px rgba(79,140,255,.4),inset 0 0 20px rgba(79,140,255,.05) !important}
+.statcard[style*="--sc:#34d17a"]{box-shadow:0 4px 20px rgba(0,0,0,.4),0 0 0 1px rgba(52,209,122,.4),inset 0 0 20px rgba(52,209,122,.05) !important}
+.statcard[style*="--sc:#b06bff"]{box-shadow:0 4px 20px rgba(0,0,0,.4),0 0 0 1px rgba(176,107,255,.4),inset 0 0 20px rgba(176,107,255,.05) !important}
+.statcard[style*="--sc:#e0a532"]{box-shadow:0 4px 20px rgba(0,0,0,.4),0 0 0 1px rgba(224,165,50,.4),inset 0 0 20px rgba(224,165,50,.05) !important}
+/* CTA-карточки — неон-рамки */
+.bigcta,.daily,.cashcta,.handcta{
+  background:linear-gradient(155deg,rgba(16,24,64,.95) 0%,rgba(8,12,36,.98) 100%) !important;
+  border:1px solid rgba(255,255,255,.06) !important;
+  border-left:3px solid var(--ac,#4f8cff) !important;
+  box-shadow:0 8px 28px rgba(0,0,0,.5),0 0 28px -6px var(--ac,#4f8cff),inset 0 1px 0 rgba(255,255,255,.04) !important;
+}
+/* режимы */
+.mode,.stake{
+  background:linear-gradient(180deg,rgba(14,22,72,.85),rgba(8,13,44,.9)) !important;
+  border:1px solid rgba(79,140,255,.2) !important;
+  box-shadow:0 4px 16px rgba(0,0,0,.35) !important;
+}
+.mode:hover,.mode:active{border-color:rgba(79,140,255,.45) !important;box-shadow:0 4px 20px rgba(79,140,255,.15) !important}
+.mode .ic{background:linear-gradient(180deg,rgba(30,50,130,.9),rgba(16,28,90,.9)) !important;box-shadow:0 0 10px rgba(79,140,255,.15)}
+/* quests */
+.quests{
+  background:linear-gradient(135deg,rgba(20,30,90,.85),rgba(10,16,52,.9)) !important;
+  border:1px solid rgba(79,140,255,.25) !important;
+  box-shadow:0 4px 18px rgba(0,0,0,.35) !important;
+}
+/* challengecard */
+.challengecard{
+  background:linear-gradient(135deg,rgba(80,20,60,.7),rgba(50,12,38,.8)) !important;
+  border:1px solid rgba(230,80,160,.35) !important;
+  box-shadow:0 4px 18px rgba(0,0,0,.4),0 0 20px -8px rgba(200,80,150,.5) !important;
+}
+/* pt-cta */
+.pt-cta{
+  background:linear-gradient(135deg,rgba(40,24,100,.85),rgba(20,12,52,.9)) !important;
+  border:1px solid rgba(123,92,255,.3) !important;
+  box-shadow:0 6px 20px rgba(0,0,0,.4),0 0 20px -8px rgba(123,92,255,.4) !important;
+}
+.pt-cta.train{
+  background:linear-gradient(135deg,rgba(15,60,40,.85),rgba(8,36,22,.9)) !important;
+  border-color:rgba(52,209,122,.3) !important;
+  box-shadow:0 6px 20px rgba(0,0,0,.4),0 0 20px -8px rgba(52,209,122,.35) !important;
+}
+/* game-meta и другие внутренние экраны — тёмные */
+.game-meta{background:linear-gradient(180deg,rgba(10,14,40,.97),rgba(6,9,28,.97)) !important}
+#screen-profile .statgrid .s,.modecard,.picksheet{background:linear-gradient(180deg,rgba(14,22,64,.85),rgba(8,14,40,.9)) !important}
 #screens{flex:1;position:relative;overflow:hidden}
 .screen{position:absolute;inset:0;display:none;flex-direction:column;animation:fade .25s ease}
 .screen.active{display:flex}
