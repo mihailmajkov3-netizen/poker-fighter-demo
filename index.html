@@ -110,28 +110,36 @@ body{
 .pt-cta.help .arr{color:#8dd8f0}
 /* helper screen */
 #screen-helper .body{display:flex;flex-direction:column;flex:1;overflow:hidden;padding:0}
-.hlp-segs{display:flex;gap:6px;padding:12px 14px 8px;flex-shrink:0}
-.hlp-seg{flex:1;border:none;border-radius:12px;padding:10px 4px;font-weight:800;font-size:12px;color:#9fb4ff;background:#0e1640;cursor:pointer;transition:background .15s,color .15s;text-align:center}
+.hlp-ctrl-panel{display:flex;flex-direction:column;flex-shrink:0}
+.hlp-segs{display:flex;gap:4px;padding:8px 12px 6px;flex-shrink:0}
+.hlp-seg{display:inline-block;border:none;border-radius:10px;padding:8px 10px;font-weight:800;font-size:11px;color:#9fb4ff;background:#0e1640;cursor:pointer;transition:background .15s,color .15s;text-align:center}
 .hlp-seg.active{background:linear-gradient(180deg,#1e3a8a,#122260);color:#fff;box-shadow:0 0 12px -4px rgba(0,160,255,.5)}
 .hlp-seg:active{transform:scale(.96)}
-.hlp-pos-row{display:flex;flex-wrap:wrap;gap:6px;padding:6px 14px;flex-shrink:0}
-.hlp-pos-row.pair-row{flex-direction:column}
-.hlp-pos-row.pair-row .pair-label{font-size:11px;color:var(--muted);font-weight:700;margin-bottom:2px}
-.hlp-pos-row.pair-row .pair-btns{display:flex;flex-wrap:wrap;gap:6px}
-.hlp-pb{border:none;border-radius:12px;padding:9px 14px;font-weight:800;font-size:13px;color:#9fb4ff;background:#0e1640;cursor:pointer;transition:background .15s,color .15s;display:flex;align-items:center;gap:6px}
+.hlp-pos-row{display:flex;flex-wrap:wrap;gap:4px;padding:4px 12px;flex-shrink:0}
+.hlp-pos-row.pair-row{flex-direction:column;gap:3px}
+.hlp-pos-row.pair-row .pair-label{font-size:10px;color:var(--muted);font-weight:700;margin-bottom:1px}
+.hlp-pos-row.pair-row .pair-btns{display:flex;flex-wrap:wrap;gap:4px}
+.hlp-pb{border:none;border-radius:10px;padding:6px 10px;font-weight:800;font-size:11px;color:#9fb4ff;background:#0e1640;cursor:pointer;transition:background .15s,color .15s;display:flex;align-items:center;gap:4px}
 .hlp-pb.active{background:linear-gradient(180deg,#1e3a8a,#122260);color:#fff;box-shadow:0 0 10px -4px rgba(0,160,255,.5)}
 .hlp-pb:active{transform:scale(.95)}
-.hlp-pb img.posemb{width:22px;height:22px;border-radius:50%;object-fit:cover}
-.hlp-grid-area{flex:1;overflow:hidden;display:flex;flex-direction:column;padding:4px 14px 0;min-height:0}
-.hlp-spot-title{font-size:13px;font-weight:800;color:var(--gold);margin-bottom:4px;flex-shrink:0}
-.hlp-spot-sub{font-size:11px;color:var(--muted);margin-bottom:6px;flex-shrink:0}
+.hlp-pb img.posemb{width:16px;height:16px;border-radius:50%;object-fit:cover}
+.hlp-grid-area{flex:1;overflow:hidden;display:flex;flex-direction:column;padding:2px 10px 0;min-height:0}
+.hlp-spot-title{font-size:12px;font-weight:800;color:var(--gold);margin-bottom:2px;flex-shrink:0}
+.hlp-spot-sub{font-size:10px;color:var(--muted);margin-bottom:3px;flex-shrink:0}
 .hlp-no-data{flex:1;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:13px;text-align:center;padding:20px}
 #hlpGrid{display:grid;grid-template-columns:repeat(13,1fr);gap:2px;width:100%;position:relative}
 #screen-helper .gridwrap{padding:0;margin:0;align-items:stretch;flex:1;min-height:0;width:100%;overflow:hidden}
 #screen-helper .grid13{max-width:100%;font-size:clamp(9px,2vw,13px)}
-#screen-helper .gridpct{font-size:11px;color:var(--muted);text-align:center;margin-top:4px;flex-shrink:0}
-#screen-helper .gridlegend{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;font-size:11px;color:var(--muted);margin-top:4px;flex-shrink:0}
-#screen-helper .gridlegend i{width:12px;height:12px;border-radius:3px;display:inline-block;vertical-align:middle;margin-right:3px}
+#screen-helper .gridpct{font-size:10px;color:var(--muted);text-align:center;margin-top:2px;flex-shrink:0}
+#screen-helper .gridlegend{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;font-size:10px;color:var(--muted);margin-top:2px;flex-shrink:0}
+#screen-helper .gridlegend i{width:10px;height:10px;border-radius:3px;display:inline-block;vertical-align:middle;margin-right:3px}
+@media(min-width:600px){
+  #screen-helper .body{flex-direction:row}
+  .hlp-ctrl-panel{width:210px;flex-shrink:0;display:flex;flex-direction:column;border-right:1px solid rgba(100,120,255,.15);overflow-y:auto}
+  .hlp-segs{flex-direction:column;align-items:flex-start}
+  .hlp-seg{white-space:nowrap;width:100%;box-sizing:border-box}
+  .hlp-grid-area{flex:1}
+}
 /* game-meta и другие внутренние экраны — тёмные */
 .game-meta{background:linear-gradient(180deg,rgba(10,14,40,.97),rgba(6,9,28,.97)) !important}
 #screen-profile .statgrid .s,.modecard,.picksheet{background:linear-gradient(180deg,rgba(14,22,64,.85),rgba(8,14,40,.9)) !important}
@@ -894,13 +902,15 @@ body{
 
     <div class="screen" id="screen-helper">
       <div class="game-meta"><span class="hcount">📡</span><span class="mid">Помощник</span><span class="x" onclick="nav('home')"><span class="ic">✕</span></span></div>
-      <div class="body" style="display:flex;flex-direction:column;flex:1;overflow:hidden;padding:0">
-        <div class="hlp-segs">
-          <button class="hlp-seg active" id="hlpSegRFI" onclick="hlpSetSit('rfi')">Открытие (RFI)</button>
-          <button class="hlp-seg" id="hlpSegVsOpen" onclick="hlpSetSit('vsopen')">vs Open</button>
-          <button class="hlp-seg" id="hlpSegVs3" onclick="hlpSetSit('vs3')">vs 3-бет</button>
+      <div class="body">
+        <div class="hlp-ctrl-panel">
+          <div class="hlp-segs">
+            <button class="hlp-seg active" id="hlpSegRFI" onclick="hlpSetSit('rfi')">Открытие (RFI)</button>
+            <button class="hlp-seg" id="hlpSegVsOpen" onclick="hlpSetSit('vsopen')">vs Open</button>
+            <button class="hlp-seg" id="hlpSegVs3" onclick="hlpSetSit('vs3')">vs 3-бет</button>
+          </div>
+          <div id="hlpPosArea" class="hlp-pos-row"></div>
         </div>
-        <div id="hlpPosArea" class="hlp-pos-row"></div>
         <div class="hlp-grid-area">
           <div class="hlp-spot-title" id="hlpTitle"></div>
           <div class="hlp-spot-sub" id="hlpSub"></div>
