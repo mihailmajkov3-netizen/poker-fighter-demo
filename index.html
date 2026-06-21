@@ -110,21 +110,21 @@ body{
 .pt-cta.help .arr{color:#8dd8f0}
 /* helper screen */
 #screen-helper .body{display:flex;flex-direction:column;flex:1;overflow:hidden;padding:0}
-/* Единственная строка: левая+правая колонки на всю высоту */
-.hlp-main-row{display:flex;flex-direction:row;flex:1;min-height:0;overflow:hidden}
-/* Левая колонка: фикс.ширина, flex-column: сегменты + позиции opener */
-.hlp-left-col{display:flex;flex-direction:column;flex-shrink:0;width:110px;padding:8px 0 6px 8px;gap:6px}
-/* Правая колонка: flex:1, flex-column: сетка + позиции hero */
-.hlp-right-col{display:flex;flex-direction:column;flex:1;min-width:0;min-height:0;overflow:hidden}
+/* Верхняя строка: левая (сегменты) + правая (сетка) — фиксирована по контенту */
+.hlp-main-row{display:flex;flex-direction:row;flex-shrink:0}
+/* Левая колонка: только сегменты (не растягивается по высоте) */
+.hlp-left-col{display:flex;flex-direction:column;align-self:flex-start;flex-shrink:0;width:110px;padding:8px 0 6px 8px;gap:6px}
+/* Правая колонка: сетка */
+.hlp-right-col{display:flex;flex-direction:column;flex:1;min-width:0;overflow:hidden}
 /* сегменты */
 .hlp-segs{display:flex;flex-direction:column;gap:4px;flex-shrink:0}
 .hlp-seg{width:100%;border:none;border-radius:10px;padding:0 4px;height:50px;font-weight:800;font-size:11px;color:#9fb4ff;background:#0e1640;cursor:pointer;transition:background .15s,color .15s;text-align:center;line-height:1.25;display:flex;align-items:center;justify-content:center}
 .hlp-seg.active{background:linear-gradient(180deg,#1e3a8a,#122260);color:#fff;box-shadow:0 0 12px -4px rgba(0,160,255,.5)}
 .hlp-seg:active{transform:scale(.96)}
 /* правая часть сетки */
-.hlp-grid-area{flex-shrink:0;display:flex;flex-direction:column;padding:6px 8px 2px 4px}
-/* разрешить ячейкам быть не квадратными в helper */
-#screen-helper .gc{aspect-ratio:unset;padding:2px 1px}
+.hlp-grid-area{display:flex;flex-direction:column;padding:6px 8px 2px 4px;flex:1;min-height:0;justify-content:center}
+/* ячейки в helper — квадратные, мелкий padding */
+#screen-helper .gc{padding:1px}
 .hlp-spot-title{font-size:11px;font-weight:800;color:var(--gold);margin-bottom:1px;flex-shrink:0;width:100%;text-align:center}
 .hlp-spot-sub{font-size:10px;color:var(--muted);margin-bottom:2px;flex-shrink:0;width:100%;text-align:center}
 #hlpGridWrap{display:flex;flex-direction:column;align-items:center;width:100%;flex:1;min-height:0;overflow:hidden;justify-content:flex-start}
@@ -136,11 +136,14 @@ body{
 #screen-helper .gridpct{font-size:9px;color:var(--muted);text-align:center;margin-top:2px;flex-shrink:0}
 #screen-helper .gridlegend{display:flex;gap:5px;justify-content:center;flex-wrap:wrap;font-size:9px;color:var(--muted);margin-top:2px;flex-shrink:0}
 #screen-helper .gridlegend i{width:8px;height:8px;border-radius:2px;display:inline-block;vertical-align:middle;margin-right:2px}
-/* Колонки позиций — встроены в левую/правую col */
+/* Нижняя зона: два столбца, растягивается на весь остаток */
+.hlp-bottom-row{display:flex;flex-direction:row;flex:1;min-height:0;border-top:1px solid rgba(120,150,230,.12)}
+.hlp-bottom-col{display:flex;flex-direction:column;gap:4px;flex:1;min-width:0;padding:6px 4px 6px 8px}
+.hlp-bottom-col-right{padding:6px 8px 6px 4px;border-left:1px solid rgba(120,150,230,.12)}
+/* общий стиль для колонок позиций */
 .hlp-pos-col{display:flex;flex-direction:column;gap:3px;flex-shrink:0}
-.hlp-pos-right{padding:2px 8px 6px 4px}
-.hlp-col-label{font-size:10px;color:var(--muted);font-weight:700;text-align:center;padding:2px 2px 2px;flex-shrink:0;border-top:1px solid rgba(120,150,230,.1)}
-.hlp-pb{width:100%;justify-content:flex-start;border:none;border-radius:8px;padding:5px 6px;font-weight:800;font-size:11px;color:#9fb4ff;background:#0e1640;cursor:pointer;transition:background .15s,color .15s;display:flex;align-items:center;gap:4px;flex-shrink:0}
+.hlp-col-label{font-size:10px;color:var(--muted);font-weight:700;text-align:center;padding:2px 2px 4px;flex-shrink:0}
+.hlp-pb{width:100%;justify-content:flex-start;border:none;border-radius:8px;padding:8px 6px;font-weight:800;font-size:11px;color:#9fb4ff;background:#0e1640;cursor:pointer;transition:background .15s,color .15s;display:flex;align-items:center;gap:4px;flex:1}
 .hlp-pb.active{background:linear-gradient(180deg,#1e3a8a,#122260);color:#fff;box-shadow:0 0 10px -4px rgba(0,160,255,.5)}
 .hlp-pb:active{transform:scale(.97)}
 .hlp-pb img.posemb{width:15px;height:15px;border-radius:50%;object-fit:cover;flex-shrink:0}
@@ -908,19 +911,15 @@ body{
     <div class="screen" id="screen-helper">
       <div class="game-meta"><span class="hcount">📡</span><span class="mid">Помощник</span><span class="x" onclick="nav('home')"><span class="ic">✕</span></span></div>
       <div class="body">
+        <!-- Верхняя зона: сегменты слева + сетка справа -->
         <div class="hlp-main-row">
-          <!-- Левая колонка: сегменты вверху + позиции внизу -->
           <div class="hlp-left-col">
             <div class="hlp-segs">
               <button class="hlp-seg active" id="hlpSegRFI" onclick="hlpSetSit('rfi')">Открытие RFI</button>
               <button class="hlp-seg" id="hlpSegVsOpen" onclick="hlpSetSit('vsopen')">vs Open</button>
               <button class="hlp-seg" id="hlpSegVs3" onclick="hlpSetSit('vs3')">vs 3-бет</button>
             </div>
-            <div class="hlp-pos-col" id="hlpPosLeft">
-              <div class="hlp-col-label" id="hlpLabelLeft">Кто открыл</div>
-            </div>
           </div>
-          <!-- Правая колонка: сетка вверху + позиции hero внизу -->
           <div class="hlp-right-col">
             <div class="hlp-grid-area">
               <div id="hlpGridWrap">
@@ -929,9 +928,15 @@ body{
                 <div id="hlpGridInner"></div>
               </div>
             </div>
-            <div class="hlp-pos-col hlp-pos-right" id="hlpPosRight">
-              <div class="hlp-col-label" id="hlpLabelRight">Моя позиция</div>
-            </div>
+          </div>
+        </div>
+        <!-- Нижняя зона: два столбца на всю ширину -->
+        <div class="hlp-bottom-row">
+          <div class="hlp-pos-col hlp-bottom-col" id="hlpPosLeft">
+            <div class="hlp-col-label" id="hlpLabelLeft">Кто открыл</div>
+          </div>
+          <div class="hlp-pos-col hlp-bottom-col hlp-bottom-col-right" id="hlpPosRight">
+            <div class="hlp-col-label" id="hlpLabelRight">Моя позиция</div>
           </div>
         </div>
         <div id="hlpPosArea" style="display:none"></div>
