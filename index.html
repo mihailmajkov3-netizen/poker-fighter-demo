@@ -110,36 +110,35 @@ body{
 .pt-cta.help .arr{color:#8dd8f0}
 /* helper screen */
 #screen-helper .body{display:flex;flex-direction:column;flex:1;overflow:hidden;padding:0}
-.hlp-ctrl-panel{display:flex;flex-direction:column;flex-shrink:0}
-.hlp-segs{display:flex;flex-direction:column;gap:7px;padding:10px 14px 8px;flex-shrink:0}
-.hlp-seg{width:100%;border:none;border-radius:12px;padding:15px 8px;font-weight:800;font-size:15px;color:#9fb4ff;background:#0e1640;cursor:pointer;transition:background .15s,color .15s;text-align:center}
+/* сегменты — горизонтальный ряд сверху */
+.hlp-segs{display:flex;flex-direction:row;gap:6px;padding:8px 10px 6px;flex-shrink:0}
+.hlp-seg{flex:1;border:none;border-radius:12px;padding:11px 4px;font-weight:800;font-size:14px;color:#9fb4ff;background:#0e1640;cursor:pointer;transition:background .15s,color .15s;text-align:center;line-height:1.2}
 .hlp-seg.active{background:linear-gradient(180deg,#1e3a8a,#122260);color:#fff;box-shadow:0 0 12px -4px rgba(0,160,255,.5)}
 .hlp-seg:active{transform:scale(.96)}
-.hlp-pos-row{display:flex;flex-wrap:wrap;gap:7px;padding:6px 14px;flex-shrink:0}
-.hlp-pos-row.pair-row{flex-direction:column;gap:5px}
-.hlp-pos-row.pair-row .pair-label{font-size:12px;color:var(--muted);font-weight:700;margin-bottom:2px}
-.hlp-pos-row.pair-row .pair-btns{display:flex;flex-direction:column;gap:7px}
-.hlp-pb{width:100%;justify-content:center;border:none;border-radius:12px;padding:15px 8px;font-weight:800;font-size:15px;color:#9fb4ff;background:#0e1640;cursor:pointer;transition:background .15s,color .15s;display:flex;align-items:center;gap:7px}
-.hlp-pb.active{background:linear-gradient(180deg,#1e3a8a,#122260);color:#fff;box-shadow:0 0 10px -4px rgba(0,160,255,.5)}
-.hlp-pb:active{transform:scale(.95)}
-.hlp-pb img.posemb{width:22px;height:22px;border-radius:50%;object-fit:cover}
-.hlp-grid-area{flex:1;overflow:hidden;display:flex;flex-direction:column;padding:2px 10px 0;min-height:0}
-.hlp-spot-title{font-size:12px;font-weight:800;color:var(--gold);margin-bottom:2px;flex-shrink:0}
-.hlp-spot-sub{font-size:10px;color:var(--muted);margin-bottom:3px;flex-shrink:0}
+/* область сетки — занимает всё свободное пространство */
+.hlp-grid-area{flex:1;overflow:hidden;display:flex;flex-direction:column;padding:2px 10px 4px;min-height:0}
+.hlp-spot-title{font-size:12px;font-weight:800;color:var(--gold);margin-bottom:2px;flex-shrink:0;width:100%;text-align:center}
+.hlp-spot-sub{font-size:10px;color:var(--muted);margin-bottom:3px;flex-shrink:0;width:100%;text-align:center}
+#hlpGridWrap{display:flex;flex-direction:column;align-items:center;width:100%;flex:1;min-height:0;overflow:hidden;justify-content:center}
 .hlp-no-data{flex:1;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:13px;text-align:center;padding:20px}
 #hlpGrid{display:grid;grid-template-columns:repeat(13,1fr);gap:2px;width:100%;position:relative}
-#screen-helper .gridwrap{padding:0;margin:0;align-items:stretch;flex:1;min-height:0;width:100%;overflow:hidden}
+#screen-helper .gridwrap{padding:0;margin:0;overflow:hidden;flex-shrink:0}
+#hlpGridInner{width:100%;display:flex;flex-direction:column;align-items:center}
 #screen-helper .grid13{max-width:100%;font-size:clamp(9px,2vw,13px)}
 #screen-helper .gridpct{font-size:10px;color:var(--muted);text-align:center;margin-top:2px;flex-shrink:0}
 #screen-helper .gridlegend{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;font-size:10px;color:var(--muted);margin-top:2px;flex-shrink:0}
 #screen-helper .gridlegend i{width:10px;height:10px;border-radius:3px;display:inline-block;vertical-align:middle;margin-right:3px}
-@media(min-width:480px){
-  #screen-helper .body{flex-direction:row}
-  .hlp-ctrl-panel{width:210px;flex-shrink:0;display:flex;flex-direction:column;border-right:1px solid rgba(100,120,255,.15);overflow-y:auto}
-  .hlp-segs{flex-direction:column;align-items:flex-start}
-  .hlp-seg{white-space:nowrap;width:100%;box-sizing:border-box}
-  .hlp-grid-area{flex:1}
-}
+/* позиции снизу — два прямоугольника на всю ширину */
+.hlp-pos-bottom{flex-shrink:0;padding:4px 10px 6px;display:flex;flex-direction:column;gap:4px}
+.hlp-pos-row{display:flex;flex-direction:row;gap:5px;flex-shrink:0}
+.hlp-pos-row.pair-row{flex-direction:column;gap:4px}
+.hlp-pos-row.pair-row .pair-label{font-size:11px;color:var(--muted);font-weight:700;padding:0 2px}
+.hlp-pos-row.pair-row .pair-btns{display:flex;flex-direction:row;gap:5px}
+.hlp-pb{flex:1;justify-content:center;border:none;border-radius:10px;padding:10px 2px;font-weight:800;font-size:13px;color:#9fb4ff;background:#0e1640;cursor:pointer;transition:background .15s,color .15s;display:flex;align-items:center;gap:4px;min-width:0}
+.hlp-pb.active{background:linear-gradient(180deg,#1e3a8a,#122260);color:#fff;box-shadow:0 0 10px -4px rgba(0,160,255,.5)}
+.hlp-pb:active{transform:scale(.95)}
+.hlp-pb img.posemb{width:18px;height:18px;border-radius:50%;object-fit:cover;flex-shrink:0}
+.hlp-pb span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 /* game-meta и другие внутренние экраны — тёмные */
 .game-meta{background:linear-gradient(180deg,rgba(10,14,40,.97),rgba(6,9,28,.97)) !important}
 #screen-profile .statgrid .s,.modecard,.picksheet{background:linear-gradient(180deg,rgba(14,22,64,.85),rgba(8,14,40,.9)) !important}
@@ -903,18 +902,20 @@ body{
     <div class="screen" id="screen-helper">
       <div class="game-meta"><span class="hcount">📡</span><span class="mid">Помощник</span><span class="x" onclick="nav('home')"><span class="ic">✕</span></span></div>
       <div class="body">
-        <div class="hlp-ctrl-panel">
-          <div class="hlp-segs">
-            <button class="hlp-seg active" id="hlpSegRFI" onclick="hlpSetSit('rfi')">Открытие (RFI)</button>
-            <button class="hlp-seg" id="hlpSegVsOpen" onclick="hlpSetSit('vsopen')">vs Open</button>
-            <button class="hlp-seg" id="hlpSegVs3" onclick="hlpSetSit('vs3')">vs 3-бет</button>
-          </div>
-          <div id="hlpPosArea" class="hlp-pos-row"></div>
+        <div class="hlp-segs">
+          <button class="hlp-seg active" id="hlpSegRFI" onclick="hlpSetSit('rfi')">Открытие (RFI)</button>
+          <button class="hlp-seg" id="hlpSegVsOpen" onclick="hlpSetSit('vsopen')">vs Open</button>
+          <button class="hlp-seg" id="hlpSegVs3" onclick="hlpSetSit('vs3')">vs 3-бет</button>
         </div>
         <div class="hlp-grid-area">
-          <div class="hlp-spot-title" id="hlpTitle"></div>
-          <div class="hlp-spot-sub" id="hlpSub"></div>
-          <div id="hlpGridWrap"></div>
+          <div id="hlpGridWrap">
+            <div class="hlp-spot-title" id="hlpTitle"></div>
+            <div class="hlp-spot-sub" id="hlpSub"></div>
+            <div id="hlpGridInner"></div>
+          </div>
+        </div>
+        <div class="hlp-pos-bottom">
+          <div id="hlpPosArea" class="hlp-pos-row"></div>
         </div>
       </div>
     </div>
@@ -1517,7 +1518,7 @@ function hlpRenderPos(){
 }
 
 function hlpRenderGrid(){
-  const wrap=$('hlpGridWrap');
+  const inner=$('hlpGridInner');
   const title=$('hlpTitle');
   const sub=$('hlpSub');
   if(hlp.sit==='rfi'){
@@ -1526,33 +1527,42 @@ function hlpRenderGrid(){
     const pct=Math.round(comboCount(range)/1326*100);
     title.textContent=pos+' · Открытие (RFI)';
     sub.textContent='Размер открытия: 2.5bb · '+pct+'% комбо';
-    wrap.innerHTML=gridHTML({in:range},null,null,false,{att:pos});
+    inner.innerHTML=gridHTML({in:range},null,null,false,{att:pos});
   } else if(hlp.sit==='vsopen'){
     const m=VS_RAW.find(x=>x.opener===hlp.opener&&x.hero===hlp.pos);
-    if(!m){wrap.innerHTML='<div class="hlp-no-data">Нет данных для этой пары позиций</div>';title.textContent='';sub.textContent='';return;}
+    if(!m){inner.innerHTML='<div class="hlp-no-data">Нет данных для этой пары позиций</div>';title.textContent='';sub.textContent='';return;}
     title.textContent=hlp.pos+' vs '+hlp.opener+' · vs Open';
     sub.textContent='Открытие 2.5bb · 3-бет / колл / фолд';
-    wrap.innerHTML=gridHTML({three:m.tbS,call:m.clS},null,null,false,{att:hlp.opener,def:hlp.pos});
+    inner.innerHTML=gridHTML({three:m.tbS,call:m.clS},null,null,false,{att:hlp.opener,def:hlp.pos});
   } else {
     const m=VS3_RAW.find(x=>x.threebettor===hlp.threebettor&&x.hero===hlp.pos);
-    if(!m){wrap.innerHTML='<div class="hlp-no-data">Нет данных для этой пары позиций</div>';title.textContent='';sub.textContent='';return;}
+    if(!m){inner.innerHTML='<div class="hlp-no-data">Нет данных для этой пары позиций</div>';title.textContent='';sub.textContent='';return;}
     title.textContent=hlp.pos+' vs 3-бет '+hlp.threebettor;
     sub.textContent='Ответ на 3-бет · 4-бет / колл / фолд';
-    wrap.innerHTML=gridHTML({three:m.fbS,call:m.clS},null,null,false,{att:hlp.threebettor,def:hlp.pos});
+    inner.innerHTML=gridHTML({three:m.fbS,call:m.clS},null,null,false,{att:hlp.threebettor,def:hlp.pos});
   }
   // Авто-размер сетки под экран
   requestAnimationFrame(hlpFitGrid);
 }
 
 function hlpFitGrid(){
-  const area=$('hlpGridWrap');
-  if(!area)return;
-  const g=area.querySelector('.grid13');
+  const inner=$('hlpGridInner');
+  if(!inner)return;
+  const g=inner.querySelector('.grid13');
   if(!g)return;
-  const availW=area.clientWidth;
-  if(!availW)return;
-  g.style.width=availW+'px';g.style.maxWidth=availW+'px';
-  g.style.fontSize=Math.max(9,Math.round(availW/13*0.38))+'px';
+  const wrap=$('hlpGridWrap');
+  if(!wrap)return;
+  // #hlpGridWrap = flex:1, занимает всё место между заголовками и нижней частью
+  const title=$('hlpTitle');const sub=$('hlpSub');
+  const titleH=title?title.offsetHeight+4:0;
+  const subH=sub?sub.offsetHeight+3:0;
+  const legendH=46; // gridpct + gridlegend ~38px + margin
+  const availW=wrap.clientWidth;
+  const availH=wrap.clientHeight-titleH-subH-legendH;
+  if(!availW||availH<40)return;
+  const size=Math.min(availW,availH);
+  g.style.width=size+'px';g.style.maxWidth=size+'px';
+  g.style.fontSize=Math.max(9,Math.round(size/13*0.38))+'px';
 }
 window.addEventListener('resize',function(){if($('screen-helper')&&$('screen-helper').classList.contains('active'))hlpFitGrid();});
 
