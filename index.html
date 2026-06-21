@@ -108,42 +108,35 @@ body{
 }
 .pt-cta.help .tx .ds{color:#8dd8f0}
 .pt-cta.help .arr{color:#8dd8f0}
-/* helper screen */
+/* helper screen — вертикальная схема v2 */
 #screen-helper .body{display:flex;flex-direction:column;flex:1;overflow:hidden;padding:0}
-/* Верхняя строка: левая (сегменты) + правая (сетка) — фиксирована по контенту */
-.hlp-main-row{display:flex;flex-direction:row;flex-shrink:0}
-/* Левая колонка: только сегменты (не растягивается по высоте) */
-.hlp-left-col{display:flex;flex-direction:column;align-self:flex-start;flex-shrink:0;width:110px;padding:8px 0 6px 8px;gap:6px}
-/* Правая колонка: сетка */
-.hlp-right-col{display:flex;flex-direction:column;flex:1;min-width:0;overflow:hidden}
-/* сегменты */
-.hlp-segs{display:flex;flex-direction:column;gap:4px;flex-shrink:0}
-.hlp-seg{width:100%;border:none;border-radius:10px;padding:0 4px;height:50px;font-weight:800;font-size:11px;color:#9fb4ff;background:#0e1640;cursor:pointer;transition:background .15s,color .15s;text-align:center;line-height:1.25;display:flex;align-items:center;justify-content:center}
-.hlp-seg.active{background:linear-gradient(180deg,#1e3a8a,#122260);color:#fff;box-shadow:0 0 12px -4px rgba(0,160,255,.5)}
-.hlp-seg:active{transform:scale(.96)}
-/* правая часть сетки */
-.hlp-grid-area{display:flex;flex-direction:column;padding:6px 8px 2px 4px;flex:1;min-height:0;justify-content:center}
-/* ячейки в helper — квадратные, мелкий padding */
+/* 1) Сетка — flex:1, заполняет доступное пространство сверху, центрирует содержимое */
+.hlp-grid-area{display:flex;flex-direction:column;padding:4px 8px 2px 8px;flex:1;min-height:0;overflow:hidden;justify-content:center;align-items:center}
+/* ячейки */
 #screen-helper .gc{padding:1px}
-.hlp-spot-title{font-size:11px;font-weight:800;color:var(--gold);margin-bottom:1px;flex-shrink:0;width:100%;text-align:center}
-.hlp-spot-sub{font-size:10px;color:var(--muted);margin-bottom:2px;flex-shrink:0;width:100%;text-align:center}
-#hlpGridWrap{display:flex;flex-direction:column;align-items:center;width:100%;flex:1;min-height:0;overflow:hidden;justify-content:flex-start}
+.hlp-spot-title{font-size:11px;font-weight:800;color:var(--gold);margin-bottom:1px;flex-shrink:0;width:100%;text-align:center;align-self:stretch}
+.hlp-spot-sub{font-size:10px;color:var(--muted);margin-bottom:2px;flex-shrink:0;width:100%;text-align:center;align-self:stretch}
+#hlpGridWrap{display:flex;flex-direction:column;align-items:center;width:100%;flex-shrink:0;overflow:hidden}
 .hlp-no-data{flex:1;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:13px;text-align:center;padding:20px}
 #hlpGrid{display:grid;grid-template-columns:repeat(13,1fr);gap:2px;width:100%;position:relative}
 #screen-helper .gridwrap{padding:0;margin:0;overflow:hidden;flex-shrink:0}
 #hlpGridInner{width:100%;display:flex;flex-direction:column;align-items:center}
 #screen-helper .grid13{max-width:100%;font-size:clamp(8px,2vw,12px)}
 #screen-helper .gridpct{font-size:9px;color:var(--muted);text-align:center;margin-top:2px;flex-shrink:0}
-#screen-helper .gridlegend{display:flex;gap:5px;justify-content:center;flex-wrap:wrap;font-size:9px;color:var(--muted);margin-top:2px;flex-shrink:0}
+#screen-helper .gridlegend{display:flex;gap:5px;justify-content:center;flex-wrap:wrap;font-size:9px;color:var(--muted);margin-top:3px;flex-shrink:0}
 #screen-helper .gridlegend i{width:8px;height:8px;border-radius:2px;display:inline-block;vertical-align:middle;margin-right:2px}
-/* Нижняя зона: два столбца, растягивается на весь остаток */
-.hlp-bottom-row{display:flex;flex-direction:row;flex:1;min-height:0;border-top:1px solid rgba(120,150,230,.12)}
-.hlp-bottom-col{display:flex;flex-direction:column;gap:4px;flex:1;min-width:0;padding:6px 4px 6px 8px}
-.hlp-bottom-col-right{padding:6px 8px 6px 4px;border-left:1px solid rgba(120,150,230,.12)}
-/* общий стиль для колонок позиций */
-.hlp-pos-col{display:flex;flex-direction:column;gap:3px;flex-shrink:0}
-.hlp-col-label{font-size:10px;color:var(--muted);font-weight:700;text-align:center;padding:2px 2px 4px;flex-shrink:0}
-.hlp-pb{width:100%;justify-content:flex-start;border:none;border-radius:8px;padding:8px 6px;font-weight:800;font-size:11px;color:#9fb4ff;background:#0e1640;cursor:pointer;transition:background .15s,color .15s;display:flex;align-items:center;gap:4px;flex:1}
+/* 2) Сегменты — горизонтальный ряд, фиксированная высота */
+.hlp-segs-row{display:flex;flex-direction:row;gap:5px;flex-shrink:0;padding:5px 8px;border-top:1px solid rgba(120,150,230,.12);border-bottom:1px solid rgba(120,150,230,.12)}
+.hlp-seg{flex:1;border:none;border-radius:10px;padding:0 4px;height:38px;font-weight:800;font-size:11px;color:#9fb4ff;background:#0e1640;cursor:pointer;transition:background .15s,color .15s;text-align:center;line-height:1.25;display:flex;align-items:center;justify-content:center}
+.hlp-seg.active{background:linear-gradient(180deg,#1e3a8a,#122260);color:#fff;box-shadow:0 0 12px -4px rgba(0,160,255,.5)}
+.hlp-seg:active{transform:scale(.96)}
+/* 3) Два столбца позиций — фиксированная высота снизу */
+.hlp-bottom-row{display:flex;flex-direction:row;flex-shrink:0}
+.hlp-bottom-col{display:flex;flex-direction:column;gap:3px;flex:1;min-width:0;padding:5px 4px 5px 8px}
+.hlp-bottom-col-right{padding:5px 8px 5px 4px;border-left:1px solid rgba(120,150,230,.12)}
+.hlp-pos-col{display:flex;flex-direction:column;gap:3px}
+.hlp-col-label{font-size:10px;color:var(--muted);font-weight:700;text-align:center;padding:0 2px 3px;flex-shrink:0}
+.hlp-pb{width:100%;justify-content:flex-start;border:none;border-radius:7px;padding:6px 6px;font-weight:800;font-size:11px;color:#9fb4ff;background:#0e1640;cursor:pointer;transition:background .15s,color .15s;display:flex;align-items:center;gap:4px}
 .hlp-pb.active{background:linear-gradient(180deg,#1e3a8a,#122260);color:#fff;box-shadow:0 0 10px -4px rgba(0,160,255,.5)}
 .hlp-pb:active{transform:scale(.97)}
 .hlp-pb img.posemb{width:15px;height:15px;border-radius:50%;object-fit:cover;flex-shrink:0}
@@ -911,26 +904,21 @@ body{
     <div class="screen" id="screen-helper">
       <div class="game-meta"><span class="hcount">📡</span><span class="mid">Помощник</span><span class="x" onclick="nav('home')"><span class="ic">✕</span></span></div>
       <div class="body">
-        <!-- Верхняя зона: сегменты слева + сетка справа -->
-        <div class="hlp-main-row">
-          <div class="hlp-left-col">
-            <div class="hlp-segs">
-              <button class="hlp-seg active" id="hlpSegRFI" onclick="hlpSetSit('rfi')">Открытие RFI</button>
-              <button class="hlp-seg" id="hlpSegVsOpen" onclick="hlpSetSit('vsopen')">vs Open</button>
-              <button class="hlp-seg" id="hlpSegVs3" onclick="hlpSetSit('vs3')">vs 3-бет</button>
-            </div>
-          </div>
-          <div class="hlp-right-col">
-            <div class="hlp-grid-area">
-              <div id="hlpGridWrap">
-                <div class="hlp-spot-title" id="hlpTitle"></div>
-                <div class="hlp-spot-sub" id="hlpSub"></div>
-                <div id="hlpGridInner"></div>
-              </div>
-            </div>
+        <!-- 1) Сетка (занимает flex:1) -->
+        <div class="hlp-grid-area">
+          <div class="hlp-spot-title" id="hlpTitle"></div>
+          <div class="hlp-spot-sub" id="hlpSub"></div>
+          <div id="hlpGridWrap">
+            <div id="hlpGridInner"></div>
           </div>
         </div>
-        <!-- Нижняя зона: два столбца на всю ширину -->
+        <!-- 2) Сегменты — горизонтальный ряд под сеткой -->
+        <div class="hlp-segs-row">
+          <button class="hlp-seg active" id="hlpSegRFI" onclick="hlpSetSit('rfi')">Открытие RFI</button>
+          <button class="hlp-seg" id="hlpSegVsOpen" onclick="hlpSetSit('vsopen')">vs Open</button>
+          <button class="hlp-seg" id="hlpSegVs3" onclick="hlpSetSit('vs3')">vs 3-бет</button>
+        </div>
+        <!-- 3) Два столбца позиций -->
         <div class="hlp-bottom-row">
           <div class="hlp-pos-col hlp-bottom-col" id="hlpPosLeft">
             <div class="hlp-col-label" id="hlpLabelLeft">Кто открыл</div>
@@ -1572,35 +1560,32 @@ function hlpFitGrid(){
   if(!inner)return;
   const g=inner.querySelector('.grid13');
   if(!g)return;
-  const rightCol=document.querySelector('.hlp-right-col');
-  const posRight=$('hlpPosRight');
-  const leftCol=document.querySelector('.hlp-left-col');
   const body=document.querySelector('#screen-helper .body');
-  if(!body||!rightCol)return;
-  // Ширина правой колонки
-  const rw=rightCol.clientWidth||body.clientWidth-110-8;
-  if(!rw){requestAnimationFrame(hlpFitGrid);return;}
+  if(!body)return;
+  const bW=body.clientWidth;
+  const bH=body.clientHeight;
+  if(!bW||!bH){requestAnimationFrame(hlpFitGrid);return;}
+  const segsRow=document.querySelector('.hlp-segs-row');
+  const bottomRow=document.querySelector('#screen-helper .hlp-bottom-row');
   const title=$('hlpTitle');const sub=$('hlpSub');
-  const titleH=title?title.offsetHeight+2:0;
-  const subH=sub?sub.offsetHeight+2:0;
-  const legendH=38;
-  // Высота позиций hero: 5 кнопок × (28px + 3px gap) + label ~18px
-  const posRH=posRight?posRight.offsetHeight:163;
-  const availW=rw-12; // padding grid-area (4+8)
-  const availH=body.clientHeight-posRH-titleH-subH-legendH-10;
+  const legend=document.querySelector('#screen-helper .gridlegend');
+  const segsH=segsRow?segsRow.offsetHeight:48;
+  const bottomH=bottomRow?bottomRow.offsetHeight:0;
+  const titleH=title?title.offsetHeight:14;
+  const subH=sub?sub.offsetHeight:12;
+  // легенда рендерится после сетки — берём реальный offsetHeight или эстимейт
+  const legendH=legend&&legend.offsetHeight?legend.offsetHeight+4:20;
+  const gridAreaPadV=10; // padding top+bottom .hlp-grid-area (4+6)
+  const availW=bW-16; // padding 8px*2
+  const availH=bH-segsH-bottomH-titleH-subH-legendH-gridAreaPadV-8;
   if(availW<40||availH<40){requestAnimationFrame(hlpFitGrid);return;}
-  // font-size: из ширины (cellW = availW/13, fs ≈ cellW*0.6)
-  const fsFromW=Math.max(7,Math.floor((availW/13)*0.6));
-  // font-size из высоты: ячейка = fs*1.2+4, 13 ячеек + 12*gap(2px) → 13*(fs*1.2+4)+24=availH
-  const fsFromH=Math.max(7,Math.floor((availH-24-52)/13/1.2));
-  const fs=Math.min(fsFromW,fsFromH);
-  g.style.width=availW+'px';g.style.maxWidth=availW+'px';
+  // Сетка квадратная (1fr × 13) — ячейка = gridWidth/13, высота=ширина
+  // Ограничиваем по наименьшему из двух измерений
+  const maxWfromH=Math.floor(availH-24); // 13 ячеек + 12 gap×2
+  const gridW=Math.min(availW, maxWfromH);
+  const fs=Math.max(7,Math.floor((gridW/13)*0.58));
+  g.style.width=gridW+'px';g.style.maxWidth=gridW+'px';
   g.style.fontSize=fs+'px';
-  // Задать высоту grid-area = реальная высота сетки + title/sub/legend
-  const cellH=fs*1.2+4;
-  const gridH=Math.ceil(13*cellH+12*2)+titleH+subH+legendH+10;
-  const gridArea=document.querySelector('.hlp-grid-area');
-  if(gridArea)gridArea.style.height=gridH+'px';
 }
 window.addEventListener('resize',function(){if($('screen-helper')&&$('screen-helper').classList.contains('active'))hlpFitGrid();});
 
