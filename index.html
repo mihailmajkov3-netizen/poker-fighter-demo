@@ -101,6 +101,37 @@ body{
   border-color:rgba(52,209,122,.3) !important;
   box-shadow:0 6px 20px rgba(0,0,0,.4),0 0 20px -8px rgba(52,209,122,.35) !important;
 }
+.pt-cta.help{
+  background:linear-gradient(135deg,rgba(20,50,80,.85),rgba(8,28,50,.9)) !important;
+  border-color:rgba(0,200,255,.35) !important;
+  box-shadow:0 6px 20px rgba(0,0,0,.4),0 0 20px -8px rgba(0,200,255,.35) !important;
+}
+.pt-cta.help .tx .ds{color:#8dd8f0}
+.pt-cta.help .arr{color:#8dd8f0}
+/* helper screen */
+#screen-helper .body{display:flex;flex-direction:column;flex:1;overflow:hidden;padding:0}
+.hlp-segs{display:flex;gap:6px;padding:12px 14px 8px;flex-shrink:0}
+.hlp-seg{flex:1;border:none;border-radius:12px;padding:10px 4px;font-weight:800;font-size:12px;color:#9fb4ff;background:#0e1640;cursor:pointer;transition:background .15s,color .15s;text-align:center}
+.hlp-seg.active{background:linear-gradient(180deg,#1e3a8a,#122260);color:#fff;box-shadow:0 0 12px -4px rgba(0,160,255,.5)}
+.hlp-seg:active{transform:scale(.96)}
+.hlp-pos-row{display:flex;flex-wrap:wrap;gap:6px;padding:6px 14px;flex-shrink:0}
+.hlp-pos-row.pair-row{flex-direction:column}
+.hlp-pos-row.pair-row .pair-label{font-size:11px;color:var(--muted);font-weight:700;margin-bottom:2px}
+.hlp-pos-row.pair-row .pair-btns{display:flex;flex-wrap:wrap;gap:6px}
+.hlp-pb{border:none;border-radius:12px;padding:9px 14px;font-weight:800;font-size:13px;color:#9fb4ff;background:#0e1640;cursor:pointer;transition:background .15s,color .15s;display:flex;align-items:center;gap:6px}
+.hlp-pb.active{background:linear-gradient(180deg,#1e3a8a,#122260);color:#fff;box-shadow:0 0 10px -4px rgba(0,160,255,.5)}
+.hlp-pb:active{transform:scale(.95)}
+.hlp-pb img.posemb{width:22px;height:22px;border-radius:50%;object-fit:cover}
+.hlp-grid-area{flex:1;overflow:hidden;display:flex;flex-direction:column;padding:4px 14px 0;min-height:0}
+.hlp-spot-title{font-size:13px;font-weight:800;color:var(--gold);margin-bottom:4px;flex-shrink:0}
+.hlp-spot-sub{font-size:11px;color:var(--muted);margin-bottom:6px;flex-shrink:0}
+.hlp-no-data{flex:1;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:13px;text-align:center;padding:20px}
+#hlpGrid{display:grid;grid-template-columns:repeat(13,1fr);gap:2px;width:100%;position:relative}
+#screen-helper .gridwrap{padding:0;margin:0;align-items:stretch;flex:1;min-height:0;width:100%;overflow:hidden}
+#screen-helper .grid13{max-width:100%;font-size:clamp(9px,2vw,13px)}
+#screen-helper .gridpct{font-size:11px;color:var(--muted);text-align:center;margin-top:4px;flex-shrink:0}
+#screen-helper .gridlegend{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;font-size:11px;color:var(--muted);margin-top:4px;flex-shrink:0}
+#screen-helper .gridlegend i{width:12px;height:12px;border-radius:3px;display:inline-block;vertical-align:middle;margin-right:3px}
 /* game-meta и другие внутренние экраны — тёмные */
 .game-meta{background:linear-gradient(180deg,rgba(10,14,40,.97),rgba(6,9,28,.97)) !important}
 #screen-profile .statgrid .s,.modecard,.picksheet{background:linear-gradient(180deg,rgba(14,22,64,.85),rgba(8,14,40,.9)) !important}
@@ -750,6 +781,7 @@ body{
         </div>
         <div class="pt-cta" onclick="openPlacement()"><div class="ic">🎯</div><div class="tx"><div class="nm">Проверка префлоп-уровня</div><div class="ds" id="ptHomeDs">16 вопросов · узнай свой уровень</div></div><div class="arr">›</div></div>
         <div class="pt-cta train" onclick="startPreflopTrain()"><div class="ic">🎓</div><div class="tx"><div class="nm">Префлоп-тренировка</div><div class="ds">60 спотов за столом · сложность растёт</div></div><div class="arr">›</div></div>
+        <div class="pt-cta help" onclick="openHelper()"><div class="ic">📡</div><div class="tx"><div class="nm">Помощник</div><div class="ds">Справочник диапазонов · за столом в реальной игре</div></div><div class="arr">›</div></div>
         <div class="pt-cta" id="schoolCta" onclick="openSchool()" style="--ac:#d05cff;border-left-color:#d05cff;box-shadow:0 6px 20px rgba(0,0,0,.4),0 0 20px -8px #d05cff"><div class="ic">🥋</div><div class="tx"><div class="nm">Школа Шифу</div><div class="ds" id="schoolCtaDs">Закрепи диапазоны · интервальное повторение</div></div><div class="arr">›</div></div>
         <div class="ctas">
         <div class="bigcta" onclick="nav('career')"><div class="tag">🪜 КАРЬЕРА</div><h3 id="ctaStake">NL2 · Микролимит</h3><small id="ctaSub">Поднимайся по лимитам</small><div class="arrow">›</div></div>
@@ -857,6 +889,23 @@ body{
           </div>
         </div>
         <div id="ptResult" class="pt-resultwrap" style="display:none"></div>
+      </div>
+    </div>
+
+    <div class="screen" id="screen-helper">
+      <div class="game-meta"><span class="hcount">📡</span><span class="mid">Помощник</span><span class="x" onclick="nav('home')"><span class="ic">✕</span></span></div>
+      <div class="body" style="display:flex;flex-direction:column;flex:1;overflow:hidden;padding:0">
+        <div class="hlp-segs">
+          <button class="hlp-seg active" id="hlpSegRFI" onclick="hlpSetSit('rfi')">Открытие (RFI)</button>
+          <button class="hlp-seg" id="hlpSegVsOpen" onclick="hlpSetSit('vsopen')">vs Open</button>
+          <button class="hlp-seg" id="hlpSegVs3" onclick="hlpSetSit('vs3')">vs 3-бет</button>
+        </div>
+        <div id="hlpPosArea" class="hlp-pos-row"></div>
+        <div class="hlp-grid-area">
+          <div class="hlp-spot-title" id="hlpTitle"></div>
+          <div class="hlp-spot-sub" id="hlpSub"></div>
+          <div id="hlpGridWrap"></div>
+        </div>
       </div>
     </div>
 
@@ -1376,6 +1425,126 @@ function genVs3bet(heroPos,tbPos){
       const nmm={fourbet:'4-бет',call:'колл',fold:'фолд'};this.coach=posAnimal(m.threebettor)+' ('+m.threebettor+') ответил 3-бетом. '+hand.code+' → '+nmm[ca]+'.'+(ca==='fourbet'?' Сильна для контрудара — 4-бет.':ca==='call'?' Достаточно крепка, чтобы принять бой. Колл.':' Слаба против его силы — отступи.');
       return {correct:ok,meh,body:gridHTML({three:m.fbS,call:m.clS},hand.code,'4-бет',false,{att:m.threebettor,def:m.hero})};}};
 }
+
+/* ===== HELPER — справочник диапазонов для реальной игры ===== */
+// Открытие: размер 2.5bb — чарты под фикс; селектор размера не реализован (нет данных под другие размеры)
+const HLP_RFI_POS=['UTG','HJ','CO','BTN','SB'];
+let hlp={sit:'vsopen',pos:'BTN',opener:'UTG',threebettor:'BB'};
+
+function openHelper(){
+  show('helper');setTitle('Помощник');
+  hlpSetSit('vsopen',true);
+}
+
+function hlpSetSit(sit,init){
+  hlp.sit=sit;
+  ['RFI','VsOpen','Vs3'].forEach(k=>{
+    const el=$('hlpSeg'+k);
+    if(el)el.classList.toggle('active',sit==={RFI:'rfi',VsOpen:'vsopen',Vs3:'vs3'}[k]);
+  });
+  hlpRenderPos();
+  hlpRenderGrid();
+}
+
+function hlpRenderPos(){
+  const area=$('hlpPosArea');
+  area.innerHTML='';
+  area.className='hlp-pos-row';
+  if(hlp.sit==='rfi'){
+    HLP_RFI_POS.forEach(p=>{
+      const b=document.createElement('button');
+      b.className='hlp-pb'+(hlp.pos===p?' active':'');
+      b.innerHTML=posEmblem(p)+'<span>'+p+'</span>';
+      b.onclick=()=>{hlp.pos=p;hlpRenderPos();hlpRenderGrid();};
+      area.appendChild(b);
+    });
+  } else {
+    // Двухшаговый выбор: opener + hero из валидных пар
+    const raw=hlp.sit==='vsopen'?VS_RAW:VS3_RAW;
+    const oppKey=hlp.sit==='vsopen'?'opener':'threebettor';
+    const heroKey='hero';
+    // Уникальные openers
+    const openers=[...new Set(raw.map(m=>m[oppKey]))];
+    // Текущий opener/3-bettor
+    const curOpp=hlp.sit==='vsopen'?hlp.opener:hlp.threebettor;
+    const validOpp=openers.includes(curOpp)?curOpp:openers[0];
+    if(hlp.sit==='vsopen')hlp.opener=validOpp;else hlp.threebettor=validOpp;
+    // Герои под выбранный opener
+    const heroes=raw.filter(m=>m[oppKey]===validOpp).map(m=>m[heroKey]);
+    const validHero=heroes.includes(hlp.pos)?hlp.pos:heroes[0];
+    hlp.pos=validHero;
+
+    area.className='hlp-pos-row pair-row';
+    const lbl1=document.createElement('div');lbl1.className='pair-label';
+    lbl1.textContent=hlp.sit==='vsopen'?'Кто открыл:':'Кто 3-бетнул:';
+    area.appendChild(lbl1);
+    const row1=document.createElement('div');row1.className='pair-btns';
+    openers.forEach(op=>{
+      const b=document.createElement('button');
+      b.className='hlp-pb'+(validOpp===op?' active':'');
+      b.innerHTML=posEmblem(op)+'<span>'+op+'</span>';
+      b.onclick=()=>{
+        if(hlp.sit==='vsopen')hlp.opener=op;else hlp.threebettor=op;
+        hlp.pos=''; // сбросить, перерисует
+        hlpRenderPos();hlpRenderGrid();
+      };
+      row1.appendChild(b);
+    });
+    area.appendChild(row1);
+    const lbl2=document.createElement('div');lbl2.className='pair-label';
+    lbl2.textContent='Ты (hero):';
+    area.appendChild(lbl2);
+    const row2=document.createElement('div');row2.className='pair-btns';
+    heroes.forEach(hp=>{
+      const b=document.createElement('button');
+      b.className='hlp-pb'+(validHero===hp?' active':'');
+      b.innerHTML=posEmblem(hp)+'<span>'+hp+'</span>';
+      b.onclick=()=>{hlp.pos=hp;hlpRenderPos();hlpRenderGrid();};
+      row2.appendChild(b);
+    });
+    area.appendChild(row2);
+  }
+}
+
+function hlpRenderGrid(){
+  const wrap=$('hlpGridWrap');
+  const title=$('hlpTitle');
+  const sub=$('hlpSub');
+  if(hlp.sit==='rfi'){
+    const pos=hlp.pos||'BTN';
+    const range=rfiRange(pos);
+    const pct=Math.round(comboCount(range)/1326*100);
+    title.textContent=pos+' · Открытие (RFI)';
+    sub.textContent='Размер открытия: 2.5bb · '+pct+'% комбо';
+    wrap.innerHTML=gridHTML({in:range},null,null,false,{att:pos});
+  } else if(hlp.sit==='vsopen'){
+    const m=VS_RAW.find(x=>x.opener===hlp.opener&&x.hero===hlp.pos);
+    if(!m){wrap.innerHTML='<div class="hlp-no-data">Нет данных для этой пары позиций</div>';title.textContent='';sub.textContent='';return;}
+    title.textContent=hlp.pos+' vs '+hlp.opener+' · vs Open';
+    sub.textContent='Открытие 2.5bb · 3-бет / колл / фолд';
+    wrap.innerHTML=gridHTML({three:m.tbS,call:m.clS},null,null,false,{att:hlp.opener,def:hlp.pos});
+  } else {
+    const m=VS3_RAW.find(x=>x.threebettor===hlp.threebettor&&x.hero===hlp.pos);
+    if(!m){wrap.innerHTML='<div class="hlp-no-data">Нет данных для этой пары позиций</div>';title.textContent='';sub.textContent='';return;}
+    title.textContent=hlp.pos+' vs 3-бет '+hlp.threebettor;
+    sub.textContent='Ответ на 3-бет · 4-бет / колл / фолд';
+    wrap.innerHTML=gridHTML({three:m.fbS,call:m.clS},null,null,false,{att:hlp.threebettor,def:hlp.pos});
+  }
+  // Авто-размер сетки под экран
+  requestAnimationFrame(hlpFitGrid);
+}
+
+function hlpFitGrid(){
+  const area=$('hlpGridWrap');
+  if(!area)return;
+  const g=area.querySelector('.grid13');
+  if(!g)return;
+  const availW=area.clientWidth;
+  if(!availW)return;
+  g.style.width=availW+'px';g.style.maxWidth=availW+'px';
+  g.style.fontSize=Math.max(9,Math.round(availW/13*0.38))+'px';
+}
+window.addEventListener('resize',function(){if($('screen-helper')&&$('screen-helper').classList.contains('active'))hlpFitGrid();});
 
 /* ===== PLACEMENT TEST — замер префлоп-уровня ===== */
 const PLACEMENT_Q=[
