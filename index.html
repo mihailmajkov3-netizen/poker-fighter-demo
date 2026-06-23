@@ -1229,7 +1229,14 @@ const VS3_RAW=[
   {hero:'HJ',threebettor:'BTN',label:'BTN делает 3-бет',fb:['QQ+','AKs','AKo','A5s'],cl:['99-JJ','AQs','AJs','KQs','KJs','QJs','JTs','AQo']},
   {hero:'HJ',threebettor:'BB',label:'BB делает 3-бет',fb:['QQ+','AKs','AKo','A5s'],cl:['99-JJ','AQs','AJs','KQs','KJs','QJs','JTs','AQo']},
   {hero:'UTG',threebettor:'BB',label:'BB делает 3-бет',fb:['KK+','AKs','A5s'],cl:['TT-QQ','AQs','AJs','KQs','AKo']},
-  {hero:'SB',threebettor:'BB',label:'BB делает 3-бет',fb:['JJ+','AQs+','AKo','A5s','A4s'],cl:['88-TT','AJs','ATs','KQs','KJs','QJs','JTs','AQo']}
+  {hero:'SB',threebettor:'BB',label:'BB делает 3-бет',fb:['JJ+','AQs+','AKo','A5s','A4s'],cl:['88-TT','AJs','ATs','KQs','KJs','QJs','JTs','AQo']},
+  {hero:'UTG',threebettor:'CO',label:'CO делает 3-бет',fb:['KK+','AKs','A5s'],cl:['TT-QQ','AQs','AJs','KQs','AKo']},
+  {hero:'HJ',threebettor:'CO',label:'CO делает 3-бет',fb:['QQ+','AKs','AKo','A5s'],cl:['99-JJ','AQs','AJs','KQs','KJs','QJs','JTs','AQo']},
+  {hero:'UTG',threebettor:'HJ',label:'HJ делает 3-бет',fb:['KK+','AKs','A5s'],cl:['TT-QQ','AQs','AJs','KQs','AKo']},
+  {hero:'UTG',threebettor:'BTN',label:'BTN делает 3-бет',fb:['KK+','AKs','A5s'],cl:['TT-QQ','AQs','AJs','KQs','AKo']},
+  {hero:'UTG',threebettor:'SB',label:'SB делает 3-бет',fb:['KK+','AKs','A5s'],cl:['TT-QQ','AQs','AJs','KQs','AKo']},
+  {hero:'HJ',threebettor:'SB',label:'SB делает 3-бет',fb:['QQ+','AKs','AKo','A5s'],cl:['99-JJ','AQs','AJs','KQs','KJs','QJs','JTs','AQo']},
+  {hero:'CO',threebettor:'SB',label:'SB делает 3-бет',fb:['JJ+','AQs+','AKo','A5s','A4s'],cl:['77-TT','AJs','ATs','KQs','KJs','QJs','JTs','T9s','AQo']}
 ].map(m=>({...m,fbS:buildRange(m.fb),clS:buildRange(m.cl)}));
 
 /* ===== PROFILE ===== */
