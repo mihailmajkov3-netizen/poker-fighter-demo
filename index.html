@@ -1546,11 +1546,11 @@ function hlpRenderPos(){
     const raw=hlp.sit==='vsopen'?VS_RAW:VS3_RAW;
     const oppKey=hlp.sit==='vsopen'?'opener':'threebettor';
     const heroKey='hero';
-    const openers=[...new Set(raw.map(m=>m[oppKey]))];
+    const openers=[...new Set(raw.map(m=>m[oppKey]))].sort((a,b)=>ACT_ORDER.indexOf(a)-ACT_ORDER.indexOf(b));
     const curOpp=hlp.sit==='vsopen'?hlp.opener:hlp.threebettor;
     const validOpp=openers.includes(curOpp)?curOpp:openers[0];
     if(hlp.sit==='vsopen')hlp.opener=validOpp;else hlp.threebettor=validOpp;
-    const heroes=raw.filter(m=>m[oppKey]===validOpp).map(m=>m[heroKey]);
+    const heroes=[...new Set(raw.filter(m=>m[oppKey]===validOpp).map(m=>m[heroKey]))].sort((a,b)=>ACT_ORDER.indexOf(a)-ACT_ORDER.indexOf(b));
     const validHero=heroes.includes(hlp.pos)?hlp.pos:heroes[0];
     hlp.pos=validHero;
 
