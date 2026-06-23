@@ -143,6 +143,97 @@ body{
 .hlp-pb:active{transform:scale(.97)}
 .hlp-pb img.posemb{width:15px;height:15px;border-radius:50%;object-fit:cover;flex-shrink:0}
 .hlp-pb span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+/* ===== HELPER — колонки-обёртки (мобайл: прозрачные flex-контейнеры) ===== */
+.hlp-col-left{display:contents}
+.hlp-col-right{display:contents}
+
+/* ===== HELPER — iPad landscape split layout ===== */
+@media (min-aspect-ratio: 13/10) and (min-width: 900px) {
+  /* Разворачиваем #app на полный экран */
+  #app{max-width:100% !important}
+
+  /* Тело помощника — горизонтальная полоса */
+  #screen-helper .body{flex-direction:row !important;overflow:hidden}
+
+  /* Левая колонка ~60%: сетка */
+  .hlp-col-left{
+    flex:0 0 60%;max-width:60%;
+    display:flex;flex-direction:column;
+    padding:8px 10px 8px 12px;
+    border-right:1px solid rgba(120,150,230,.15);
+    overflow:hidden;min-height:0;
+  }
+  /* Правая колонка ~40%: управление */
+  .hlp-col-right{
+    flex:1;
+    display:flex;flex-direction:column;
+    padding:6px 10px 6px 8px;
+    overflow:hidden;min-height:0;
+  }
+
+  /* Сегменты в правой колонке — тонкий ряд сверху */
+  .hlp-col-right .hlp-segs-row{
+    border-top:none !important;
+    border-bottom:1px solid rgba(120,150,230,.15) !important;
+    padding:4px 0 6px !important;
+    flex-shrink:0;
+  }
+  .hlp-col-right .hlp-seg{height:32px !important;font-size:10px !important}
+
+  /* Нижняя строка позиций — занимает всю оставшуюся высоту */
+  .hlp-col-right .hlp-bottom-row{
+    flex:1 !important;
+    min-height:0 !important;
+    gap:6px;
+    padding:6px 0 0 !important;
+  }
+  .hlp-col-right .hlp-bottom-col{
+    flex:1 !important;
+    padding:0 !important;
+    gap:4px !important;
+    display:flex;flex-direction:column;
+    min-height:0;
+    overflow:hidden;
+  }
+  .hlp-col-right .hlp-bottom-col-right{
+    border-left:1px solid rgba(120,150,230,.12);
+    padding-left:6px !important;
+  }
+
+  /* Плитки — растягиваются на 1fr, минимальная тап-зона 44px */
+  .hlp-col-right .hlp-pb{
+    flex:1 !important;
+    min-height:44px !important;
+    max-height:none !important;
+    border-radius:10px !important;
+    padding:8px 10px !important;
+    font-size:12px !important;
+    justify-content:flex-start !important;
+    align-items:center;
+  }
+  .hlp-col-right .hlp-pb img.posemb{width:22px !important;height:22px !important}
+  .hlp-col-right .hlp-col-label{font-size:11px !important;padding-bottom:4px !important}
+
+  /* Заголовок в левой колонке */
+  .hlp-col-left .hlp-spot-title{font-size:13px !important;text-align:left !important;margin-bottom:2px}
+  .hlp-col-left .hlp-spot-sub{font-size:11px !important;text-align:left !important;margin-bottom:4px}
+
+  /* Сетка в левой колонке — заполняет оставшуюся высоту */
+  .hlp-col-left .hlp-grid-area{
+    flex:1 !important;
+    padding:0 !important;
+    justify-content:flex-start !important;
+    align-items:flex-start !important;
+    overflow:hidden;min-height:0;
+  }
+  .hlp-col-left #hlpGridWrap{flex:1 !important;min-height:0;width:100%}
+  .hlp-col-left #hlpGridInner{width:100%}
+
+  /* Скрываем оригинальные контейнеры вне колонок (они перемещены в JS) */
+  #screen-helper > .body > .hlp-segs-row,
+  #screen-helper > .body > .hlp-bottom-row{display:none !important}
+}
+
 /* game-meta и другие внутренние экраны — тёмные */
 .game-meta{background:linear-gradient(180deg,rgba(10,14,40,.97),rgba(6,9,28,.97)) !important}
 #screen-profile .statgrid .s,.modecard,.picksheet{background:linear-gradient(180deg,rgba(14,22,64,.85),rgba(8,14,40,.9)) !important}
@@ -954,27 +1045,32 @@ body{
     <div class="screen" id="screen-helper">
       <div class="game-meta"><span class="hcount">📡</span><span class="mid">Помощник</span><span class="x" onclick="nav('home')"><span class="ic">✕</span></span></div>
       <div class="body">
-        <!-- 1) Сетка (занимает flex:1) -->
-        <div class="hlp-grid-area">
-          <div class="hlp-spot-title" id="hlpTitle"></div>
-          <div class="hlp-spot-sub" id="hlpSub"></div>
-          <div id="hlpGridWrap">
-            <div id="hlpGridInner"></div>
+        <!-- Левая колонка (desktop: 60%) — сетка-доминанта -->
+        <div class="hlp-col-left">
+          <div class="hlp-grid-area">
+            <div class="hlp-spot-title" id="hlpTitle"></div>
+            <div class="hlp-spot-sub" id="hlpSub"></div>
+            <div id="hlpGridWrap">
+              <div id="hlpGridInner"></div>
+            </div>
           </div>
         </div>
-        <!-- 2) Сегменты — горизонтальный ряд под сеткой -->
-        <div class="hlp-segs-row">
-          <button class="hlp-seg active" id="hlpSegRFI" onclick="hlpSetSit('rfi')">Открытие RFI</button>
-          <button class="hlp-seg" id="hlpSegVsOpen" onclick="hlpSetSit('vsopen')">vs Open</button>
-          <button class="hlp-seg" id="hlpSegVs3" onclick="hlpSetSit('vs3')">vs 3-бет</button>
-        </div>
-        <!-- 3) Два столбца позиций -->
-        <div class="hlp-bottom-row">
-          <div class="hlp-pos-col hlp-bottom-col" id="hlpPosLeft">
-            <div class="hlp-col-label" id="hlpLabelLeft">Кто открыл</div>
+        <!-- Правая колонка (desktop: 40%) / на мобайле — продолжение потока -->
+        <div class="hlp-col-right">
+          <!-- Сегменты режима -->
+          <div class="hlp-segs-row">
+            <button class="hlp-seg active" id="hlpSegRFI" onclick="hlpSetSit('rfi')">Открытие RFI</button>
+            <button class="hlp-seg" id="hlpSegVsOpen" onclick="hlpSetSit('vsopen')">vs Open</button>
+            <button class="hlp-seg" id="hlpSegVs3" onclick="hlpSetSit('vs3')">vs 3-бет</button>
           </div>
-          <div class="hlp-pos-col hlp-bottom-col hlp-bottom-col-right" id="hlpPosRight">
-            <div class="hlp-col-label" id="hlpLabelRight">Моя позиция</div>
+          <!-- Два столбца позиций -->
+          <div class="hlp-bottom-row">
+            <div class="hlp-pos-col hlp-bottom-col" id="hlpPosLeft">
+              <div class="hlp-col-label" id="hlpLabelLeft">Кто открыл</div>
+            </div>
+            <div class="hlp-pos-col hlp-bottom-col hlp-bottom-col-right" id="hlpPosRight">
+              <div class="hlp-col-label" id="hlpLabelRight">Моя позиция</div>
+            </div>
           </div>
         </div>
         <div id="hlpPosArea" style="display:none"></div>
@@ -1628,26 +1724,35 @@ function hlpFitGrid(){
   if(!g)return;
   const body=document.querySelector('#screen-helper .body');
   if(!body)return;
-  const bW=body.clientWidth;
-  const bH=body.clientHeight;
+
+  // На landscape-планшете сетка живёт в левой колонке — меряем её
+  const leftCol=document.querySelector('#screen-helper .hlp-col-left');
+  const isLandscape=leftCol&&leftCol.clientWidth>100&&leftCol.style.display!=='contents'&&getComputedStyle(leftCol).display!=='contents';
+  const colEl=isLandscape?leftCol:body;
+
+  const bW=colEl.clientWidth;
+  const bH=isLandscape?colEl.clientHeight:body.clientHeight;
   if(!bW||!bH){requestAnimationFrame(hlpFitGrid);return;}
-  const segsRow=document.querySelector('.hlp-segs-row');
-  const bottomRow=document.querySelector('#screen-helper .hlp-bottom-row');
+
   const title=$('hlpTitle');const sub=$('hlpSub');
   const legend=document.querySelector('#screen-helper .gridlegend');
-  const segsH=segsRow?segsRow.offsetHeight:48;
-  const bottomH=bottomRow?bottomRow.offsetHeight:0;
   const titleH=title?title.offsetHeight:14;
   const subH=sub?sub.offsetHeight:12;
-  // легенда рендерится после сетки — берём реальный offsetHeight или эстимейт
   const legendH=legend&&legend.offsetHeight?legend.offsetHeight+4:20;
-  const gridAreaPadV=10; // padding top+bottom .hlp-grid-area (4+6)
-  const availW=bW-16; // padding 8px*2
+
+  let segsH=0,bottomH=0;
+  if(!isLandscape){
+    const segsRow=document.querySelector('.hlp-segs-row');
+    const bottomRow=document.querySelector('#screen-helper .hlp-bottom-row');
+    segsH=segsRow?segsRow.offsetHeight:48;
+    bottomH=bottomRow?bottomRow.offsetHeight:0;
+  }
+
+  const gridAreaPadV=isLandscape?4:10;
+  const availW=bW-(isLandscape?22:16);
   const availH=bH-segsH-bottomH-titleH-subH-legendH-gridAreaPadV-8;
   if(availW<40||availH<40){requestAnimationFrame(hlpFitGrid);return;}
-  // Сетка квадратная (1fr × 13) — ячейка = gridWidth/13, высота=ширина
-  // Ограничиваем по наименьшему из двух измерений
-  const maxWfromH=Math.floor(availH-24); // 13 ячеек + 12 gap×2
+  const maxWfromH=Math.floor(availH-24);
   const gridW=Math.min(availW, maxWfromH);
   const fs=Math.max(7,Math.floor((gridW/13)*0.58));
   g.style.width=gridW+'px';g.style.maxWidth=gridW+'px';
