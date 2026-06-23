@@ -125,6 +125,8 @@ body{
 #screen-helper .gridpct{font-size:9px;color:var(--muted);text-align:center;margin-top:2px;flex-shrink:0}
 #screen-helper .gridlegend{display:flex;gap:5px;justify-content:center;flex-wrap:wrap;font-size:9px;color:var(--muted);margin-top:3px;flex-shrink:0}
 #screen-helper .gridlegend i{width:8px;height:8px;border-radius:2px;display:inline-block;vertical-align:middle;margin-right:2px}
+.hlp-shd-legend{display:flex;align-items:center;gap:5px;justify-content:center;font-size:9px;color:#56d0ef;margin-top:4px;flex-shrink:0;font-weight:700;letter-spacing:.2px}
+.hlp-shd-swatch{width:10px;height:10px;border-radius:2px;display:inline-block;flex-shrink:0;background:rgba(0,210,255,.12);box-shadow:0 0 0 1.5px rgba(0,210,255,.7);}
 /* 2) Сегменты — горизонтальный ряд, фиксированная высота */
 .hlp-segs-row{display:flex;flex-direction:row;gap:5px;flex-shrink:0;padding:5px 8px;border-top:1px solid rgba(120,150,230,.12);border-bottom:1px solid rgba(120,150,230,.12)}
 .hlp-seg{flex:1;border:none;border-radius:10px;padding:0 4px;height:38px;font-weight:800;font-size:11px;color:#9fb4ff;background:#0e1640;cursor:pointer;transition:background .15s,color .15s;text-align:center;line-height:1.25;display:flex;align-items:center;justify-content:center}
@@ -480,6 +482,10 @@ body{
 .gs-emb-att{left:-3%;bottom:-3%}.gs-emb-def{right:-3%;top:-3%}
 .gc{aspect-ratio:1;border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700;background:#1a2350;color:#5a6aa8;position:relative}
 .gc.in{background:linear-gradient(180deg,#e0a532,#c2841d);color:#241a00}.gc.in3{background:linear-gradient(180deg,#d05cff,#9b3cdf);color:#fff}.gc.incall{background:linear-gradient(180deg,#2f9d68,#1f7a4d);color:#fff}
+.gc.shd{background:rgba(0,210,255,.1);color:#8fa3b8;box-shadow:0 0 0 1.5px rgba(0,210,255,.55)}
+.gc.shd.in{background:linear-gradient(180deg,#e0a532,#c2841d);color:#241a00;box-shadow:0 0 0 2px rgba(0,210,255,.9),0 0 6px rgba(0,210,255,.45)}
+.gc.shd.in3{background:linear-gradient(180deg,#d05cff,#9b3cdf);color:#fff;box-shadow:0 0 0 2px rgba(0,210,255,.9),0 0 6px rgba(0,210,255,.45)}
+.gc.shd.incall{background:linear-gradient(180deg,#2f9d68,#1f7a4d);color:#fff;box-shadow:0 0 0 2px rgba(0,210,255,.9),0 0 6px rgba(0,210,255,.45)}
 .gc.hl{box-shadow:0 0 0 2px #fff,0 0 8px rgba(255,255,255,.7);z-index:2}
 .gc.of{filter:brightness(1.32)}
 .gc.pr.in{background:linear-gradient(180deg,#ffb13a,#ef8210);color:#241400}
@@ -760,6 +766,50 @@ body{
 .sitem .se{width:54px;height:54px;border-radius:50%;margin:0 auto 4px}
 .sitem .sname{font-size:11px;font-weight:700;color:var(--txt)}
 .avemoji{display:flex;align-items:center;justify-content:center;width:100%;height:100%;line-height:1}
+
+/* ===== ШАГ 4: NEON-АПГРЕЙД 4 ЭКРАНОВ ===== */
+
+/* --- ПРОФИЛЬ --- */
+.pf-card{background:linear-gradient(135deg,rgba(20,30,90,.95),rgba(10,16,52,.98));border:1px solid rgba(123,140,255,.35);box-shadow:0 0 0 1px rgba(123,140,255,.12),0 8px 32px rgba(79,140,255,.28),inset 0 1px 0 rgba(255,255,255,.05)}
+.statgrid .s{background:linear-gradient(160deg,rgba(16,24,72,.9),rgba(8,12,40,.95));border:1px solid rgba(79,140,255,.3);box-shadow:0 4px 18px rgba(0,0,0,.4),0 0 0 1px rgba(79,140,255,.15)}
+.linkrow{background:linear-gradient(160deg,rgba(14,22,64,.85),rgba(8,14,40,.9));border:1px solid rgba(79,140,255,.22);box-shadow:0 4px 16px rgba(0,0,0,.35)}
+.linkrow:hover,.linkrow:active{border-color:rgba(79,140,255,.45)}
+.modeacc .ma .bar{background:rgba(5,8,30,.9);border:1px solid rgba(79,140,255,.2)}
+
+/* --- ЛИГИ --- */
+.divbanner{background:linear-gradient(135deg,rgba(20,30,90,.85),rgba(10,16,52,.9));border:1px solid rgba(123,140,255,.35);box-shadow:0 0 0 1px rgba(123,140,255,.1),0 6px 24px rgba(79,140,255,.2),inset 0 1px 0 rgba(255,255,255,.04)}
+.tabs .tab{background:linear-gradient(180deg,rgba(14,22,72,.85),rgba(8,13,44,.9));border:1px solid rgba(79,140,255,.2);box-shadow:0 3px 12px rgba(0,0,0,.3)}
+.tabs .tab.active{background:linear-gradient(180deg,#e0a532,#c2841d);border-color:#e0a532;box-shadow:0 4px 16px rgba(224,165,50,.35)}
+.hof-row{border-bottom:1px solid rgba(79,140,255,.12);transition:background .15s}
+.hof-row:hover,.hof-row:active{background:rgba(79,140,255,.06)}
+.hof-row.me{background:linear-gradient(90deg,rgba(79,140,255,.2),rgba(79,140,255,.05));border-left:3px solid #4f8cff}
+.hof-row .av{border:2px solid rgba(86,186,223,.6);box-shadow:0 0 8px rgba(86,186,223,.25)}
+.zoneline{opacity:.8}
+
+/* --- ТРЕНАЖЁРЫ --- */
+#screen-mem .game-meta,
+#screen-findhand .game-meta{background:linear-gradient(180deg,rgba(10,14,40,.97),rgba(6,9,28,.97));border-bottom:1px solid rgba(79,140,255,.2);box-shadow:0 2px 12px rgba(0,0,0,.4)}
+.memtab{background:linear-gradient(180deg,rgba(14,22,72,.85),rgba(8,13,44,.9));border:1px solid rgba(79,140,255,.2)}
+.memtab.active{background:linear-gradient(180deg,#4f8cff,#3567d6);border-color:#4f8cff;box-shadow:0 4px 16px rgba(79,140,255,.35)}
+.posbtn{background:linear-gradient(180deg,rgba(14,22,72,.85),rgba(8,13,44,.9));border:1px solid rgba(79,140,255,.18)}
+.mem-actions button.clear{background:linear-gradient(180deg,rgba(90,100,136,.9),rgba(67,76,112,.9));border:1px solid rgba(90,100,136,.4);box-shadow:0 4px 14px rgba(0,0,0,.4)}
+.mem-actions button.reveal{background:linear-gradient(180deg,#4f8cff,#3567d6);box-shadow:0 4px 18px rgba(79,140,255,.4)}
+.mem-actions button.check{background:linear-gradient(180deg,#2f9d68,#1f7a4d);box-shadow:0 4px 18px rgba(47,157,104,.35)}
+.fh-presets button{background:linear-gradient(160deg,rgba(16,24,72,.9),rgba(8,12,40,.95));border:1px solid rgba(79,140,255,.3);box-shadow:0 4px 18px rgba(0,0,0,.4),0 0 0 1px rgba(79,140,255,.1)}
+.fh-presets button:hover,.fh-presets button:active{border-color:rgba(79,140,255,.6);box-shadow:0 4px 20px rgba(79,140,255,.2)}
+
+/* --- ИГРОВОЙ СТОЛ --- */
+#screen-game .game-meta{background:linear-gradient(180deg,rgba(10,14,40,.97),rgba(6,9,28,.97));border-bottom:1px solid rgba(79,140,255,.18);box-shadow:0 2px 12px rgba(0,0,0,.4)}
+.progress{background:rgba(5,8,30,.9);border:none}
+.progress i{box-shadow:0 0 8px rgba(79,140,255,.5)}
+.actionbar{background:linear-gradient(180deg,rgba(10,14,40,.98),rgba(6,9,28,.99));border-top:1px solid rgba(79,140,255,.18)}
+.abtn.fold{box-shadow:0 5px 16px rgba(0,0,0,.4)}
+.abtn.call{box-shadow:0 5px 18px rgba(47,157,104,.35)}
+.abtn.raise{box-shadow:0 5px 18px rgba(224,165,50,.35)}
+.abtn.threebet{box-shadow:0 5px 18px rgba(208,92,255,.35)}
+.fb{background:linear-gradient(180deg,rgba(18,24,72,.98),rgba(10,16,48,.99));border:1px solid rgba(79,140,255,.3);box-shadow:0 18px 60px rgba(0,0,0,.7),0 0 40px -10px rgba(79,140,255,.2)}
+
+/* ===== END ШАГ 4 ===== */
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 </head>
@@ -1370,7 +1420,8 @@ function gridHTML(sets,hl,rl,bare,sides){
   let h='<div class="gridwrap"><div class="grid13">';
   for(let r=0;r<13;r++)for(let c=0;c<13;c++){let code,disp;
     if(r===c){code=RANKS[r]+RANKS[c];disp=code;}else if(r<c){code=RANKS[r]+RANKS[c]+'s';disp=RANKS[r]+RANKS[c];}else{code=RANKS[c]+RANKS[r]+'o';disp=RANKS[c]+RANKS[r];}
-    let cls='gc'+(r>c?' of':r===c?' pr':'');if(sets.three&&sets.three.has(code))cls+=' in3';else if(sets.call&&sets.call.has(code))cls+=' incall';else if(sets.in&&sets.in.has(code))cls+=' in';
+    let cls='gc'+(r>c?' of':r===c?' pr':'');const inMain=!!(sets.three&&sets.three.has(code))||(sets.call&&sets.call.has(code))||(sets.in&&sets.in.has(code));if(sets.three&&sets.three.has(code))cls+=' in3';else if(sets.call&&sets.call.has(code))cls+=' incall';else if(sets.in&&sets.in.has(code))cls+=' in';
+    if(sets.shadow&&sets.shadow.has(code))cls+=' shd';
     if(hl&&code===hl)cls+=' hl';h+='<div class="'+cls+'">'+disp+'</div>';}
   if(sides){if(sides.att)h+='<div class="gs-emb gs-emb-att">'+posEmblem(sides.att)+'</div>';if(sides.def)h+='<div class="gs-emb gs-emb-def">'+posEmblem(sides.def)+'</div>';}
   h+='</div>';
@@ -1543,13 +1594,21 @@ function hlpRenderGrid(){
     if(!m){inner.innerHTML='<div class="hlp-no-data">Нет данных для этой пары позиций</div>';title.textContent='';sub.textContent='';return;}
     title.textContent=hlp.pos+' vs '+hlp.opener+' · vs Open';
     sub.textContent='Открытие 2.5bb · 3-бет / колл / фолд';
-    inner.innerHTML=gridHTML({three:m.tbS,call:m.clS},null,null,false,{att:hlp.opener,def:hlp.pos});
+    inner.innerHTML=gridHTML({three:m.tbS,call:m.clS,shadow:RFI[hlp.opener]},null,null,false,{att:hlp.opener,def:hlp.pos});
   } else {
     const m=VS3_RAW.find(x=>x.threebettor===hlp.threebettor&&x.hero===hlp.pos);
     if(!m){inner.innerHTML='<div class="hlp-no-data">Нет данных для этой пары позиций</div>';title.textContent='';sub.textContent='';return;}
     title.textContent=hlp.pos+' vs 3-бет '+hlp.threebettor;
     sub.textContent='Ответ на 3-бет · 4-бет / колл / фолд';
-    inner.innerHTML=gridHTML({three:m.fbS,call:m.clS},null,null,false,{att:hlp.threebettor,def:hlp.pos});
+    inner.innerHTML=gridHTML({three:m.fbS,call:m.clS,shadow:(VS_RAW.find(x=>x.opener===hlp.pos&&x.hero===hlp.threebettor)||{}).tbS},null,null,false,{att:hlp.threebettor,def:hlp.pos});
+  }
+  // Легенда тени — только для vsopen и vs3
+  if(hlp.sit==='vsopen'||hlp.sit==='vs3'){
+    const shdLbl=hlp.sit==='vsopen'?'Диапазон открытия оппонента':'Диапазон 3-бета оппонента';
+    const shdNote=document.createElement('div');
+    shdNote.className='hlp-shd-legend';
+    shdNote.innerHTML='<span class="hlp-shd-swatch"></span>'+shdLbl;
+    inner.appendChild(shdNote);
   }
   // Авто-размер сетки под экран
   hlpFitGrid();
