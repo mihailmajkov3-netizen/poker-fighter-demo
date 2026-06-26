@@ -147,6 +147,19 @@ body{
 .hlp-col-left{display:contents}
 .hlp-col-right{display:contents}
 
+/* ===== HELPER — кнопка смены сторон (только landscape) ===== */
+.hlp-swap-btn{display:none;background:none;border:1px solid rgba(100,140,255,.35);border-radius:7px;color:#7a9fff;font-size:15px;line-height:1;padding:3px 8px;cursor:pointer;transition:background .15s,color .15s,box-shadow .15s;flex-shrink:0}
+.hlp-swap-btn:active{transform:scale(.93)}
+@media (min-aspect-ratio: 13/10) and (min-width: 900px){
+  .hlp-swap-btn{display:flex;align-items:center;justify-content:center}
+  .hlp-swap-btn:hover{background:rgba(100,140,255,.18);color:#aac4ff;box-shadow:0 0 8px -2px rgba(80,140,255,.5)}
+  /* панель управления слева: меняем порядок колонок */
+  #screen-helper .body.hlp-side-left{flex-direction:row-reverse !important}
+  /* border переезжает: правая колонка теперь слева */
+  #screen-helper .body.hlp-side-left .hlp-col-left{border-right:none;border-left:1px solid rgba(120,150,230,.15);padding:8px 12px 8px 10px}
+  #screen-helper .body.hlp-side-left .hlp-col-right{padding:6px 8px 6px 10px}
+}
+
 /* ===== HELPER — iPad landscape split layout ===== */
 @media (min-aspect-ratio: 13/10) and (min-width: 900px) {
   /* Разворачиваем #app на полный экран */
@@ -497,6 +510,7 @@ body{
 
 .gridwrap{display:flex;flex-direction:column;align-items:center;margin:6px 0}
 .grid13{display:grid;grid-template-columns:repeat(13,1fr);gap:2px;width:100%;max-width:330px;position:relative}
+#memGrid{touch-action:none;user-select:none;-webkit-user-select:none}
 #screen-findhand .gridwrap{padding:0 14px;width:100%}
 #screen-findhand #fhGrid{max-width:none;font-size:13px;gap:3px}
 #screen-findhand #fhGrid .gc{font-size:inherit;border-radius:5px}
@@ -1043,7 +1057,7 @@ body{
     </div>
 
     <div class="screen" id="screen-helper">
-      <div class="game-meta"><span class="hcount">📡</span><span class="mid">Помощник</span><span class="x" onclick="nav('home')"><span class="ic">✕</span></span></div>
+      <div class="game-meta"><span class="hcount">📡</span><span class="mid">Помощник</span><button class="hlp-swap-btn" id="hlpSwapBtn" onclick="hlpToggleSide()" title="Сменить сторону">⇄</button><span class="x" onclick="nav('home')"><span class="ic">✕</span></span></div>
       <div class="body">
         <!-- Левая колонка (desktop: 60%) — сетка-доминанта -->
         <div class="hlp-col-left">
@@ -1339,7 +1353,7 @@ const VS3_RAW=[
 const MODE_NAMES={rfi:'Preflop RFI',vsopen:'vs Open',vs3:'vs 3-бет',postflop:'Postflop',potodds:'Pot Odds',memorize:'Range Trainer',mixed:'Микс',custom:'Свой диапазон'};
 let profile=loadProfile();
 function loadProfile(){let p={};try{p=JSON.parse(localStorage.getItem('pf_profile_v2'))||{};}catch(e){}
-  const o=Object.assign({rating:1000,xp:0,hands:0,correct:0,streak:0,bestStreak:0,byMode:{},byConcept:{},career:{stake:0,stars:{}},achievements:[],mistakes:[],lastDaily:null,dailyStreak:0,quests:null,surBest:0,name:'Игрок',avatar:'warrior',onboarded:false,coins:0,owned:['warrior'],ownedThemes:['green'],theme:'green',soundOn:true,hapticsOn:true,lessonsRead:[],customRanges:[],findBest:0},p);
+  const o=Object.assign({rating:1000,xp:0,hands:0,correct:0,streak:0,bestStreak:0,byMode:{},byConcept:{},career:{stake:0,stars:{}},achievements:[],mistakes:[],lastDaily:null,dailyStreak:0,quests:null,surBest:0,name:'Игрок',avatar:'warrior',onboarded:false,coins:0,owned:['warrior'],ownedThemes:['green'],theme:'green',soundOn:true,hapticsOn:true,lessonsRead:[],customRanges:[],findBest:0,hlpSide:'right'},p);
   if(!CHAR_BY_ID[o.avatar])o.avatar='warrior';
   o.owned=(o.owned||[]).filter(x=>CHAR_BY_ID[x]);if(!o.owned.includes(o.avatar))o.owned.push(o.avatar);
   o.career=o.career||{};if(typeof o.career.node!=='number')o.career.node=0;o.career.stars=o.career.stars||{};
@@ -1607,9 +1621,21 @@ function genVs3bet(heroPos,tbPos){
 const HLP_RFI_POS=['UTG','HJ','CO','BTN','SB'];
 let hlp={sit:'vsopen',pos:'BTN',opener:'UTG',threebettor:'BB'};
 
+function hlpApplySide(){
+  const body=document.querySelector('#screen-helper .body');
+  if(!body)return;
+  body.classList.toggle('hlp-side-left',profile.hlpSide==='left');
+}
+function hlpToggleSide(){
+  profile.hlpSide=(profile.hlpSide==='left'?'right':'left');
+  saveProfile();
+  hlpApplySide();
+  requestAnimationFrame(()=>{ if(typeof hlpFitGrid==='function') hlpFitGrid(); });
+}
 function openHelper(){
   show('helper');setTitle('Помощник');
   void $('screen-helper').offsetWidth; // force reflow
+  hlpApplySide();
   hlpSetSit('vsopen',true);
 }
 
@@ -2756,17 +2782,57 @@ function renderMemControls(){
   }
 }
 function renderMemGrid(reveal){const g=$('memGrid');g.innerHTML='';const m=memData();const rs=memMode!=='rfi'?memRaiseSet(m):null;
-  for(let r=0;r<13;r++)for(let c=0;c<13;c++){const code=cellCode(r,c);const cell=document.createElement('div');cell.className='gc'+(r>c?' of':r===c?' pr':'');cell.textContent=cellDisp(r,c);
+  for(let r=0;r<13;r++)for(let c=0;c<13;c++){const code=cellCode(r,c);const cell=document.createElement('div');cell.className='gc'+(r>c?' of':r===c?' pr':'');cell.textContent=cellDisp(r,c);cell.dataset.code=code;
     if(memMode==='rfi'){
       if(reveal){if(RFI[memPos].has(code))cell.classList.add('in');}else if(memSel.has(code))cell.classList.add('in');
-      cell.onclick=()=>{if(reveal)return;if(memSel.has(code))memSel.delete(code);else memSel.add(code);renderMemGrid();};
     }else{
       if(reveal){if(rs.has(code))cell.classList.add('in3');else if(m.clS.has(code))cell.classList.add('incall');}
       else{if(mem3.has(code))cell.classList.add('in3');else if(memCall.has(code))cell.classList.add('incall');}
-      cell.onclick=()=>{if(reveal)return;mem3.delete(code);memCall.delete(code);if(memBrush==='3')mem3.add(code);else if(memBrush==='call')memCall.add(code);renderMemGrid();};
     }
     g.appendChild(cell);}
+  if(!reveal)memBindDrag(g);else{g.onpointerdown=null;g.onpointermove=null;g.onpointerup=null;g.onpointercancel=null;}
   updateMemLive(reveal);
+}
+let _memDrag=null;
+function _memApplyCell(code){
+  if(!code)return;
+  if(memMode==='rfi'){
+    if(_memDrag.paint)memSel.add(code);else memSel.delete(code);
+  }else{
+    mem3.delete(code);memCall.delete(code);
+    if(_memDrag.paint){if(memBrush==='3')mem3.add(code);else if(memBrush==='call')memCall.add(code);}
+  }
+}
+function _memCellAt(x,y){const el=document.elementFromPoint(x,y);return(el&&el.dataset&&el.dataset.code&&el.closest('#memGrid'))?el.dataset.code:null;}
+function _memRefresh(){
+  const g=$('memGrid');
+  g.querySelectorAll('.gc').forEach(cell=>{
+    const code=cell.dataset.code;
+    cell.classList.remove('in','in3','incall');
+    if(memMode==='rfi'){if(memSel.has(code))cell.classList.add('in');}
+    else{if(mem3.has(code))cell.classList.add('in3');else if(memCall.has(code))cell.classList.add('incall');}
+  });
+  updateMemLive(false);
+}
+function memBindDrag(g){
+  g.onpointerdown=e=>{
+    const code=_memCellAt(e.clientX,e.clientY);if(!code)return;
+    e.preventDefault();g.setPointerCapture(e.pointerId);
+    let paint;
+    if(memMode==='rfi')paint=!memSel.has(code);
+    else paint=!(memBrush==='erase'?false:memBrush==='3'?mem3.has(code):memCall.has(code));
+    if(memBrush==='erase')paint=false;
+    _memDrag={paint,moved:false,last:code};
+    _memApplyCell(code);_memRefresh();
+  };
+  g.onpointermove=e=>{
+    if(!_memDrag)return;
+    e.preventDefault();
+    const code=_memCellAt(e.clientX,e.clientY);
+    if(code&&code!==_memDrag.last){_memDrag.moved=true;_memDrag.last=code;_memApplyCell(code);_memRefresh();}
+  };
+  const end=()=>{_memDrag=null;};
+  g.onpointerup=end;g.onpointercancel=end;
 }
 function updateMemLive(reveal){const el=$('memLive');if(!el)return;
   if(reveal){el.innerHTML='';return;}
