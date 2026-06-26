@@ -127,6 +127,14 @@ body{
 #screen-helper .gridlegend i{width:8px;height:8px;border-radius:2px;display:inline-block;vertical-align:middle;margin-right:2px}
 .hlp-shd-legend{display:flex;align-items:center;gap:5px;justify-content:center;font-size:9px;color:#56d0ef;margin-top:4px;flex-shrink:0;font-weight:700;letter-spacing:.2px}
 .hlp-shd-swatch{width:10px;height:10px;border-radius:2px;display:inline-block;flex-shrink:0;background:rgba(0,210,255,.12);box-shadow:0 0 0 1.5px rgba(0,210,255,.7);}
+/* Cold steppers */
+.hlp-steppers{display:flex;flex-direction:column;gap:6px;padding:6px 8px;width:100%}
+.hlp-stepper{display:flex;flex-direction:column;gap:2px}
+.hlp-stepper-lbl{font-size:9px;color:var(--muted);font-weight:700;text-align:center;letter-spacing:.3px;text-transform:uppercase}
+.hlp-stepper-row{display:flex;align-items:center;justify-content:space-between;gap:4px;background:#0e1640;border-radius:10px;border:1px solid rgba(120,150,230,.18);padding:2px 4px}
+.hlp-step-btn{min-width:40px;min-height:40px;border:none;background:transparent;color:#9fb4ff;font-size:20px;font-weight:700;cursor:pointer;border-radius:8px;display:flex;align-items:center;justify-content:center;transition:background .12s}
+.hlp-step-btn:active{background:rgba(120,150,230,.18)}
+.hlp-stepper-val{flex:1;display:flex;align-items:center;justify-content:center;gap:4px;font-weight:800;font-size:13px;color:#fff}
 /* 2) Сегменты — горизонтальный ряд, фиксированная высота */
 .hlp-segs-row{display:flex;flex-direction:row;gap:5px;flex-shrink:0;padding:5px 8px;border-top:1px solid rgba(120,150,230,.12);border-bottom:1px solid rgba(120,150,230,.12)}
 .hlp-seg{flex:1;border:none;border-radius:10px;padding:0 4px;height:38px;font-weight:800;font-size:11px;color:#9fb4ff;background:#0e1640;cursor:pointer;transition:background .15s,color .15s;text-align:center;line-height:1.25;display:flex;align-items:center;justify-content:center}
@@ -1076,6 +1084,7 @@ body{
             <button class="hlp-seg active" id="hlpSegRFI" onclick="hlpSetSit('rfi')">Открытие RFI</button>
             <button class="hlp-seg" id="hlpSegVsOpen" onclick="hlpSetSit('vsopen')">vs Open</button>
             <button class="hlp-seg" id="hlpSegVs3" onclick="hlpSetSit('vs3')">vs 3-бет</button>
+            <button class="hlp-seg" id="hlpSegCold" onclick="hlpSetSit('cold')">cold</button>
           </div>
           <!-- Два столбца позиций -->
           <div class="hlp-bottom-row">
@@ -1349,6 +1358,17 @@ const VS3_RAW=[
   {hero:'CO',threebettor:'SB',label:'SB делает 3-бет',fb:['JJ+','AQs+','AKo','A5s','A4s'],cl:['77-TT','AJs','ATs','KQs','KJs','QJs','JTs','T9s','AQo']}
 ].map(m=>({...m,fbS:buildRange(m.fb),clS:buildRange(m.cl)}));
 
+const COLD_RAW=[
+  {opener:'UTG',threebettor:'HJ',hero:'BB',label:'UTG откр · HJ 3бет · BB cold',f4b:['QQ+','AKs','AKo','A5s','A4s'],cl:['JJ','AQs']},
+  {opener:'UTG',threebettor:'CO',hero:'BB',label:'UTG откр · CO 3бет · BB cold',f4b:['QQ+','AKs','AKo','A5s'],cl:['JJ','AQs']},
+  {opener:'UTG',threebettor:'BTN',hero:'BB',label:'UTG откр · BTN 3бет · BB cold',f4b:['QQ+','AKs','AKo','A5s'],cl:['JJ']},
+  {opener:'HJ',threebettor:'CO',hero:'BB',label:'HJ откр · CO 3бет · BB cold',f4b:['QQ+','AKs','AKo','A5s','A4s'],cl:['JJ','AQs','KQs']},
+  {opener:'HJ',threebettor:'BTN',hero:'BB',label:'HJ откр · BTN 3бет · BB cold',f4b:['QQ+','AKs','AKo','A5s'],cl:['JJ','AQs']},
+  {opener:'CO',threebettor:'BTN',hero:'BB',label:'CO откр · BTN 3бет · BB cold',f4b:['QQ+','AKs','AKo','A5s','A4s'],cl:['JJ','TT','AQs','KQs']},
+  {opener:'UTG',threebettor:'HJ',hero:'SB',label:'UTG откр · HJ 3бет · SB cold',f4b:['QQ+','AKo','AKs'],cl:['JJ']},
+  {opener:'HJ',threebettor:'CO',hero:'SB',label:'HJ откр · CO 3бет · SB cold',f4b:['QQ+','AKo','AKs','A5s'],cl:['JJ']}
+].map(m=>({...m,f4bS:buildRange(m.f4b),clS:buildRange(m.cl)}));
+
 /* ===== PROFILE ===== */
 const MODE_NAMES={rfi:'Preflop RFI',vsopen:'vs Open',vs3:'vs 3-бет',postflop:'Postflop',potodds:'Pot Odds',memorize:'Range Trainer',mixed:'Микс',custom:'Свой диапазон'};
 let profile=loadProfile();
@@ -1619,7 +1639,7 @@ function genVs3bet(heroPos,tbPos){
 /* ===== HELPER — справочник диапазонов для реальной игры ===== */
 // Открытие: размер 2.5bb — чарты под фикс; селектор размера не реализован (нет данных под другие размеры)
 const HLP_RFI_POS=['UTG','HJ','CO','BTN','SB'];
-let hlp={sit:'vsopen',pos:'BTN',opener:'UTG',threebettor:'BB'};
+let hlp={sit:'vsopen',pos:'BTN',opener:'UTG',threebettor:'BB',coldOpener:'UTG',coldThreebettor:'HJ',coldHero:'BB'};
 
 function hlpApplySide(){
   const body=document.querySelector('#screen-helper .body');
@@ -1641,9 +1661,9 @@ function openHelper(){
 
 function hlpSetSit(sit,init){
   hlp.sit=sit;
-  ['RFI','VsOpen','Vs3'].forEach(k=>{
+  ['RFI','VsOpen','Vs3','Cold'].forEach(k=>{
     const el=$('hlpSeg'+k);
-    if(el)el.classList.toggle('active',sit==={RFI:'rfi',VsOpen:'vsopen',Vs3:'vs3'}[k]);
+    if(el)el.classList.toggle('active',sit==={RFI:'rfi',VsOpen:'vsopen',Vs3:'vs3',Cold:'cold'}[k]);
   });
   hlpRenderPos();
   hlpRenderGrid();
@@ -1658,8 +1678,42 @@ function hlpRenderPos(){
   left.innerHTML='';right.innerHTML='';
   if(lblL)left.appendChild(lblL);
   if(lblR)right.appendChild(lblR);
+  // cold-режим: степперы занимают всю ширину, правая колонка скрыта
+  right.style.display=hlp.sit==='cold'?'none':'';
+  left.style.flex=hlp.sit==='cold'?'1 1 100%':'';
 
-  if(hlp.sit==='rfi'){
+  if(hlp.sit==='cold'){
+    lblL.textContent='';lblR.textContent='';
+    // Три степпера: Опенер / 3-беттор / Я — с валидацией по COLD_RAW
+    const allOpeners=[...new Set(COLD_RAW.map(m=>m.opener))].sort((a,b)=>ACT_ORDER.indexOf(a)-ACT_ORDER.indexOf(b));
+    if(!allOpeners.includes(hlp.coldOpener))hlp.coldOpener=allOpeners[0];
+    const validTB=[...new Set(COLD_RAW.filter(m=>m.opener===hlp.coldOpener).map(m=>m.threebettor))].sort((a,b)=>ACT_ORDER.indexOf(a)-ACT_ORDER.indexOf(b));
+    if(!validTB.includes(hlp.coldThreebettor))hlp.coldThreebettor=validTB[0];
+    const validHero=[...new Set(COLD_RAW.filter(m=>m.opener===hlp.coldOpener&&m.threebettor===hlp.coldThreebettor).map(m=>m.hero))].sort((a,b)=>ACT_ORDER.indexOf(a)-ACT_ORDER.indexOf(b));
+    if(!validHero.includes(hlp.coldHero))hlp.coldHero=validHero[0];
+
+    function makeStepper(label,values,cur,onPick){
+      const wrap=document.createElement('div');
+      wrap.className='hlp-stepper';
+      const lbl=document.createElement('div');lbl.className='hlp-stepper-lbl';lbl.textContent=label;
+      const row=document.createElement('div');row.className='hlp-stepper-row';
+      const btnL=document.createElement('button');btnL.className='hlp-step-btn';btnL.textContent='‹';
+      const val=document.createElement('span');val.className='hlp-stepper-val';val.textContent=cur;
+      const btnR=document.createElement('button');btnR.className='hlp-step-btn';btnR.textContent='›';
+      btnL.onclick=()=>{const i=values.indexOf(cur);onPick(values[(i-1+values.length)%values.length]);};
+      btnR.onclick=()=>{const i=values.indexOf(cur);onPick(values[(i+1)%values.length]);};
+      row.appendChild(btnL);row.appendChild(val);row.appendChild(btnR);
+      wrap.appendChild(lbl);wrap.appendChild(row);
+      return wrap;
+    }
+    const stepperWrap=document.createElement('div');
+    stepperWrap.className='hlp-steppers';
+    stepperWrap.appendChild(makeStepper('Опенер O',allOpeners,hlp.coldOpener,v=>{hlp.coldOpener=v;hlpRenderPos();hlpRenderGrid();}));
+    stepperWrap.appendChild(makeStepper('3-беттор T',validTB,hlp.coldThreebettor,v=>{hlp.coldThreebettor=v;hlpRenderPos();hlpRenderGrid();}));
+    stepperWrap.appendChild(makeStepper('Я (hero H)',validHero,hlp.coldHero,v=>{hlp.coldHero=v;hlpRenderPos();hlpRenderGrid();}));
+    left.appendChild(stepperWrap);
+    return;
+  } else if(hlp.sit==='rfi'){
     lblL.textContent='Моя позиция';
     lblR.textContent='';
     // все позиции RFI в левый столбец, правый пустой
@@ -1724,6 +1778,13 @@ function hlpRenderGrid(){
     title.textContent=hlp.pos+' vs '+hlp.opener+' · vs Open';
     sub.textContent='Открытие 2.5bb · 3-бет / колл / фолд';
     inner.innerHTML=gridHTML({three:m.tbS,call:m.clS,shadow:RFI[hlp.opener]},null,null,false,{att:hlp.opener,def:hlp.pos});
+  } else if(hlp.sit==='cold'){
+    const m=COLD_RAW.find(x=>x.opener===hlp.coldOpener&&x.threebettor===hlp.coldThreebettor&&x.hero===hlp.coldHero);
+    if(!m){inner.innerHTML='<div class="hlp-no-data">Нет данных для этой тройки позиций</div>';title.textContent='';sub.textContent='';return;}
+    title.textContent=m.label;
+    sub.textContent='Холодная защита · cold-4бет / колл / фолд';
+    const shadow3b=(VS_RAW.find(x=>x.opener===hlp.coldOpener&&x.hero===hlp.coldThreebettor)||{}).tbS;
+    inner.innerHTML=gridHTML({three:m.f4bS,call:m.clS,shadow:shadow3b},null,null,false,{att:hlp.coldThreebettor,def:hlp.coldHero});
   } else {
     const m=VS3_RAW.find(x=>x.threebettor===hlp.threebettor&&x.hero===hlp.pos);
     if(!m){inner.innerHTML='<div class="hlp-no-data">Нет данных для этой пары позиций</div>';title.textContent='';sub.textContent='';return;}
@@ -1731,9 +1792,9 @@ function hlpRenderGrid(){
     sub.textContent='Ответ на 3-бет · 4-бет / колл / фолд';
     inner.innerHTML=gridHTML({three:m.fbS,call:m.clS,shadow:(VS_RAW.find(x=>x.opener===hlp.pos&&x.hero===hlp.threebettor)||{}).tbS},null,null,false,{att:hlp.threebettor,def:hlp.pos});
   }
-  // Легенда тени — только для vsopen и vs3
-  if(hlp.sit==='vsopen'||hlp.sit==='vs3'){
-    const shdLbl=hlp.sit==='vsopen'?'Диапазон открытия оппонента':'Диапазон 3-бета оппонента';
+  // Легенда тени — для vsopen, vs3 и cold
+  if(hlp.sit==='vsopen'||hlp.sit==='vs3'||hlp.sit==='cold'){
+    const shdLbl=hlp.sit==='vsopen'?'Диапазон открытия оппонента':hlp.sit==='cold'?'Диапазон 3-бета T (тень)':'Диапазон 3-бета оппонента';
     const shdNote=document.createElement('div');
     shdNote.className='hlp-shd-legend';
     shdNote.innerHTML='<span class="hlp-shd-swatch"></span>'+shdLbl;
