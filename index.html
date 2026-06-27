@@ -396,17 +396,30 @@ body{
 
 /* career map */
 .ladder{padding:10px 14px 24px}
-.stake{display:flex;align-items:center;gap:12px;background:linear-gradient(180deg,#1b2868,#16204f);border:1px solid var(--line);border-radius:14px;padding:13px;margin:9px 0;cursor:pointer;position:relative}
-.stake.locked{opacity:.45}
-.stake.cur{border-color:var(--gold);box-shadow:0 0 0 1px var(--gold),0 6px 18px rgba(224,165,50,.2)}
-.stake .no{width:42px;height:42px;border-radius:12px;background:linear-gradient(180deg,#2a3680,#1c2660);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:15px;flex:0 0 auto}
-.stake.cleared .no{background:linear-gradient(180deg,#2f9d68,#1f7a4d)}
-.stake .tx{flex:1}.stake .tx .nm{font-weight:800;font-size:15px}.stake .tx .ds{font-size:11px;color:var(--muted);margin-top:2px}
-.stake .stars{font-size:13px;letter-spacing:1px;color:var(--gold)}
-.stake .lk{font-size:18px}
+.career-tiles{display:grid;grid-template-columns:1fr 1fr;gap:9px;padding:4px 0 10px}
+.ctile{position:relative;border-radius:18px;padding:14px 12px 40px;cursor:pointer;overflow:hidden;display:flex;flex-direction:column;gap:5px;min-height:110px;border:1px solid rgba(255,255,255,.1);transition:transform .12s;background:linear-gradient(145deg,#0e2856,#081838)}
+.ctile:active{transform:scale(.96)}
+.ctile::before{content:'';position:absolute;inset:0;border-radius:18px;box-shadow:inset 0 0 28px rgba(255,255,255,.04);pointer-events:none}
+.ctile .tglow{position:absolute;right:-10px;top:-10px;width:70px;height:70px;border-radius:50%;filter:blur(28px);opacity:.55;pointer-events:none;background:#4f8cff}
+.ctile .cic{font-size:22px;position:relative;line-height:1}
+.ctile .cnm{position:relative;font-size:12px;font-weight:800;color:#fff;line-height:1.2;margin-top:2px}
+.ctile .cds{position:relative;font-size:10px;line-height:1.3;margin-top:2px;opacity:.8;color:#8dd8f0}
+.ctile .cst{position:absolute;right:10px;bottom:10px;font-size:11px;font-weight:700;letter-spacing:.5px;color:#4f8cff;opacity:.8}
+/* cleared (done) */
+.ctile.cleared{background:linear-gradient(145deg,#12402a,#0a2618);border-color:rgba(52,209,122,.3);box-shadow:0 6px 20px rgba(0,0,0,.4),0 0 22px -8px #34d17a}
+.ctile.cleared .tglow{background:#34d17a}
+.ctile.cleared .cds{color:#a9e0c4}
+.ctile.cleared .cst{color:#34d17a;opacity:1;font-size:13px;letter-spacing:1px}
+/* current */
+.ctile.cur{background:linear-gradient(145deg,#3a2806,#201600);border-color:rgba(224,165,50,.45);box-shadow:0 6px 20px rgba(0,0,0,.4),0 0 22px -8px #e0a532}
+.ctile.cur .tglow{background:#e0a532}
+.ctile.cur .cds{color:#f0c96a}
+.ctile.cur .cst{color:#e0a532;opacity:1;font-size:12px;font-weight:900}
+/* locked */
+.ctile.locked{opacity:.4;pointer-events:auto}
+.ctile.locked .cst{color:rgba(255,255,255,.5);font-size:16px}
 .ladder .phdr{padding:6px 4px 2px;color:var(--muted);font-size:12px;line-height:1.5}
 .ladder .phdr b{color:var(--txt)}
-.stake.cur .no{background:linear-gradient(180deg,#e0a532,#c2841d);color:#1a1206}
 .examtimer{height:6px;margin:6px 14px 0;border-radius:4px;background:#161f47;overflow:hidden;display:none}
 .examtimer.show{display:block}
 .examtimer i{display:block;height:100%;width:100%;border-radius:4px;background:linear-gradient(90deg,#34d17a,#ffcf4d)}
@@ -1880,7 +1893,7 @@ function hlpRenderGrid(){
     title.textContent=pos+' · Открытие (RFI)';
     sub.textContent='Размер открытия: 2.5bb · '+pct+'% комбо';
     const RFI_LAYERS=['UTG','HJ','CO','BTN','SB'];
-    const RFI_COLORS={UTG:'#c0392b',HJ:'#8B4513',CO:'#e67e22',BTN:'#f1c40f',SB:'#27ae60'};
+    const RFI_COLORS={UTG:'#FF2020',HJ:'#FF6600',CO:'#FFAA00',BTN:'#FFE600',SB:'#00E060'};
     const layerMap={};
     range.forEach(code=>{
       const lay=RFI_LAYERS.find(p=>rfiRange(p).has(code));
@@ -2482,15 +2495,19 @@ function renderLadder(){
   const hdr=document.createElement('div');hdr.className='phdr';
   hdr.innerHTML='<b>Тренер Шифу:</b> не прыгай через голову — знакомство → тренировка → экзамен на время ⏱';
   w.appendChild(hdr);
+  const grid=document.createElement('div');grid.className='career-tiles';
   CAREER.forEach((nd,i)=>{
     const isDone=i<profile.career.node,cur=i===profile.career.node,unlocked=i<=profile.career.node;
     const stars=profile.career.stars[i]||0;
-    const el=document.createElement('div');el.className='stake'+(unlocked?'':' locked')+(cur?' cur':'')+(isDone?' cleared':'');
+    const ds=nd.kind==='rfi'?('Открытие '+nd.pos):nd.id==='vsopen'?'3-бет / колл / фолд':nd.id==='vs3'?'4-бет / колл / фолд':nd.id==='potodds'?'Шансы банка · эквити':'Постфлоп-линии';
+    let stClass='ctile'+(isDone?' cleared':cur?' cur':' locked');
+    const el=document.createElement('div');el.className=stClass;
     el.onclick=()=>{if(!unlocked){toast('Сначала пройди предыдущий узел');return;}openNode(i);};
-    const right=isDone?('<div class="stars">'+'★'.repeat(stars)+'☆'.repeat(3-stars)+'</div>'):cur?'<div class="stars" style="color:var(--gold);font-weight:800">играть ›</div>':'<div class="lk">🔒</div>';
-    el.innerHTML='<div class="no">'+(isDone?'✓':(i+1))+'</div><div class="tx"><div class="nm">'+nd.ic+' '+nd.nm+'</div><div class="ds">'+(nd.kind==='rfi'?('Диапазон открытия '+nd.pos):nd.id==='vsopen'?'3-бет / колл / фолд':nd.id==='vs3'?'4-бет / колл / фолд':nd.id==='potodds'?'Шансы банка и эквити':'Линии после флопа')+'</div></div>'+right;
-    w.appendChild(el);
+    const stHtml=isDone?('<div class="cst">'+'★'.repeat(stars)+'☆'.repeat(3-stars)+'</div>'):cur?'<div class="cst">играть ›</div>':'<div class="cst">🔒</div>';
+    el.innerHTML='<div class="tglow"></div><div class="cic">'+nd.ic+'</div><div class="cnm">'+nd.nm+'</div><div class="cds">'+ds+'</div>'+stHtml;
+    grid.appendChild(el);
   });
+  w.appendChild(grid);
 }
 
 /* ===== RESULTS ===== */
