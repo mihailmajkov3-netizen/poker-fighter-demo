@@ -1596,13 +1596,13 @@ VIEW.table=function(sp,stage){
 function combosOf(code){return code.length===2?6:(code[2]==='s'?4:12);}
 function comboSum(set){let n=0;if(set)set.forEach(c=>n+=combosOf(c));return n;}
 function pctOf(combos){return Math.round(combos/1326*100);}
-function gridHTML(sets,hl,rl,bare,sides){
+function gridHTML(sets,hl,rl,bare,sides,layerMap){
   let h='<div class="gridwrap"><div class="grid13">';
   for(let r=0;r<13;r++)for(let c=0;c<13;c++){let code,disp;
     if(r===c){code=RANKS[r]+RANKS[c];disp=code;}else if(r<c){code=RANKS[r]+RANKS[c]+'s';disp=RANKS[r]+RANKS[c];}else{code=RANKS[c]+RANKS[r]+'o';disp=RANKS[c]+RANKS[r];}
     let cls='gc'+(r>c?' of':r===c?' pr':'');const inMain=!!(sets.three&&sets.three.has(code))||(sets.call&&sets.call.has(code))||(sets.in&&sets.in.has(code));if(sets.three&&sets.three.has(code))cls+=' in3';else if(sets.call&&sets.call.has(code))cls+=' incall';else if(sets.in&&sets.in.has(code))cls+=' in';
     if(sets.shadow&&sets.shadow.has(code))cls+=' shd';
-    if(hl&&code===hl)cls+=' hl';h+='<div class="'+cls+'">'+disp+'</div>';}
+    if(hl&&code===hl)cls+=' hl';const lc=layerMap&&layerMap[code];h+='<div class="'+cls+'"'+(lc?' style="background:'+lc+';color:#111"':'')+'>'+disp+'</div>';}
   if(sides){if(sides.att)h+='<div class="gs-emb gs-emb-att">'+posEmblem(sides.att)+'</div>';if(sides.def)h+='<div class="gs-emb gs-emb-def">'+posEmblem(sides.def)+'</div>';}
   h+='</div>';
   if(bare)return h+'</div>';
@@ -1610,7 +1610,7 @@ function gridHTML(sets,hl,rl,bare,sides){
     const cR=comboSum(sets.three),cC=comboSum(sets.call),rname=rl||'3-бет';
     h+='<div class="gridpct">Весь рендж <b>'+pctOf(cR+cC)+'%</b> · '+rname+' <b>'+pctOf(cR)+'%</b> · колл <b>'+pctOf(cC)+'%</b></div>';
     h+='<div class="gridlegend"><span><i style="background:linear-gradient(180deg,#d05cff,#9b3cdf)"></i>'+rname+'</span><span><i style="background:linear-gradient(180deg,#2f9d68,#1f7a4d)"></i>колл</span><span><i style="background:#1a2350"></i>фолд</span></div>';
-  }else{
+  }else if(!layerMap){
     h+='<div class="gridpct">Весь рендж <b>'+pctOf(comboSum(sets.in))+'%</b></div>';
     h+='<div class="gridlegend"><span><i style="background:linear-gradient(180deg,#e0a532,#c2841d)"></i>raise</span><span><i style="background:#1a2350"></i>fold</span></div>';
   }
@@ -1816,7 +1816,18 @@ function hlpRenderGrid(){
     const pct=Math.round(comboCount(range)/1326*100);
     title.textContent=pos+' · Открытие (RFI)';
     sub.textContent='Размер открытия: 2.5bb · '+pct+'% комбо';
-    inner.innerHTML=gridHTML({in:range},null,null,false,{att:pos});
+    const RFI_LAYERS=['UTG','HJ','CO','BTN','SB'];
+    const RFI_COLORS={UTG:'#c0392b',HJ:'#8B4513',CO:'#e67e22',BTN:'#f1c40f',SB:'#27ae60'};
+    const layerMap={};
+    range.forEach(code=>{
+      const lay=RFI_LAYERS.find(p=>rfiRange(p).has(code));
+      if(lay)layerMap[code]=RFI_COLORS[lay];
+    });
+    inner.innerHTML=gridHTML({in:range},null,null,false,{att:pos},layerMap);
+    const leg=document.createElement('div');
+    leg.className='gridlegend rfi-layer-legend';
+    leg.innerHTML=RFI_LAYERS.filter(p=>rfiRange(p).size>0).map(p=>'<span><i style="background:'+RFI_COLORS[p]+'"></i>'+({UTG:'🐉 UTG',HJ:'🐻 HJ',CO:'🐯 CO',BTN:'🐵 BTN',SB:'🐍 SB'})[p]+'</span>').join('')+'<span><i style="background:#1a2350"></i>fold</span>';
+    inner.querySelector('.gridwrap').appendChild(leg);
   } else if(hlp.sit==='vsopen'){
     const m=VS_RAW.find(x=>x.opener===hlp.opener&&x.hero===hlp.pos);
     if(!m){inner.innerHTML='<div class="hlp-no-data">Нет данных для этой пары позиций</div>';title.textContent='';sub.textContent='';return;}
