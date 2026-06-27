@@ -64,7 +64,7 @@ body{
 .statcard[style*="--sc:#b06bff"]{box-shadow:0 4px 24px rgba(0,0,0,.5),0 0 0 1px rgba(176,107,255,.55),0 0 14px rgba(176,107,255,.25),inset 0 0 20px rgba(176,107,255,.08) !important}
 .statcard[style*="--sc:#e0a532"]{box-shadow:0 4px 24px rgba(0,0,0,.5),0 0 0 1px rgba(224,165,50,.55),0 0 14px rgba(224,165,50,.25),inset 0 0 20px rgba(224,165,50,.08) !important}
 /* CTA-карточки — неон-рамки */
-.bigcta,.daily,.cashcta,.handcta{
+.bigcta{
   background:linear-gradient(155deg,rgba(16,24,64,.95) 0%,rgba(8,12,36,.98) 100%) !important;
   border:1px solid rgba(255,255,255,.06) !important;
   border-left:3px solid var(--ac,#4f8cff) !important;
@@ -313,37 +313,28 @@ body{
   .statcard .sv{font-size:26px}
   .statcard .sl{font-size:10px}
   .ctas{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 14px}
-  .ctas .bigcta,.ctas .daily,.ctas .cashcta,.ctas .handcta{margin:0}
+  .ctas .bigcta{margin:0}
   .modes{display:grid;grid-template-columns:1fr 1fr}
 }
 
-.bigcta,.daily,.cashcta,.handcta{background:linear-gradient(155deg,#1b2554 0%,#0e1638 100%)!important;color:var(--txt)!important;border:1px solid var(--line);border-left:3px solid var(--ac,#4f8cff)!important;box-shadow:0 8px 24px rgba(6,8,24,.55),0 0 22px -8px var(--ac,#4f8cff)!important}
-.bigcta{--ac:#ffcf4d}.daily{--ac:#7b5cff}.cashcta{--ac:#34d17a}.handcta{--ac:#ff5b6e}
-.bigcta .tag,.daily .tag,.cashcta .tag,.handcta .tag{color:var(--ac)!important;opacity:1!important}
-.bigcta h3,.daily h3,.cashcta h3,.handcta h3{color:#fff!important}
-.bigcta small,.daily small,.cashcta small,.handcta small{color:var(--muted)!important;opacity:1!important}
-.bigcta .arrow,.daily .arrow,.cashcta .arrow,.handcta .arrow{color:var(--ac)!important}
+.bigcta{background:linear-gradient(155deg,#1b2554 0%,#0e1638 100%)!important;color:var(--txt)!important;border:1px solid var(--line);border-left:3px solid var(--ac,#4f8cff)!important;box-shadow:0 8px 24px rgba(6,8,24,.55),0 0 22px -8px var(--ac,#4f8cff)!important}
+.bigcta{--ac:#ffcf4d}
+.bigcta .tag{color:var(--ac)!important;opacity:1!important}
+.bigcta h3{color:#fff!important}
+.bigcta small{color:var(--muted)!important;opacity:1!important}
+.bigcta .arrow{color:var(--ac)!important}
 .bigcta{margin:0 14px 10px;padding:16px;border-radius:18px;cursor:pointer;background:linear-gradient(135deg,#e0a532,#c2841d);box-shadow:0 8px 22px rgba(224,165,50,.3);position:relative;color:#241a00}
 .bigcta:active{transform:scale(.985)}
 .bigcta .tag{font-size:11px;font-weight:800;letter-spacing:1px;opacity:.8}
 .bigcta h3{font-size:21px;font-weight:900;margin:2px 0 3px}
 .bigcta small{font-weight:700;opacity:.85;font-size:12px}
 .bigcta .arrow{position:absolute;right:16px;top:50%;transform:translateY(-50%);font-size:26px}
-.daily{margin:0 14px 6px;padding:14px;border-radius:16px;cursor:pointer;background:linear-gradient(135deg,#7b5cff,#4f8cff);box-shadow:0 6px 18px rgba(79,140,255,.3);position:relative}
 .hseat{position:absolute;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:3px;z-index:2}
 .hseat.top{top:6%}.hseat.bot{bottom:4%}
 .hseat .hcards{display:flex;gap:4px;margin-top:2px}
 .hseat .pav{width:92px;height:92px;border:2px solid #56badf}
 .hseat .pav.hero{border-color:var(--gold)}
 .hseat .lastact{position:absolute;top:-13px;font-size:9px;font-weight:800;padding:2px 7px;border-radius:6px;white-space:nowrap}
-.handcta{margin:0 14px 6px;padding:14px;border-radius:16px;cursor:pointer;background:linear-gradient(135deg,#c2364a,#7b2233);box-shadow:0 6px 18px rgba(194,54,74,.3);position:relative;color:#fff}
-.handcta:active{transform:scale(.985)}
-.handcta .tag{font-size:11px;font-weight:800;letter-spacing:1px;opacity:.85}.handcta h3{font-size:19px;font-weight:900;margin:2px 0 2px}.handcta small{font-weight:700;opacity:.85;font-size:12px}.handcta .arrow{position:absolute;right:16px;top:50%;transform:translateY(-50%);font-size:24px}
-.cashcta{margin:0 14px 6px;padding:14px;border-radius:16px;cursor:pointer;background:linear-gradient(135deg,#2f9d68,#1f7a4d);box-shadow:0 6px 18px rgba(47,157,104,.3);position:relative;color:#fff}
-.cashcta:active{transform:scale(.985)}
-.cashcta .tag{font-size:11px;font-weight:800;letter-spacing:1px;opacity:.85}.cashcta h3{font-size:19px;font-weight:900;margin:2px 0 2px}.cashcta small{font-weight:700;opacity:.85;font-size:12px}.cashcta .arrow{position:absolute;right:16px;top:50%;transform:translateY(-50%);font-size:24px}
-.fb .cashres{text-align:center;font-weight:800;font-size:15px;margin-bottom:8px}
-.fb .cashres.win{color:#34d17a}.fb .cashres.loss,.fb .cashres.cooler{color:#ff6b6b}.fb .cashres.fold,.fb .cashres.flat{color:var(--muted)}
 .daily:active{transform:scale(.985)}
 .daily .tag{font-size:10px;font-weight:700;letter-spacing:1px;opacity:.85}
 .daily h3{font-size:17px;font-weight:900;margin:2px 0 2px}.daily small{opacity:.9;font-size:11px}
@@ -923,6 +914,52 @@ body{
 .fb{background:linear-gradient(180deg,rgba(18,24,72,.98),rgba(10,16,48,.99));border:1px solid rgba(79,140,255,.3);box-shadow:0 18px 60px rgba(0,0,0,.7),0 0 40px -10px rgba(79,140,255,.2)}
 
 /* ===== END ШАГ 4 ===== */
+
+/* ===== RANGE RUSH ===== */
+#screen-rush .game-meta{background:linear-gradient(180deg,rgba(10,14,40,.97),rgba(6,9,28,.97));border-bottom:1px solid rgba(208,92,255,.22);box-shadow:0 2px 12px rgba(0,0,0,.4)}
+.rr-arena{position:relative;flex:1;overflow:hidden;background:linear-gradient(180deg,rgba(4,6,22,.98),rgba(8,12,36,.98));touch-action:none;user-select:none}
+.rr-zones{display:flex;gap:8px;padding:8px;background:linear-gradient(0deg,rgba(6,9,28,.99),rgba(8,12,36,.95));border-top:1px solid rgba(208,92,255,.2);flex-shrink:0}
+.rr-zone{flex:1;border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px 4px;gap:4px;border:2px solid transparent;font-weight:800;font-size:13px;letter-spacing:.04em;transition:transform .1s,box-shadow .1s;min-height:68px;cursor:pointer;position:relative}
+.rr-zone.fold{background:linear-gradient(180deg,#1a1a2e,#111125);border-color:rgba(120,120,180,.35);color:#8888bb}
+.rr-zone.call{background:linear-gradient(180deg,#0a2318,#061610);border-color:rgba(47,157,104,.4);color:#34d17a}
+.rr-zone.raise,.rr-zone.threebet,.rr-zone.fourbet{background:linear-gradient(180deg,#2a1a00,#1a1000);border-color:rgba(224,165,50,.4);color:#e0a532}
+.rr-zone.active-drop{transform:scale(1.07);box-shadow:0 0 24px rgba(208,92,255,.5);border-color:rgba(208,92,255,.9)}
+.rr-zone .zone-lbl{font-size:11px;opacity:.7;font-weight:600}
+.rr-tile{position:absolute;top:-80px;left:50%;transform:translateX(-50%);width:72px;height:72px;border-radius:18px;background:linear-gradient(145deg,#1e2860,#131a4a);border:2px solid rgba(208,92,255,.6);box-shadow:0 0 24px rgba(208,92,255,.4),0 4px 16px rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:900;color:#e8eaff;cursor:grab;touch-action:none;z-index:10;letter-spacing:-.5px;transition:box-shadow .1s}
+.rr-tile.dragging{cursor:grabbing;box-shadow:0 0 36px rgba(208,92,255,.7),0 8px 28px rgba(0,0,0,.7);opacity:.92;z-index:20;transform:none}
+.rr-tile.correct-flash{background:linear-gradient(145deg,#0a2a18,#062015);border-color:rgba(47,157,104,.9);box-shadow:0 0 30px rgba(47,157,104,.6)}
+.rr-tile.wrong-flash{background:linear-gradient(145deg,#2a0a0a,#1a0606);border-color:rgba(255,80,80,.9);box-shadow:0 0 30px rgba(255,80,80,.6)}
+.rr-hud{display:flex;align-items:center;gap:10px;padding:8px 12px}
+.rr-lives{display:flex;gap:5px;font-size:18px}
+.rr-score{margin-left:auto;font-weight:800;color:#d05cff;font-size:16px}
+.rr-timer-bar{height:4px;background:rgba(5,8,30,.8)}
+.rr-timer-fill{height:100%;background:linear-gradient(90deg,#d05cff,#4f8cff);transition:width .08s linear}
+.rr-ctx-badge{background:rgba(79,140,255,.12);border:1px solid rgba(79,140,255,.25);border-radius:20px;padding:3px 10px;font-size:11px;color:#8ab4ff;font-weight:600}
+.rr-go-screen{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;gap:16px;padding:24px}
+.rr-go-screen h2{font-size:26px;font-weight:900;color:#d05cff;text-shadow:0 0 20px rgba(208,92,255,.6);margin:0}
+.rr-go-screen .go-score{font-size:56px;font-weight:900;color:#fff;text-shadow:0 0 30px rgba(208,92,255,.5);margin:0}
+.rr-go-screen .go-rec{font-size:14px;color:#e0a532;font-weight:700}
+.rr-go-screen .go-sub{font-size:13px;color:var(--muted)}
+.rr-go-btn{background:linear-gradient(180deg,#d05cff,#9b3fd0);border:none;border-radius:14px;color:#fff;font-size:16px;font-weight:800;padding:14px 40px;cursor:pointer;box-shadow:0 6px 24px rgba(208,92,255,.45)}
+/* Rush setup screen */
+.rr-setup{padding:16px;display:flex;flex-direction:column;gap:12px}
+.rr-setup h3{margin:0;font-size:18px;font-weight:900;color:#d05cff}
+.rr-setup .rs-sub{font-size:13px;color:var(--muted);margin:0}
+.rr-seg-row{display:flex;gap:6px;flex-wrap:wrap}
+.rr-seg{background:rgba(14,22,72,.8);border:1px solid rgba(79,140,255,.22);border-radius:10px;padding:8px 12px;font-size:13px;font-weight:700;color:var(--muted);cursor:pointer}
+.rr-seg.active{background:linear-gradient(180deg,rgba(208,92,255,.25),rgba(160,60,200,.15));border-color:#d05cff;color:#d05cff}
+.rr-pick-row{display:flex;flex-wrap:wrap;gap:6px}
+.rr-pick{background:rgba(14,22,72,.8);border:1px solid rgba(79,140,255,.22);border-radius:10px;padding:7px 13px;font-size:13px;font-weight:700;color:var(--muted);cursor:pointer}
+.rr-pick.active{background:linear-gradient(180deg,rgba(79,140,255,.25),rgba(50,100,200,.15));border-color:#4f8cff;color:#4f8cff}
+.rr-start-btn{background:linear-gradient(180deg,#d05cff,#9b3fd0);border:none;border-radius:14px;color:#fff;font-size:17px;font-weight:800;padding:15px;cursor:pointer;box-shadow:0 6px 24px rgba(208,92,255,.45);margin-top:4px}
+.rr-best{font-size:12px;color:var(--muted);text-align:center}
+.rr-zone-sub{font-size:10px;opacity:.6}
+/* Rush card in challenges */
+.rushcard{display:flex;align-items:center;gap:14px;background:linear-gradient(135deg,rgba(208,92,255,.08),rgba(79,140,255,.05));border:1px solid rgba(208,92,255,.25);border-radius:18px;padding:14px 16px;cursor:pointer;margin-top:8px;box-shadow:0 4px 16px rgba(0,0,0,.3),0 0 20px -8px rgba(208,92,255,.3)}
+.rushcard .ic{font-size:26px;flex-shrink:0}
+.rushcard .tx .nm{font-weight:800;font-size:15px;margin-bottom:2px}
+.rushcard .tx .ds{font-size:12px;color:var(--muted)}
+.rushcard .go{color:#d05cff;font-size:18px;margin-left:auto}
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 </head>
@@ -951,20 +988,17 @@ body{
           <div class="statcard" style="--sc:#b06bff"><div class="glow"></div><div class="sv" id="hStreak">0</div><div class="sl">Стрик 🔥</div><svg class="spk" viewBox="0 0 100 28" preserveAspectRatio="none"><polygon class="fillz" points="0,28 0,24 18,16 36,18 54,9 72,15 90,8 100,11 100,28"/><polyline points="0,24 18,16 36,18 54,9 72,15 90,8 100,11" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
           <div class="statcard" style="--sc:#e0a532"><div class="glow"></div><div class="sv" id="hDays">0</div><div class="sl">Дни</div><svg class="spk" viewBox="0 0 100 28" preserveAspectRatio="none"><polygon class="fillz" points="0,28 0,20 18,17 36,19 54,12 72,14 90,9 100,5 100,28"/><polyline points="0,20 18,17 36,19 54,12 72,14 90,9 100,5" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
         </div>
-        <div class="pt-cta" onclick="openPlacement()"><div class="ic">🎯</div><div class="tx"><div class="nm">Проверка префлоп-уровня</div><div class="ds" id="ptHomeDs">16 вопросов · узнай свой уровень</div></div><div class="arr">›</div></div>
         <div class="pt-cta train" onclick="startPreflopTrain()"><div class="ic">🎓</div><div class="tx"><div class="nm">Префлоп-тренировка</div><div class="ds">60 спотов за столом · сложность растёт</div></div><div class="arr">›</div></div>
         <div class="pt-cta help" onclick="openHelper()"><div class="ic">📡</div><div class="tx"><div class="nm">Помощник</div><div class="ds">Справочник диапазонов · за столом в реальной игре</div></div><div class="arr">›</div></div>
         <div class="pt-cta" id="schoolCta" onclick="openSchool()" style="--ac:#d05cff;border-left-color:#d05cff;box-shadow:0 6px 20px rgba(0,0,0,.4),0 0 20px -8px #d05cff"><div class="ic">🥋</div><div class="tx"><div class="nm">Школа Шифу</div><div class="ds" id="schoolCtaDs">Закрепи диапазоны · интервальное повторение</div></div><div class="arr">›</div></div>
         <div class="ctas">
         <div class="bigcta" onclick="nav('career')"><div class="tag">🪜 КАРЬЕРА</div><h3 id="ctaStake">NL2 · Микролимит</h3><small id="ctaSub">Поднимайся по лимитам</small><div class="arrow">›</div></div>
-        <div class="daily" onclick="startDaily()"><div class="tag">⚡ ЕЖЕДНЕВНЫЙ ВЫЗОВ</div><h3>Daily Fight</h3><small id="dailySub">8 спотов · бонус к рейтингу</small><div class="arrow">›</div></div>
-        <div class="cashcta" onclick="chooseCash()"><div class="tag">💵 КЭШ-СТОЛ · 5–9 MAX</div><h3>Сессия 100bb</h3><small>Выбери размер стола, веди стек в плюс</small><div class="arrow">›</div></div>
-        <div class="handcta" onclick="startHand()"><div class="tag">🎬 СЫГРАЙ РУКУ ЦЕЛИКОМ</div><h3>Хедз-ап розыгрыш</h3><small>Префлоп → флоп → тёрн → ривер → вскрытие</small><div class="arrow">›</div></div>
         </div>
         <div class="quests" onclick="nav('quests')"><div class="qh"><span>🎯 Задания дня</span><span class="badge" id="qBadge">0/3</span></div><div id="qMini" style="margin-top:8px"></div></div>
         <div class="section-h">Тренировки</div>
         <div class="modes" id="modeList"></div>
         <div class="section-h">Испытания</div>
+        <div class="rushcard" onclick="openRush()"><div class="ic">⚡</div><div class="tx"><div class="nm">Шквал рук</div><div class="ds">Руки падают — тащи в нужный блок. 3 жизни. Рекорд: <span id="rrBestHome">0</span></div></div><div class="go">›</div></div>
         <div class="challengecard" onclick="startSurvival()"><div class="ic">💀</div><div class="tx"><div class="nm">Survival</div><div class="ds">Бесконечно, пока 3 ошибки. Сколько продержишься?</div></div><div class="go" style="color:#e6b8d8;font-size:18px">›</div></div>
       </div>
       <div class="bottomnav">
@@ -1038,27 +1072,41 @@ body{
       <div class="mem-actions"><button class="clear" onclick="nav('home')">Выйти</button><button class="check" id="fhAgain" style="display:none;background:linear-gradient(180deg,#e0a532,#c2841d);color:#241a06" onclick="openFindHand()">Ещё раз 🎯</button></div>
     </div>
 
-    <div class="screen" id="screen-placement">
-      <div class="game-meta"><span class="hcount" id="ptHud">Тест</span><span class="mid">Проверка уровня</span><span class="x" onclick="nav('home')"><span class="ic">✕</span></span></div>
-      <div class="body" style="display:flex;flex-direction:column;min-height:0">
-        <div id="ptIntro" class="pt-intro">
-          <div class="pt-emoji">🎯</div>
-          <div class="pt-ttl">Проверка префлоп-уровня</div>
-          <div class="pt-sub">16 вопросов · RFI, vs Open, vs 3-бет · ~4 минуты. Без подсказок — разбор в конце. Это замер: рейтинг не меняется.</div>
-          <div id="ptPrev" class="pt-prev"></div>
-          <button class="pt-start" onclick="startPlacementQuiz()">Начать тест ›</button>
+    <div class="screen" id="screen-rush">
+      <div class="game-meta"><span class="hcount" id="rrHud">⚡ Rush</span><span class="mid" id="rrCtxBadge"></span><span class="x" onclick="rrQuit()"><span class="ic">✕</span></span></div>
+      <div style="display:flex;flex-direction:column;height:calc(100% - 48px)" id="rrBody">
+        <!-- setup panel -->
+        <div class="rr-setup" id="rrSetup">
+          <h3>Шквал рук</h3>
+          <p class="rs-sub">Руки падают — тащи в нужный блок. Три ошибки — всё.</p>
+          <div style="font-size:12px;color:var(--muted);font-weight:600;margin-bottom:2px">Режим</div>
+          <div class="rr-seg-row" id="rrSegRow"></div>
+          <div id="rrPosArea"></div>
+          <div class="rr-best" id="rrBestLine"></div>
+          <button class="rr-start-btn" onclick="rrStart()">Старт ⚡</button>
         </div>
-        <div id="ptQuiz" style="display:none;flex:1;flex-direction:column;min-height:0">
-          <div id="ptProgWrap" style="height:7px;background:#1a2350;border-radius:4px;overflow:hidden;margin:2px 0 14px"><div id="ptProg" style="height:100%;width:0%;background:linear-gradient(90deg,#4f8cff,#7b5cff);transition:width .3s ease"></div></div>
-          <div class="pt-stage">
-            <div class="pt-qmeta"><span id="ptQn">1 / 16</span><span id="ptQcat" class="pt-cat">RFI</span></div>
-            <div id="ptCtx" class="pt-ctx"></div>
-            <div class="pt-pos"><div id="ptPosEmb" class="pt-emb"></div><div id="ptPosName" class="pt-posname"></div></div>
-            <div id="ptCards" class="fh-cards"></div>
-            <div id="ptActions" class="pt-actions"></div>
+        <!-- arena (game) -->
+        <div style="display:none;flex:1;flex-direction:column" id="rrGame">
+          <div class="rr-hud">
+            <div class="rr-lives" id="rrLives"></div>
+            <div class="rr-ctx-badge" id="rrCtxInfo"></div>
+            <div class="rr-score">⚡ <span id="rrScoreNum">0</span></div>
           </div>
+          <div class="rr-timer-bar"><div class="rr-timer-fill" id="rrTimerFill" style="width:100%"></div></div>
+          <div class="rr-arena" id="rrArena">
+            <div class="rr-tile" id="rrTile" style="display:none"></div>
+          </div>
+          <div class="rr-zones" id="rrZones"></div>
         </div>
-        <div id="ptResult" class="pt-resultwrap" style="display:none"></div>
+        <!-- game over -->
+        <div class="rr-go-screen" id="rrGameOver" style="display:none">
+          <h2>Игра окончена</h2>
+          <div class="go-score" id="rrGoScore">0</div>
+          <div class="go-rec" id="rrGoRec"></div>
+          <div class="go-sub" id="rrGoSub"></div>
+          <button class="rr-go-btn" onclick="rrRestart()">Ещё раз</button>
+          <button class="rr-go-btn" style="background:linear-gradient(180deg,#334,#222);color:var(--muted);box-shadow:none;margin-top:-6px" onclick="rrQuit()">На главную</button>
+        </div>
       </div>
     </div>
 
@@ -1182,7 +1230,6 @@ body{
     <div class="di" onclick="nav('career');closeDrawer()"><span class="ic">🪜</span>Карьера</div>
     <div class="di" onclick="nav('hof');closeDrawer()"><span class="ic">🏅</span>Лиги</div>
     <div class="di" onclick="nav('ach');closeDrawer()"><span class="ic">🏆</span>Достижения</div>
-    <div class="di" onclick="startDaily();closeDrawer()"><span class="ic">⚡</span>Daily Fight</div>
     <div class="di" onclick="nav('shop');closeDrawer()"><span class="ic">🛒</span>Магазин</div>
     <div class="di" onclick="open3D();closeDrawer()"><span class="ic">🎲</span>3D-стол (beta)</div>
     <div class="di" onclick="nav('settings');closeDrawer()"><span class="ic">⚙️</span>Настройки</div>
@@ -1357,7 +1404,7 @@ const COLD_RAW=[
 ].map(m=>({...m,f4bS:buildRange(m.f4b),clS:buildRange(m.cl)}));
 
 /* ===== PROFILE ===== */
-const MODE_NAMES={rfi:'Preflop RFI',vsopen:'vs Open',vs3:'vs 3-бет',postflop:'Postflop',potodds:'Pot Odds',memorize:'Range Trainer',mixed:'Микс',custom:'Свой диапазон'};
+const MODE_NAMES={rfi:'Preflop RFI',vsopen:'vs Open',vs3:'vs 3-бет',potodds:'Pot Odds',memorize:'Range Trainer',mixed:'Микс',custom:'Свой диапазон'};
 let profile=loadProfile();
 function loadProfile(){let p={};try{p=JSON.parse(localStorage.getItem('pf_profile_v2'))||{};}catch(e){}
   const o=Object.assign({rating:1000,xp:0,hands:0,correct:0,streak:0,bestStreak:0,byMode:{},byConcept:{},career:{stake:0,stars:{}},achievements:[],mistakes:[],lastDaily:null,dailyStreak:0,quests:null,surBest:0,name:'Игрок',avatar:'warrior',onboarded:false,coins:0,owned:['warrior'],ownedThemes:['green'],theme:'green',soundOn:true,hapticsOn:true,lessonsRead:[],customRanges:[],findBest:0,hlpSide:'right'},p);
@@ -1419,7 +1466,6 @@ function renderHome(){
   const lvl=levelOf(profile.xp),xpIn=profile.xp%600;
   $('hLevel').textContent='Уровень '+lvl;$('hXp').textContent=xpIn+' / 600 XP';$('hXpFill').style.width=(xpIn/600*100)+'%';
   $('hHands').textContent=profile.hands;$('hAcc').textContent=profile.hands?Math.round(profile.correct/profile.hands*100)+'%':'—';$('hStreak').textContent=profile.bestStreak;$('hDays').textContent=(profile.dailyStreak||0);
-  {const pl=profile.placement,ph=$('ptHomeDs');if(ph)ph.textContent=(pl&&pl.history&&pl.history.length)?('Твой уровень: '+pl.history[pl.history.length-1].overall+'% · перепройти'):'16 вопросов · узнай свой уровень';}
   const cdone=profile.career.node>=CAREER.length,cn=Math.min(profile.career.node,CAREER.length-1),cnd=CAREER[cn];
   $('ctaStake').textContent=cdone?'Дорожка пройдена 🏆':(cnd.ic+' '+cnd.nm);
   $('ctaSub').textContent=cdone?'Вся база освоена':'Урок '+(cn+1)+'/'+CAREER.length+' — жми, чтобы продолжить';
@@ -1457,7 +1503,7 @@ function nav(s){
   else if(s==='settings'){show('settings');setTitle('Настройки');renderSettings();}
   else if(s==='school'){openSchool();}
 }
-function quitGame(){if(!session&&hand){hand=null;nav('home');return;}if(session&&session.type==='cash'){cashSummary();return;}if(confirm('Выйти из забега? Рейтинг по сыгранным рукам сохранится.')){clearExamTimer();clearTimeout(gridAdv);nav('home');}}
+function quitGame(){if(confirm('Выйти из забега? Рейтинг по сыгранным рукам сохранится.')){clearExamTimer();clearTimeout(gridAdv);nav('home');}}
 
 /* ===== CARD VIEWS ===== */
 const VIEW={};
@@ -1876,69 +1922,6 @@ function ptCards(code){
   else{const blk=FH_SUITS[Math.floor(Math.random()*2)],red=FH_SUITS[2+Math.floor(Math.random()*2)];if(Math.random()<0.5){s1=blk;s2=red;}else{s1=red;s2=blk;}}
   return fhCard(r1,s1)+fhCard(r2,s2);
 }
-function ptToday(){const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
-function ptLevelLabel(p){if(p>=85)return 'Крашер';if(p>=70)return 'Регуляр';if(p>=50)return 'Любитель';return 'Рыба';}
-let pt=null;
-function openPlacement(){
-  pt={i:0,answers:[]};
-  show('placement');setTitle('Проверка уровня');
-  $('ptIntro').style.display='';$('ptQuiz').style.display='none';$('ptResult').style.display='none';
-  $('ptHud').textContent='Тест';
-  const pl=profile.placement;
-  $('ptPrev').innerHTML=(pl&&pl.history&&pl.history.length)?('Прошлый результат: <b>'+pl.history[pl.history.length-1].overall+'%</b> — перепройди и сравни прогресс'):'';
-}
-function startPlacementQuiz(){
-  pt={i:0,answers:[]};
-  $('ptIntro').style.display='none';$('ptResult').style.display='none';$('ptQuiz').style.display='flex';
-  ptRender();
-}
-function ptRender(){
-  const q=PLACEMENT_Q[pt.i];
-  $('ptProg').style.width=Math.round(pt.i/PLACEMENT_Q.length*100)+'%';
-  $('ptQn').textContent=(pt.i+1)+' / '+PLACEMENT_Q.length;
-  $('ptQcat').textContent=PT_CATNAME[q.cat];
-  $('ptHud').textContent='Вопрос '+(pt.i+1)+'/'+PLACEMENT_Q.length;
-  $('ptCtx').innerHTML=ptCtx(q);
-  $('ptPosEmb').innerHTML=posEmblem(q.pos);
-  $('ptPosName').textContent=posAnimal(q.pos)+' · '+q.pos;
-  $('ptCards').innerHTML=ptCards(q.code);
-  $('ptActions').innerHTML=ptActions(q.cat).map(a=>'<button class="'+a[1]+'" onclick="ptAnswer(\''+a[0]+'\')">'+PT_LABELS[a[0]]+'</button>').join('');
-}
-function ptAnswer(key){
-  const q=PLACEMENT_Q[pt.i];
-  pt.answers.push({q,pick:key,correct:ptCorrect(q)});
-  pt.i++;
-  if(pt.i>=PLACEMENT_Q.length)ptFinish();else ptRender();
-}
-function ptFinish(){
-  $('ptProg').style.width='100%';
-  const by={rfi:[0,0],vsopen:[0,0],vs3:[0,0]};
-  pt.answers.forEach(a=>{const c=a.q.cat;by[c][1]++;if(a.pick===a.correct)by[c][0]++;});
-  const tot=pt.answers.length,cor=pt.answers.filter(a=>a.pick===a.correct).length;
-  const pct=v=>v[1]?Math.round(v[0]/v[1]*100):0;
-  const res={date:ptToday(),overall:Math.round(cor/tot*100),rfi:pct(by.rfi),vsopen:pct(by.vsopen),vs3:pct(by.vs3)};
-  if(!profile.placement)profile.placement={baseline:null,history:[]};
-  const prev=profile.placement.history.length?profile.placement.history[profile.placement.history.length-1]:null;
-  if(!profile.placement.baseline)profile.placement.baseline=res;
-  profile.placement.history.push(res);saveProfile();
-  ptRenderResult(res,prev);
-}
-function ptRenderResult(res,prev){
-  $('ptQuiz').style.display='none';$('ptResult').style.display='block';$('ptHud').textContent='Результат';
-  let dh='';
-  if(prev){const d=res.overall-prev.overall;dh='<div class="delta" style="color:'+(d>=0?'#34d17a':'#ff6b6b')+'">'+(d>=0?'▲ +':'▼ ')+d+'% к прошлому ('+prev.overall+'% → '+res.overall+'%)</div>';}
-  const catRow=(nm,v,prevV,color)=>{const dd=prevV!=null?(v-prevV):null;return '<div class="pt-catrow"><div class="cn">'+nm+'</div><div class="pt-catbar"><i style="width:'+v+'%;background:linear-gradient(90deg,'+color+',rgba(255,255,255,.15))"></i></div><div class="cv">'+v+'%'+(dd!=null&&dd!==0?'<small style="color:'+(dd>0?'#34d17a':'#ff6b6b')+';font-weight:700"> '+(dd>0?'+':'')+dd+'</small>':'')+'</div></div>';};
-  const cats=[['RFI · открытие',res.rfi],['Игра vs Open',res.vsopen],['Защита vs 3-бет',res.vs3]];
-  const weak=cats.slice().sort((a,b)=>a[1]-b[1])[0];
-  let html='<div class="pt-score"><div class="big">'+res.overall+'%</div><div class="lbl">Уровень: '+ptLevelLabel(res.overall)+'</div>'+dh+'</div>';
-  html+='<div class="pt-cats">'+catRow('RFI',res.rfi,prev?prev.rfi:null,'#4f8cff')+catRow('vs Open',res.vsopen,prev?prev.vsopen:null,'#2f9d68')+catRow('vs 3-бет',res.vs3,prev?prev.vs3:null,'#b06bff')+'</div>';
-  html+='<div class="pt-weak">Слабее всего — <b>'+weak[0]+'</b> ('+weak[1]+'%). Подтяни этот блок в «Свободной тренировке».</div>';
-  html+='<div class="pt-review-h">Разбор ответов</div>';
-  pt.answers.forEach(a=>{const ok=a.pick===a.correct;html+='<div class="pt-rev"><div class="okm">'+(ok?'✅':'❌')+'</div><div class="rh"><b>'+a.q.code+'</b> · '+PT_CATNAME[a.q.cat]+(a.q.opener?' vs '+a.q.opener:'')+'<small>'+posAnimal(a.q.pos)+' · '+a.q.pos+'</small></div><div class="ra">'+(ok?'<span class="good">'+PT_LABELS[a.pick]+'</span>':'<span class="bad">'+PT_LABELS[a.pick]+'</span> → <span class="good">'+PT_LABELS[a.correct]+'</span>')+'</div></div>';});
-  html+='<div class="pt-resbtns"><button class="primary" onclick="nav(\'home\')">Готово</button><button class="ghost" onclick="startPlacementQuiz()">Перепройти</button></div>';
-  $('ptResult').innerHTML=html;$('ptResult').scrollTop=0;
-}
-
 /* ===== ПРЕФЛОП-ТРЕНИРОВКА — длинная сессия с нарастанием сложности ===== */
 function genPreflopTrain(){
   const i=session?session.idx:0;
@@ -1954,136 +1937,6 @@ function startPreflopTrain(){
   beginSession('🎓 Префлоп-тренировка');
 }
 
-/* ===== POSTFLOP ARCHETYPES (procedural) ===== */
-function dressing(facing,heroPos){
-  const all=['Button','SB','BB','UTG','Hijack','Cutoff'].filter(n=>n.toUpperCase()!==heroPos.toUpperCase()&&n!==heroPos);
-  const opp=shuffle(all).slice(0,4);const seats={};opp.forEach(n=>seats[n]=oneOf([175,185,196,200,210]));
-  const pot=oneOf([16,20,24,28,32]);const o={pot,heroStack:oneOf([165,180,195]),seats,dealer:oneOf(opp),lastacts:{},bets:{}};
-  if(facing){const a=oneOf(opp);o.lastacts[a]='bet';o.bets[a]=Math.round(pot*0.6);o.bet=o.bets[a];o.pot=pot+o.bets[a];}else{const a=oneOf(opp);o.lastacts[a]='check';}
-  return o;
-}
-// board builders
-function dryLowBoard(d,belowVal){let rk=[],pool=RANKS.filter(r=>RVAL[r]<belowVal);let g=0;
-  while(rk.length<3&&g++<300){const r=oneOf(pool);if(rk.includes(r))continue;if(rk.some(x=>Math.abs(RVAL[x]-RVAL[r])<2))continue;rk.push(r);}
-  while(rk.length<3){const r=oneOf(pool);if(!rk.includes(r))rk.push(r);}
-  rk.sort((a,b)=>RVAL[b]-RVAL[a]);const su=shuffle(['s','h','d','c']);return rk.map((r,i)=>d.takeRC(r,su[i]));}
-function topBoard(d,topR){const lows=RANKS.filter(r=>RVAL[r]<RVAL[topR]-1);let a=oneOf(lows),b=oneOf(lows);let g=0;while(b===a&&g++<50)b=oneOf(lows);
-  const su=shuffle(['s','h','d','c']);return [d.takeRC(topR,su[0]),d.takeRC(a,su[1]),d.takeRC(b,su[2])];}
-function wetTwoTone(d,suit){ // two of `suit`, connected-ish
-  const r1=oneOf(['Q','J','T','9','8']),r2=RCHAR[RVAL[r1]-1]||'7';let r3=oneOf(RANKS.filter(r=>r!==r1&&r!==r2&&RVAL[r]<RVAL[r1]));
-  const off=shuffle(['s','h','d','c'].filter(c=>c!==suit));
-  return [d.takeRC(r1,suit),d.takeRC(r2,suit),d.takeRC(r3,off[0])];}
-function aceBoard(d){const lows=RANKS.filter(r=>RVAL[r]<10&&r!=='A');let a=oneOf(['K','Q']),b=oneOf(lows);const su=shuffle(['s','h','d','c']);return [d.takeRC('A',su[0]),d.takeRC(a,su[1]),d.takeRC(b,su[2])];}
-const ARCH=[
-  {id:'overpair_dry',concept:'Велью бет оверпарой',diff:1,facing:false,best:'raise',handLabel:'Оверпара',boardLabel:'сухой низкий',
-   build(d){const pr=oneOf(['JJ','QQ','KK','AA']);const h=[d.takeRank(pr[0]),d.takeRank(pr[0])];const board=dryLowBoard(d,RVAL[pr[0]]);return {hero:h,board};},
-   coach:'Оверпара на сухом борде — ты тут король. Ставь за велью, младшие пары приползут платить. Чек — это оставить деньги на столе, не позорься.'},
-  {id:'tptk',concept:'Велью топ-парой',diff:1,facing:false,best:'raise',handLabel:'Топ-пара, топ-кикер',boardLabel:'сухой',
-   build(d){const top=oneOf(['A','K','Q']);const kick=oneOf(RANKS.filter(r=>RVAL[r]>=8&&r!==top));const h=[d.takeRank(top),d.takeRank(kick)];const board=topBoard(d,top);return {hero:h,board};},
-   coach:'TPTK на сухом борде — это не повод скромничать. Тонкое велью: младшие пары и слабейшие топ-пары охотно заплатят.'},
-  {id:'set_wet',concept:'Велью сетом на мокром',diff:1,facing:true,best:'raise',handLabel:'Сет',boardLabel:'мокрый',
-   build(d){const pr=oneOf(['77','88','99','TT','JJ']);const suit=oneOf(['s','h','d','c']);const board=wetTwoTone(d,suit);
-     // ensure set rank present on board
-     board[2]=d.takeRank(pr[0]);const h=[d.takeRank(pr[0]),d.takeRank(pr[0])];return {hero:h,board};},
-   coach:'Сет на мокром борде — деньги есть, но борд ждать не будет. Рейзи: дро заплатят сейчас. Дашь бесплатную карту — сам виноват.'},
-  {id:'twopair',concept:'Велью двумя парами',diff:2,facing:true,best:'raise',handLabel:'Две пары',boardLabel:'координированный',
-   build(d){const r1=oneOf(['A','K','Q','J']),r2=oneOf(RANKS.filter(r=>RVAL[r]<RVAL[r1]&&RVAL[r]>=5));const h=[d.takeRank(r1),d.takeRank(r2)];
-     const low=oneOf(RANKS.filter(r=>r!==r1&&r!==r2&&RVAL[r]<RVAL[r2]));const su=shuffle(['s','h','d','c']);const board=[d.takeRC(r1,su[0]),d.takeRC(r2,su[1]),d.takeRC(low,su[2])];return {hero:h,board};},
-   coach:'Две пары — сильно, но борд угрожает. Рейзи и раздувай банк сейчас: топ-пары и дро заплатят, а ждать тёрна — риск.'},
-  {id:'nfd_oop',concept:'Полублеф флеш-дро',diff:2,facing:true,best:'raise',handLabel:'Натсовое флеш-дро',boardLabel:'мокрый',
-   build(d){const suit=oneOf(['s','h','d','c']);const low=RANKS.filter(r=>RVAL[r]<8);
-     const h=[d.takeRC('A',suit),d.takeSuit(suit,['Q','J','T','9'])];
-     const board=[d.takeSuit(suit,low),d.takeSuit(suit,low),d.takeOffSuit(suit,RANKS.filter(r=>RVAL[r]<6))];return {hero:h,board,oop:true};},
-   coach:'Натсовое флеш-дро с оверкартой — это не дро, это оружие. Рейзи: fold equity сейчас, натс на будущее. Пассивность тебя не спасёт.'},
-  {id:'oesd_ip',concept:'Полублеф со стрит-дро',diff:2,facing:false,best:'raise',handLabel:'Двусторонний стрит-дро',boardLabel:'координированный',
-   build(d){const base=oneOf([9,8,7,6]);const h=[d.takeRank(RCHAR[base]),d.takeRank(RCHAR[base-1])];
-     const su=shuffle(['s','h','d','c']);const board=[d.takeRC(RCHAR[base-2],su[0]),d.takeRC(RCHAR[base+1]||'A',su[1]),d.takeRC(oneOf(['A','K','2','3']),su[2])];return {hero:h,board,oop:false};},
-   coach:'OESD в позиции — 8 аутов и право давить. Бет: fold equity сейчас, стрит потом. Дашь бесплатную карту — выбросишь рычаг.'},
-  {id:'fd_call',concept:'Колл с дро по шансам',diff:2,facing:true,best:'call',handLabel:'Флеш-дро',boardLabel:'мокрый',
-   build(d){const suit=oneOf(['s','h','d','c']);const h=[d.takeSuit(suit,['K','Q','J']),d.takeSuit(suit,['9','8','7'])];
-     const board=[d.takeSuit(suit,['A','K','Q']),d.takeSuit(suit,RANKS.filter(r=>RVAL[r]<7)),d.takeOffSuit(suit,RANKS.filter(r=>RVAL[r]<7))];return {hero:h,board,oop:true};},
-   coach:'Флеш-дро против ставки, fold equity нет — не геройствуй рейзом. Колл по шансам банка и имплайду. Скромность здесь добродетель.'},
-  {id:'midpair_call',concept:'Контроль средней парой',diff:2,facing:true,best:'call',handLabel:'Средняя пара',boardLabel:'сухой',
-   build(d){const mid=oneOf(['9','8','7','T']);const top=oneOf(RANKS.filter(r=>RVAL[r]>RVAL[mid]+1));const kick=oneOf(RANKS.filter(r=>RVAL[r]>=9&&r!==mid&&r!==top));const h=[d.takeRank(mid),d.takeRank(kick)];
-     const low=oneOf(RANKS.filter(r=>RVAL[r]<RVAL[mid]));const su=shuffle(['s','h','d','c']);const board=[d.takeRC(top,su[0]),d.takeRC(mid,su[1]),d.takeRC(low,su[2])];return {hero:h,board,oop:true};},
-   coach:'Средняя пара — не герой, но и не мусор. Контролируй банк: колл-чек-колл. Рейз превратит её в дорогой блеф против сильнее.'},
-  {id:'overpair_scary',concept:'Пот-контроль на тёрне',diff:3,facing:false,best:'call',handLabel:'Оверпара (уязвима)',boardLabel:'тёрн дал оверкарту',
-   build(d){const pr=oneOf(['TT','JJ','QQ']);const h=[d.takeRank(pr[0]),d.takeRank(pr[0])];const board=dryLowBoard(d,RVAL[pr[0]]);board.push(d.takeRank(oneOf(['A','K'])));return {hero:h,board,oop:false};},
-   coach:'Оверкарта на тёрне — король слез с трона. Чек: тёрн ударил по твоему диапазону, гнать банк сейчас себе дороже.'},
-  {id:'air_akq_fold',concept:'Фолд воздуха',diff:1,facing:true,best:'fold',handLabel:'Воздух (нет пары/дро)',boardLabel:'A-high, бьёт агрессора',
-   build(d){const h=[d.takeRank(oneOf(['7','6','5'])),d.takeRank(oneOf(['4','3','2']))];const board=aceBoard(d);return {hero:h,board,oop:true};},
-   coach:'Воздух на A-high борде против ставки — это уже не смелость, это расточительство. Ни эквити, ни fold equity. Фолд, не думай.'},
-  {id:'overcards_fold',concept:'Фолд оверкарт',diff:2,facing:true,best:'fold',handLabel:'Две оверкарты, без дро',boardLabel:'связанный, мокрый',
-   build(d){const h=[d.takeRank('A'),d.takeRank(oneOf(['K','Q']))];const suit=oneOf(['s','h','d','c']);const r1=oneOf(['9','8','7']),r2=RCHAR[RVAL[r1]-1],r3=RCHAR[RVAL[r1]-2];const board=[d.takeRC(r1,suit),d.takeRC(r2,suit),d.takeRC(r3,oneOf(['s','h','d','c'].filter(c=>c!==suit)))];return {hero:h,board,oop:true};},
-   coach:'Две оверкарты, дро нет, борд мокрый — это надежда, не рука. Против ставки эквити нищенское. Фолд достойнее пассивного колла.'},
-  {id:'underpair_fold',concept:'Фолд андерпары',diff:2,facing:true,best:'fold',handLabel:'Андерпара',boardLabel:'две оверкарты',
-   build(d){const pr=oneOf(['55','66','77']);const h=[d.takeRank(pr[0]),d.takeRank(pr[0])];const highs=shuffle(['A','K','Q','J']).slice(0,2);const low=oneOf(RANKS.filter(r=>RVAL[r]<RVAL[pr[0]]));const su=shuffle(['s','h','d','c']);const board=[d.takeRC(highs[0],su[0]),d.takeRC(highs[1],su[1]),d.takeRC(low,su[2])];return {hero:h,board,oop:true};},
-   coach:'Андерпара с двумя оверкартами на борде — ты уже, скорее всего, позади. Платить за это удовольствие смысла нет. Фолд.'},
-  {id:'tp_face_raise',concept:'Велью топ-парой в банк',diff:2,facing:true,best:'call',handLabel:'Топ-пара',boardLabel:'сухой',
-   build(d){const top=oneOf(['K','Q','J']);const kick=oneOf(RANKS.filter(r=>RVAL[r]>=7&&r!==top));const h=[d.takeRank(top),d.takeRank(kick)];const board=topBoard(d,top);return {hero:h,board,oop:false};},
-   coach:'Топ-пара против ставки на сухом борде — это колл, не война. Рейз загонит тебя в угол против рук, которые тебя бьют.'},
-  {id:'combo_raise',concept:'Полублеф комбо-дро',diff:3,facing:true,best:'raise',handLabel:'Флеш-дро + стрит-дро',boardLabel:'очень мокрый',
-   build(d){const suit=oneOf(['s','h','d','c']);const base=oneOf([10,9,8]);const h=[d.takeRC(RCHAR[base],suit),d.takeRC(RCHAR[base-1],suit)];
-     const board=[d.takeRC(RCHAR[base-2],suit),d.takeRC(RCHAR[base+1],suit),d.takeOffSuit(suit,['2','3','4'])];return {hero:h,board,oop:true};},
-   coach:'Комбо-дро — ~15 аутов, ты сам часто фаворит. Рейзи без сомнений: fold equity сейчас плюс мощнейшее эквити в запасе.'},
-  {id:'trips_value',concept:'Велью трипсом',diff:2,facing:false,best:'raise',handLabel:'Трипс',boardLabel:'парный',
-   build(d){const X=oneOf(['Q','J','T','9','8']);const k=oneOf(RANKS.filter(r=>RVAL[r]>=9&&r!==X));const h=[d.takeRank(X),d.takeRank(k)];const low=oneOf(RANKS.filter(r=>RVAL[r]<RVAL[X]&&r!==k));const su=shuffle(['s','h','d','c']);const board=[d.takeRC(X,su[0]),d.takeRC(X,su[1]),d.takeRC(low,su[2])];return {hero:h,board,oop:false};},
-   coach:'Трипс на парном борде — ты почти всегда лучший. Ставь: топ-пары и дро охотно заплатят. Чек — потерянные деньги.'},
-  {id:'flush_made',concept:'Велью флешем',diff:2,facing:true,best:'raise',handLabel:'Флеш',boardLabel:'три одной масти',
-   build(d){const su=oneOf(['s','h','d','c']);const h=[d.takeSuit(su,['A','K','Q']),d.takeSuit(su,['J','T','9','8'])];const board=[d.takeSuit(su,['7','6','5','4','3','2']),d.takeSuit(su,['7','6','5','4','3','2']),d.takeSuit(su,['9','8','7','6','5'])];return {hero:h,board,oop:true};},
-   coach:'Флеш готов — почти натс, что ещё надо. Рейзи: сеты, две пары и младшие флеши с удовольствием заплатят.'},
-  {id:'straight_made',concept:'Велью стритом',diff:2,facing:true,best:'raise',handLabel:'Стрит',boardLabel:'связанный',
-   build(d){const base=oneOf([9,10,11]);const h=[d.takeRank(RCHAR[base]),d.takeRank(RCHAR[base-1])];const su=shuffle(['s','h','d','c']);const board=[d.takeRC(RCHAR[base-2],su[0]),d.takeRC(RCHAR[base-3],su[1]),d.takeRC(RCHAR[base-4],su[2])];return {hero:h,board,oop:false};},
-   coach:'Стрит готов — деньги ждут. Рейзи: две пары, сеты и дро заплатят. Стесняться нечего.'},
-  {id:'bluffcatch_call',concept:'Колл блефкэтчером',diff:3,facing:true,best:'call',handLabel:'Топ-пара (блефкэтчер)',boardLabel:'ривер, страшный',
-   build(d){const top=oneOf(['K','Q','J']);const kick=oneOf(RANKS.filter(r=>RVAL[r]>=8&&r!==top));const h=[d.takeRank(top),d.takeRank(kick)];const board=topBoard(d,top);board.push(d.takeRank(oneOf(['2','3','4','5'])));board.push(d.takeRank(oneOf(['6','7','8'])));return {hero:h,board,oop:true};},
-   coach:'Ривер, топ-пара — ты теперь блефкэтчер. Оппонент поляризован: фолд отдаёт банк блефам, рейз — сам себя убьёшь. Только колл.'},
-  {id:'river_fold',concept:'Фолд на ривере',diff:2,facing:true,best:'fold',handLabel:'Слабая пара',boardLabel:'ривер, крупная ставка',
-   build(d){const mid=oneOf(['8','7','6']);const k=oneOf(['Q','J','T']);const h=[d.takeRank(mid),d.takeRank(k)];const su=shuffle(['s','h','d','c']);const board=[d.takeRC('A',su[0]),d.takeRC(oneOf(['K','Q']),su[1]),d.takeRC(mid,su[2]),d.takeRank(oneOf(['2','3','4'])),d.takeRank(oneOf(['9','5']))];return {hero:h,board,oop:true};},
-   coach:'Слабая пара, ривер, крупная ставка — блефов здесь почти нет. Дисциплина дороже гордости. Фолд.'},
-  {id:'checkraise',concept:'Чек-рейз велью',diff:3,facing:true,best:'raise',handLabel:'Две пары (OOP)',boardLabel:'мокрый',
-   build(d){const r1=oneOf(['K','Q','J','T']),r2=oneOf(RANKS.filter(r=>RVAL[r]<RVAL[r1]&&RVAL[r]>=6));const h=[d.takeRank(r1),d.takeRank(r2)];const low=oneOf(RANKS.filter(r=>r!==r1&&r!==r2&&RVAL[r]<RVAL[r2]));const su=shuffle(['s','h','d','c']);const board=[d.takeRC(r1,su[0]),d.takeRC(r2,su[1]),d.takeRC(low,su[2])];return {hero:h,board,oop:true};},
-   coach:'Две пары OOP на мокром борде — чек-рейз. Набиваешь банк и перекрываешь дро. Дашь сыграть бесплатно — пожалеешь.'},
-  {id:'turn_barrel',concept:'Второй ствол на тёрне',diff:2,facing:false,best:'raise',handLabel:'Топ-пара',boardLabel:'тёрн, безопасный',
-   build(d){const top=oneOf(['A','K','Q']);const kick=oneOf(RANKS.filter(r=>RVAL[r]>=9&&r!==top));const h=[d.takeRank(top),d.takeRank(kick)];const board=topBoard(d,top);board.push(d.takeRank(oneOf(['2','3','4','5'])));return {hero:h,board,oop:false};},
-   coach:'Тёрн безопасен, топ-пара держится. Второй ствол: оппонент полон худших пар и дро, которые охотно заплатят.'},
-  {id:'gutshot_fold',concept:'Фолд гатшота',diff:1,facing:true,best:'fold',handLabel:'Гатшот, без пары',boardLabel:'против крупной ставки',
-   build(d){const h=[d.takeRank(oneOf(['K','Q'])),d.takeRank(oneOf(['J','T']))];const su=shuffle(['s','h','d','c']);const board=[d.takeRC('A',su[0]),d.takeRC(oneOf(['9','8']),su[1]),d.takeRC(oneOf(['5','4','3']),su[2])];return {hero:h,board,oop:true};},
-   coach:'Голый гатшот — 4 аута, против крупной ставки математика против тебя. Без имплайда — это не колл, это подарок оппоненту. Фолд.'},
-  {id:'set_river',concept:'Велью сетом на ривере',diff:2,facing:false,best:'raise',handLabel:'Сет',boardLabel:'ривер',
-   build(d){const pr=oneOf(['66','77','88','99','TT']);const h=[d.takeRank(pr[0]),d.takeRank(pr[0])];const board=dryLowBoard(d,RVAL[pr[0]]);board[2]=d.takeRank(pr[0]);board.push(d.takeRank(oneOf(['A','K'])));board.push(d.takeRank(oneOf(['2','3','4'])));return {hero:h,board,oop:false};},
-   coach:'Сет на ривере — почти всегда номер один. Ставь: топ-пары и две пары заплатят. Чек — это оставить деньги лежать на столе.'}
-];
-/* real hand evaluator — guarantees built cards match the archetype's category */
-function evalMade(cards){
-  const byR={},byS={};
-  cards.forEach(c=>{const v=RVAL[c.r];byR[v]=(byR[v]||0)+1;(byS[c.s.c]=byS[c.s.c]||[]).push(v);});
-  const counts=Object.values(byR).sort((a,b)=>b-a);const c0=counts[0]||0,c1=counts[1]||0;
-  function hasStr(vals){const s=new Set(vals);if(s.has(12))s.add(-1);for(let lo=8;lo>=-1;lo--){let ok=true;for(let k=0;k<5;k++)if(!s.has(lo+k)){ok=false;break;}if(ok)return true;}return false;}
-  const flushSuit=Object.keys(byS).find(s=>byS[s].length>=5);
-  const straight=hasStr(cards.map(c=>RVAL[c.r]));
-  const sflush=flushSuit?hasStr(byS[flushSuit]):false;
-  let cat,name;
-  if(sflush){cat=8;name='Стрит-флеш';}else if(c0===4){cat=7;name='Каре';}else if(c0>=3&&c1>=2){cat=6;name='Фулл-хаус';}
-  else if(flushSuit){cat=5;name='Флеш';}else if(straight){cat=4;name='Стрит';}else if(c0===3){cat=3;name='Трипс';}
-  else if(c0===2&&c1===2){cat=2;name='Две пары';}else if(c0===2){cat=1;name='Пара';}else{cat=0;name='Старшая карта';}
-  return {cat,name};
-}
-const ARCH_CAT={overpair_dry:1,tptk:1,set_wet:3,twopair:2,nfd_oop:0,oesd_ip:0,fd_call:0,midpair_call:1,overpair_scary:1,air_akq_fold:0,overcards_fold:0,underpair_fold:1,tp_face_raise:1,combo_raise:0,trips_value:3,flush_made:5,straight_made:4,bluffcatch_call:1,river_fold:1,checkraise:2,turn_barrel:1,gutshot_fold:0,set_river:3};
-function genPostflop(diffCap){
-  diffCap=diffCap||3;const cand=ARCH.filter(a=>a.diff<=diffCap);const a=oneOf(cand);
-  const want=ARCH_CAT[a.id];let built,d;
-  for(let i=0;i<40;i++){d=newDeck();built=a.build(d);if(want==null||evalMade(built.hero.concat(built.board)).cat===want)break;}
-  const heroPos=oneOf(['BTN','CO','HJ','BB']);
-  const dr=dressing(a.facing,heroPos);
-  const sp={view:'table',mode:'postflop',concept:a.concept,diff:a.diff,archId:a.id,
-    hero:built.hero,board:built.board,handLabel:a.handLabel,boardLabel:a.boardLabel,pos:heroPos,oop:built.oop!=null?built.oop:(heroPos==='BB'),
-    facing:a.facing,actions:a.facing?OPT_FACE:OPT_CHECKBET,best:a.best,baseCoach:a.coach,oppR:980+a.diff*120,
-    pot:dr.pot,heroStack:dr.heroStack,seats:dr.seats,dealer:dr.dealer,lastacts:dr.lastacts,bets:dr.bets,
-    grade(key){const ok=key===this.best;const meh=!ok&&((this.best==='call'&&key==='raise')||(this.best==='raise'&&key==='call'));
-      this.coach=this.baseCoach;return {correct:ok,meh,body:readoutHTML(this)+'<div class="concepttag">📚 '+this.concept+'</div>'};}};
-  return sp;
-}
 /* ===== POT ODDS (procedural) ===== */
 const POT_BUILDS=[fdCards,oesdCards,gutCards,fdGutCards];
 /* compute the actual out cards (flush/straight completions) from real cards */
@@ -2342,173 +2195,6 @@ function endFind(){
   $('fhProg').style.width='100%';
   $('fhAgain').style.display='';
 }
-function startDaily(){
-  session={type:'daily',modeKey:'mixed',gen:()=>genMixed(3),n:8,idx:0,results:[],combo:0,maxCombo:0,lives:99,livesMax:0,score:0};
-  beginSession('⚡ Daily Fight');
-}
-/* ===== CASH GAME (session play) ===== */
-function chooseCash(){
-  let h='<h3>💵 Кэш-стол</h3><div class="psub">Выбери размер стола</div><div class="pickgrid">';
-  [9,8,7,6,5].forEach(n=>{h+='<div class="pickbtn'+(n===6?' rand':'')+'" onclick="startCash('+n+')">'+n+'-max'+(n===6?' · стандарт':'')+'</div>';});
-  h+='</div>';
-  $('pickSheet').innerHTML=h;$('pickMask').classList.add('show');
-}
-function cashSpot(N){const r=Math.random();let sp;
-  if(r<0.55)sp=genRFI(null,N);
-  else if(r<0.80)sp=genVsOpen();
-  else sp=genVs3bet();
-  if(!sp.tableSize)sp.tableSize=N;
-  return sp;
-}
-function startCash(size){
-  $('pickMask').classList.remove('show');const N=size||6;
-  session={type:'cash',modeKey:'mixed',tableSize:N,gen:()=>cashSpot(N),n:1e9,idx:0,results:[],combo:0,maxCombo:0,lives:99,livesMax:0,score:0,
-    stack:100,invested:100,peak:100};
-  beginSession('💵 Кэш-стол · '+N+'-max');
-}
-function cashResolve(sp,key,g){
-  const posted=sp.pos==='SB'?0.5:sp.pos==='BB'?1:0;
-  if(key==='fold')return {bb:-posted,kind:'fold',txt:posted?('Фолд · −'+posted+'bb блайнд'):'Фолд · 0'};
-  const rnd=Math.random();
-  if(g.correct){
-    if(rnd<0.48){const w=2+Math.floor(Math.random()*9);return {bb:w,kind:'win',txt:'Забрал банк · +'+w+'bb'};}
-    if(rnd<0.66)return {bb:1,kind:'win',txt:'Соперник спасовал · +1bb'};
-    if(rnd<0.84){const l=1+Math.floor(Math.random()*3);return {bb:-l,kind:'loss',txt:'Не зашло · −'+l+'bb'};}
-    const l=5+Math.floor(Math.random()*9);return {bb:-l,kind:'cooler',txt:'Кулер · −'+l+'bb'};
-  }
-  if(rnd<0.66){const l=3+Math.floor(Math.random()*10);return {bb:-l,kind:'loss',txt:'Ошибка стоила · −'+l+'bb'};}
-  if(rnd<0.84)return {bb:0,kind:'flat',txt:'Пронесло · 0bb'};
-  const w=1+Math.floor(Math.random()*3);return {bb:w,kind:'win',txt:'Повезло · +'+w+'bb'};
-}
-function cashRebuy(){session.invested+=100;session.stack=100;$('fb').classList.remove('show');session.idx++;renderCurrent();}
-function cashSummary(){
-  show('results');setTitle('Сессия');
-  const hands=session.results.length,net=Math.round((session.stack-session.invested)*10)/10;
-  const bb100=hands?Math.round(net/hands*100):0;
-  const ok=session.results.filter(x=>x.correct).length,acc=hands?Math.round(ok/hands*100):0;
-  const T=$('resTitle'),ST=$('resStars'),SUB=$('resSub'),ACT=$('resActions');
-  ST.textContent='';
-  T.textContent=net>0?'💵 В ПЛЮСЕ!':net<0?'В МИНУСЕ':'НОЛЬ';T.className=net>=0?'':'mid';
-  SUB.innerHTML='Итог <b>'+(net>=0?'+':'')+net+'bb</b> за '+hands+' рук · <b>'+(bb100>=0?'+':'')+bb100+'</b> bb/100';
-  $('resStats').innerHTML='<div class="s"><div class="v g">'+acc+'%</div><div class="l">Точность</div></div><div class="s"><div class="v gold">'+session.peak+'</div><div class="l">Пик</div></div><div class="s"><div class="v">'+hands+'</div><div class="l">Рук</div></div>';
-  $('resList').innerHTML='';
-  ACT.innerHTML='<button class="again" onclick="startCash('+(session.tableSize||6)+')">Сесть снова</button><button class="home" onclick="nav(\'home\')">В меню</button>';
-}
-/* ===== FULL HAND (heads-up play-out) ===== */
-function mkScore(cat,r){let s=cat;for(let i=0;i<5;i++)s=s*13+((r[i]||0)+1);return s;}
-function best5score(cards){
-  const byR={},byS={};cards.forEach(c=>{const v=RVAL[c.r];byR[v]=(byR[v]||0)+1;(byS[c.s.c]=byS[c.s.c]||[]).push(v);});
-  const allv=cards.map(c=>RVAL[c.r]);
-  function strHigh(vs){const s=new Set(vs);if(s.has(12))s.add(-1);for(let hi=12;hi>=3;hi--){let ok=true;for(let k=0;k<5;k++)if(!s.has(hi-k)){ok=false;break;}if(ok)return hi;}return -1;}
-  const fSuit=Object.keys(byS).find(s=>byS[s].length>=5);
-  if(fSuit){const sf=strHigh(byS[fSuit]);if(sf>=0)return mkScore(8,[sf]);}
-  const groups=Object.keys(byR).map(v=>[+v,byR[v]]).sort((a,b)=>b[1]-a[1]||b[0]-a[0]);
-  const c0=groups[0][1],c1=groups[1]?groups[1][1]:0;
-  const sv=[...new Set(allv)].sort((a,b)=>b-a);
-  const kick=(ex,n)=>sv.filter(v=>!ex.includes(v)).slice(0,n);
-  if(c0===4)return mkScore(7,[groups[0][0],...kick([groups[0][0]],1)]);
-  if(c0>=3&&c1>=2)return mkScore(6,[groups[0][0],groups[1][0]]);
-  if(fSuit)return mkScore(5,byS[fSuit].sort((a,b)=>b-a).slice(0,5));
-  const sh=strHigh(allv);if(sh>=0)return mkScore(4,[sh]);
-  if(c0===3)return mkScore(3,[groups[0][0],...kick([groups[0][0]],2)]);
-  if(c0===2&&c1===2)return mkScore(2,[groups[0][0],groups[1][0],...kick([groups[0][0],groups[1][0]],1)]);
-  if(c0===2)return mkScore(1,[groups[0][0],...kick([groups[0][0]],3)]);
-  return mkScore(0,sv.slice(0,5));
-}
-function dealCard(d){for(let i=0;i<300;i++){const r=oneOf(RANKS),c=oneOf(['s','h','d','c']);if(!d.used.has(r+c))return d.card(r,c);}return d.takeRank(oneOf(RANKS));}
-let hand=null;
-function startHand(){
-  session=null;clearExamTimer&&clearExamTimer();
-  const d=newDeck();
-  hand={d,hero:[d.takeRank(oneOf(RANKS)),d.takeRank(oneOf(RANKS))],vill:[d.takeRank(oneOf(RANKS)),d.takeRank(oneOf(RANKS))],
-    board:[],street:'preflop',pot:0,heroStack:100,villStack:100,heroSt:0,villSt:0,villAct:null,msg:'',done:false,result:null,toCall:0};
-  putIn('hero',0.5);putIn('vill',1);hand.heroSt=0.5;hand.villSt=1;hand.toCall=0.5; // hero faces 0.5 to call BB
-  show('game');setTitle('Игра');$('gMode').textContent='🎬 Рука · хедз-ап';
-  renderHand();
-}
-function putIn(who,amt){amt=Math.round(amt*10)/10;if(who==='hero'){hand.heroStack-=amt;hand.heroSt+=amt;}else{hand.villStack-=amt;hand.villSt+=amt;}hand.pot=Math.round((hand.pot+amt)*10)/10;}
-function villMade(){return evalMade(hand.vill.concat(hand.board)).cat;}
-function streetName(s){return {preflop:'Префлоп',flop:'Флоп',turn:'Тёрн',river:'Ривер'}[s]||s;}
-function renderHand(){
-  const st=$('stage');st.innerHTML='';
-  const tw=document.createElement('div');tw.className='table-wrap pf-oval';
-  const tc=themeColors(profile.theme);tw.style.background='radial-gradient(120% 90% at 50% 42%,'+tc[0]+' 0%,'+tc[1]+' 45%,'+tc[2]+' 100%)';
-  // villain seat (top), hero seat (bottom)
-  const vshow=hand.done;
-  tw.innerHTML='<div class="hseat top"><div class="pav">'+posEmblem('BB')+'</div><div class="pinfo"><div class="ppos">Оппонент</div><div class="pstk">'+hand.villStack+'bb</div></div><div class="hcards" id="vc"></div>'+(hand.villAct&&!hand.done?'<div class="lastact la-'+(hand.villAct==='bet'?'bet':'check')+'">'+(hand.villAct==='bet'?'БЕТ '+hand.villSt+'bb':'ЧЕК')+'</div>':'')+'</div>'+
-    '<div class="pot"><span class="lbl">POT</span>'+hand.pot+'bb</div><div class="board" id="hb"></div>'+
-    '<div class="hseat bot"><div class="hcards" id="hc"></div><div class="pav hero">'+posEmblem('BTN')+'</div><div class="pinfo"><div class="ppos" style="color:#7fe0a8">Ты · BTN</div><div class="pstk">'+hand.heroStack+'bb</div></div></div>';
-  st.appendChild(tw);
-  const hb=tw.querySelector('#hb');hand.board.forEach(c=>hb.appendChild(cardEl(c,'tbl')));
-  const hc=tw.querySelector('#hc');hand.hero.forEach(c=>hc.appendChild(cardEl(c,'sm')));
-  const vc=tw.querySelector('#vc');if(vshow)hand.vill.forEach(c=>vc.appendChild(cardEl(c,'sm')));else{vc.innerHTML='<div class="cardback"></div><div class="cardback"></div>';}
-  const banner=document.createElement('div');banner.className='pf-banner';banner.innerHTML=hand.msg||('<b style="color:var(--gold)">'+streetName(hand.street)+'</b> · твоё решение');
-  st.appendChild(banner);
-  renderHandActions();
-}
-function renderHandActions(){
-  const bar=$('actionbar');bar.innerHTML='';
-  if(hand.done){bar.innerHTML='<button class="abtn adv" onclick="startHand()">Новая рука 🎬</button><button class="abtn fold" onclick="nav(\'home\')">Выйти</button>';return;}
-  const btn=(key,label,cls)=>{const b=document.createElement('button');b.className='abtn '+cls;b.textContent=label;b.onclick=()=>heroDo(key);bar.appendChild(b);};
-  if(hand.toCall>0){btn('fold','FOLD','fold');btn('call','CALL '+hand.toCall+'bb','call');btn('raise',hand.street==='preflop'?'RAISE':'RAISE','raise');}
-  else{btn('check','CHECK','call');btn('bet','BET','raise');}
-}
-function endHand(winner,reason){
-  hand.done=true;
-  if(winner==='hero')hand.heroStack+=hand.pot;else if(winner==='vill')hand.villStack+=hand.pot;else{hand.heroStack+=hand.pot/2;hand.villStack+=hand.pot/2;}
-  const net=Math.round((hand.heroStack-100)*10)/10;
-  const hs=evalMade(hand.hero.concat(hand.board)),vs=evalMade(hand.vill.concat(hand.board));
-  let m='<div class="verdict '+(net>0?'ok':net<0?'bad':'meh')+'">'+(net>0?'+'+net+'bb 🟢':net<0?net+'bb 🔴':'± сплит')+'</div>';
-  m+='<div class="cashres '+(net>=0?'win':'loss')+'">'+reason+'</div>';
-  if(hand.board.length>=3)m+='<div class="sub">Ты: '+hs.name+' · Оппонент: '+vs.name+'</div>';
-  hand.msg=m;
-  renderHand();
-}
-/* villain heuristics */
-function villOpenAct(){const s=villMade();const r=Math.random();if(s>=2)return r<0.72?'bet':'check';if(s===1)return r<0.42?'bet':'check';return r<0.2?'bet':'check';}
-function villVsBet(){const s=villMade();const r=Math.random();if(s>=3)return r<0.35?'raise':'call';if(s>=1)return r<0.74?'call':'fold';return r<0.16?'call':'fold';}
-function villPreCall(){const r=Math.random();return r<0.62;} // calls hero open 62%
-function nextStreet(){
-  hand.heroSt=0;hand.villSt=0;hand.toCall=0;hand.villAct=null;hand.msg='';
-  if(hand.street==='preflop'){hand.street='flop';hand.board=[dealCard(hand.d),dealCard(hand.d),dealCard(hand.d)];}
-  else if(hand.street==='flop'){hand.street='turn';hand.board.push(dealCard(hand.d));}
-  else if(hand.street==='turn'){hand.street='river';hand.board.push(dealCard(hand.d));}
-  else{return showdownHand();}
-  villainFirst();
-}
-function villainFirst(){
-  const a=villOpenAct();
-  if(a==='bet'){const b=Math.max(1,Math.round(hand.pot*0.66*2)/2);putIn('vill',b);hand.villAct='bet';hand.toCall=b;}
-  else{hand.villAct='check';hand.toCall=0;}
-  renderHand();
-}
-function showdownHand(){
-  const hsc=best5score(hand.hero.concat(hand.board)),vsc=best5score(hand.vill.concat(hand.board));
-  if(hsc>vsc)endHand('hero','Вскрытие — ты сильнее!');else if(vsc>hsc)endHand('vill','Вскрытие — оппонент сильнее.');else endHand('split','Вскрытие — сплит.');
-}
-function heroDo(key){
-  SND.tick();
-  if(hand.street==='preflop'){
-    if(key==='fold'){endHand('vill','Сбросил префлоп.');return;}
-    if(key==='call'){putIn('hero',hand.toCall);hand.heroSt=1;nextStreet();return;}
-    if(key==='raise'){const to=3;putIn('hero',to-hand.heroSt);hand.heroSt=to;hand.toCall=0;
-      if(villPreCall()){putIn('vill',to-hand.villSt);hand.villSt=to;nextStreet();}else endHand('hero','Оппонент сбросил на префлопе.');
-      return;}
-  }
-  // postflop
-  if(hand.toCall>0){ // facing a bet
-    if(key==='fold'){endHand('vill','Сбросил против бета.');return;}
-    if(key==='call'){putIn('hero',hand.toCall);hand.heroSt=hand.villSt;hand.toCall=0;nextStreet();return;}
-    if(key==='raise'){const to=Math.round(hand.villSt*2.5*2)/2;putIn('hero',to-hand.heroSt);hand.heroSt=to;
-      const v=villVsBet();if(v==='call'){putIn('vill',to-hand.villSt);hand.villSt=to;nextStreet();}else endHand('hero','Оппонент спасовал на твой рейз.');return;}
-  } else { // villain checked
-    if(key==='check'){nextStreet();return;}
-    if(key==='bet'){const b=Math.max(1,Math.round(hand.pot*0.66*2)/2);putIn('hero',b);hand.heroSt=b;
-      const v=villVsBet();if(v==='call'){putIn('vill',b-hand.villSt);hand.villSt=b;nextStreet();}
-      else if(v==='raise'){const to=Math.round(b*2.6*2)/2;putIn('vill',to-hand.villSt);hand.villSt=to;hand.toCall=to-hand.heroSt;hand.villAct='bet';renderHand();}
-      else endHand('hero','Оппонент сбросил на твой бет.');return;}
-  }
-}
 function startReview(){
   const q=profile.mistakes.slice(0,10);
   session={type:'review',modeKey:'mixed',gen:()=>genFromMistake(),n:Math.max(5,q.length),idx:0,results:[],combo:0,maxCombo:0,lives:99,livesMax:0,score:0,queue:q.slice()};
@@ -2518,7 +2204,6 @@ function genFromMistake(){const m=session.queue&&session.queue.length?session.qu
   if(!m)return genMixed(3);
   if(m.mode==='rfi')return genRFI();if(m.mode==='vsopen')return genVsOpen();if(m.mode==='vs3')return genVs3bet();if(m.mode==='potodds')return genPotOdds();
   return genMixed(3);}
-function genPostflopFrom(a,built,dr,heroPos){const sp=genPostflop(3);return sp;} // simplify: fresh postflop
 /* ===== CAREER PATH ===== */
 const CAREER=[
   {id:'utg',ic:'🟢',nm:'Открытие с UTG',concept:'rfi',kind:'rfi',pos:'UTG',learn:'UTG — самая ранняя позиция, ты говоришь первым. Открывай только сильнейшее: премиум-пары, сильные тузы, бродвеи. Всё остальное — фолд. Запомни сетку.'},
@@ -2674,28 +2359,14 @@ function choose(key){
   trackQuest('hands',1);if(g.correct)trackQuest('mode_correct',1,sp.mode||session.modeKey);trackQuest('streak',profile.streak);if(session.combo>=5)trackQuest('combo5',1);
   session.results.push({sp,choice:key,correct:g.correct,delta});
   if(session.type==='school'&&sp._schoolId){session._schoolResults[sp._schoolId]=g.correct;}
-  if(session.type==='cash'){const cr=cashResolve(sp,key,g);session.stack=Math.max(0,Math.round((session.stack+cr.bb)*10)/10);session.peak=Math.max(session.peak,session.stack);session._cr=cr;}
   if(levelOf(profile.xp)>lvlBefore)queueModal({ic:'⭐',tag:'Новый уровень',name:'Уровень '+levelOf(profile.xp),desc:'Ты становишься сильнее. Так держать!'});
   checkAch();updateHUD();
-  const bust=session.type==='cash'?session.stack<=0:(session.livesMax>0&&session.lives<=0);
+  const bust=session.livesMax>0&&session.lives<=0;
   playActionAnim(sp,key,function(){showFeedback(sp,g,delta,bust);});
 }
 function showFeedback(sp,g,delta,bust){
   const fb=$('fb');const last=session.idx>=session.n-1;
   let vcls=g.correct?'ok':(g.meh?'meh':'bad'),vtxt=g.correct?'✓ ВЕРНО':(g.meh?'≈ Почти':'✗ Ошибка');
-  if(session.type==='cash'){
-    const cr=session._cr,net=Math.round((session.stack-session.invested)*10)/10;
-    let h='<div class="verdict '+vcls+'">'+vtxt+'</div>';
-    h+='<div class="cashres '+cr.kind+'">'+cr.txt+'</div>';
-    h+='<div class="sub">Стек <b>'+session.stack+'bb</b> · сессия <span class="rd '+(net<0?'neg':'')+'">'+(net>=0?'+':'')+net+'bb</span></div>';
-    if(g.body)h+=g.body;
-    if(sp.coach)h+='<div class="coach"><b>🥋 Шифу:</b> '+sp.coach+'</div>';
-    fb.innerHTML=h;fb.classList.add('show');
-    const bar=$('actionbar');
-    if(bust)bar.innerHTML='<button class="abtn lose" onclick="cashRebuy()">↺ Сесть заново (100bb)</button><button class="abtn fold" onclick="cashSummary()">Встать</button>';
-    else bar.innerHTML='<button class="abtn adv" onclick="nextSpot()">Следующая рука ›</button><button class="abtn fold" onclick="cashSummary()">Встать 💵</button>';
-    return;
-  }
   let html='<div class="verdict '+vcls+'">'+vtxt+(g.correct&&session.combo>=2?' · x'+Math.min(session.combo,9)+' комбо':'')+'</div>';
   html+='<div class="sub">Рейтинг <span class="rd '+(delta<0?'neg':'')+'">'+(delta>=0?'+':'')+delta+'</span> → '+profile.rating+'</div>';
   if(g.body&&(!session.exam||session.gridMode))html+=g.body;
@@ -2783,7 +2454,6 @@ function endSession(bust){
     ACT.innerHTML='<button class="again" onclick="replaySession()">Ещё раз</button><button class="home" onclick="nav(\'home\')">В меню</button>';
     if(acc>=80)trackQuest('session80',1);
     if(acc>=70)fxBurst(true);
-    if(session.type==='daily')handleDaily();
   }
   $('resStats').innerHTML='<div class="s"><div class="v g">'+ok+'/'+r.length+'</div><div class="l">Верно</div></div><div class="s"><div class="v gold">'+(totalDelta>=0?'+':'')+totalDelta+'</div><div class="l">Рейтинг</div></div><div class="s"><div class="v">'+profile.rating+'</div><div class="l">Итог</div></div>';
   const list=$('resList');list.innerHTML='';
@@ -2795,8 +2465,7 @@ function endSession(bust){
     list.appendChild(row);});
   renderHome();
 }
-function replaySession(){if(!session)return;if(session.type==='drill')startDrill(session.modeKey);else if(session.type==='daily')startDaily();else if(session.type==='review')startReview();else if(session.type==='survival')startSurvival();}
-function handleDaily(){const today=new Date().toISOString().slice(0,10);if(profile.lastDaily!==today){const y=new Date(Date.now()-86400000).toISOString().slice(0,10);profile.dailyStreak=(profile.lastDaily===y)?(profile.dailyStreak||0)+1:1;profile.lastDaily=today;profile.rating+=10;saveProfile();checkAch();setTimeout(()=>toast('Daily +10 · стрик '+profile.dailyStreak+' 🔥'),400);}}
+function replaySession(){if(!session)return;if(session.type==='drill')startDrill(session.modeKey);else if(session.type==='review')startReview();else if(session.type==='survival')startSurvival();}
 
 /* ===== MEMORIZE (RFI + vs Open) ===== */
 let memMode='rfi',memPos='UTG',memVsIdx=0,memBrush='3',memSel=new Set(),mem3=new Set(),memCall=new Set();
@@ -3202,6 +2871,287 @@ function divisionOf(r){let d=DIVS[0];DIVS.forEach(x=>{if(r>=x.min)d=x;});return 
 function renderDivBanner(){const b=$('divBanner');if(!b)return;const d=divisionOf(profile.rating),i=DIVS.indexOf(d),nx=DIVS[i+1];
   b.style.background='linear-gradient(135deg,'+d.c+'2e,#16204f)';b.style.borderColor=d.c;
   b.innerHTML='<div class="dlabel">Твой дивизион</div><div class="dname" style="color:'+d.c+'">'+d.n+'</div><div class="dnote">'+(nx?'До '+nx.n+': +'+(nx.min-profile.rating)+' рейтинга':'Высший дивизион! 👑')+'</div>';}
+
+/* ===== RANGE RUSH ===== */
+const RR_MODES=[
+  {key:'rfi',  label:'RFI · Открытие', zones:[{key:'raise',label:'RAISE',cls:'raise'},{key:'fold',label:'FOLD',cls:'fold'}]},
+  {key:'vsopen',label:'vs Open',       zones:[{key:'threebet',label:'3-BET',cls:'threebet'},{key:'call',label:'CALL',cls:'call'},{key:'fold',label:'FOLD',cls:'fold'}]},
+  {key:'vs3',   label:'vs 3-бет',      zones:[{key:'fourbet',label:'4-BET',cls:'threebet'},{key:'call',label:'CALL',cls:'call'},{key:'fold',label:'FOLD',cls:'fold'}]},
+  {key:'cold',  label:'Cold Call',     zones:[{key:'fourbet',label:'4-BET',cls:'threebet'},{key:'call',label:'CALL',cls:'call'},{key:'fold',label:'FOLD',cls:'fold'}]}
+];
+let rrState=null;
+
+function rrCtxLabel(){
+  const s=rrState,m=RR_MODES.find(x=>x.key===s.mode);
+  if(s.mode==='rfi')return (s.pos||'Микс')+' · Открытие';
+  if(s.mode==='vsopen')return s.opener+' open → '+s.hero;
+  if(s.mode==='vs3')return s.tb+' 3-бет → '+s.hero;
+  if(s.mode==='cold')return s.coldOpener+' → '+s.coldTB+' 3-бет → '+s.coldHero;
+  return m.label;
+}
+
+function rrCorrectAction(code){
+  const s=rrState;
+  if(s.mode==='rfi'){const range=RFI[s.pos]||RFI.UTG;return range.has(code)?'raise':'fold';}
+  if(s.mode==='vsopen'){const m=VS_RAW.find(x=>x.opener===s.opener&&x.hero===s.hero);if(!m)return 'fold';return m.tbS.has(code)?'threebet':m.clS.has(code)?'call':'fold';}
+  if(s.mode==='vs3'){const m=VS3_RAW.find(x=>x.threebettor===s.tb&&x.hero===s.hero);if(!m)return 'fold';return m.fbS.has(code)?'fourbet':m.clS.has(code)?'call':'fold';}
+  if(s.mode==='cold'){const m=COLD_RAW.find(x=>x.opener===s.coldOpener&&x.threebettor===s.coldTB&&x.hero===s.coldHero);if(!m)return 'fold';return m.f4bS.has(code)?'fourbet':m.clS.has(code)?'call':'fold';}
+  return 'fold';
+}
+
+function openRush(){
+  clearTimeout(rrTileTimer);if(rrTimerRAF)cancelAnimationFrame(rrTimerRAF);
+  show('rush');setTitle('Шквал рук');
+  $('rrSetup').style.display='';$('rrGame').style.display='none';$('rrGameOver').style.display='none';
+  if(!rrState)rrState={mode:'rfi',pos:'BTN',opener:'BTN',hero:'BB',tb:'BB',coldOpener:'UTG',coldTB:'HJ',coldHero:'BB'};
+  rrRenderSetup();
+}
+
+function rrRenderSetup(){
+  const s=rrState;
+  // режим-сегменты
+  const sr=$('rrSegRow');sr.innerHTML='';
+  RR_MODES.forEach(m=>{const b=document.createElement('div');b.className='rr-seg'+(s.mode===m.key?' active':'');b.textContent=m.label;b.onclick=()=>{s.mode=m.key;rrRenderSetup();};sr.appendChild(b);});
+  // позиционные пикеры
+  const pa=$('rrPosArea');pa.innerHTML='';
+  if(s.mode==='rfi'){
+    pa.innerHTML='<div style="font-size:12px;color:var(--muted);font-weight:600;margin:8px 0 4px">Позиция</div>';
+    const row=document.createElement('div');row.className='rr-pick-row';
+    ['UTG','HJ','CO','BTN','SB','Микс'].forEach(p=>{const b=document.createElement('div');b.className='rr-pick'+((s.pos||'Микс')===p?' active':'');b.textContent=p;b.onclick=()=>{s.pos=p==='Микс'?null:p;rrRenderSetup();};row.appendChild(b);});
+    pa.appendChild(row);
+  }
+  if(s.mode==='vsopen'){
+    pa.innerHTML='<div style="font-size:12px;color:var(--muted);font-weight:600;margin:8px 0 4px">Опенер</div>';
+    const openers=[...new Set(VS_RAW.map(m=>m.opener))];
+    const row1=document.createElement('div');row1.className='rr-pick-row';
+    ['Микс',...openers].forEach(p=>{const b=document.createElement('div');b.className='rr-pick'+((s.opener||'Микс')===p?' active':'');b.textContent=p;b.onclick=()=>{s.opener=p==='Микс'?null:p;rrRenderSetup();};row1.appendChild(b);});
+    pa.appendChild(row1);
+    const heroes=[...new Set(VS_RAW.filter(m=>!s.opener||m.opener===s.opener).map(m=>m.hero))];
+    pa.insertAdjacentHTML('beforeend','<div style="font-size:12px;color:var(--muted);font-weight:600;margin:8px 0 4px">Моя позиция</div>');
+    const row2=document.createElement('div');row2.className='rr-pick-row';
+    ['Микс',...heroes].forEach(p=>{const b=document.createElement('div');b.className='rr-pick'+((s.hero||'Микс')===p?' active':'');b.textContent=p;b.onclick=()=>{s.hero=p==='Микс'?null:p;rrRenderSetup();};row2.appendChild(b);});
+    pa.appendChild(row2);
+  }
+  if(s.mode==='vs3'){
+    pa.innerHTML='<div style="font-size:12px;color:var(--muted);font-weight:600;margin:8px 0 4px">3-беттор</div>';
+    const tbs=[...new Set(VS3_RAW.map(m=>m.threebettor))];
+    const row1=document.createElement('div');row1.className='rr-pick-row';
+    ['Микс',...tbs].forEach(p=>{const b=document.createElement('div');b.className='rr-pick'+((s.tb||'Микс')===p?' active':'');b.textContent=p;b.onclick=()=>{s.tb=p==='Микс'?null:p;rrRenderSetup();};row1.appendChild(b);});
+    pa.appendChild(row1);
+    const heroes=[...new Set(VS3_RAW.filter(m=>!s.tb||m.threebettor===s.tb).map(m=>m.hero))];
+    pa.insertAdjacentHTML('beforeend','<div style="font-size:12px;color:var(--muted);font-weight:600;margin:8px 0 4px">Открытие с позиции</div>');
+    const row2=document.createElement('div');row2.className='rr-pick-row';
+    ['Микс',...heroes].forEach(p=>{const b=document.createElement('div');b.className='rr-pick'+((s.hero||'Микс')===p?' active':'');b.textContent=p;b.onclick=()=>{s.hero=p==='Микс'?null:p;rrRenderSetup();};row2.appendChild(b);});
+    pa.appendChild(row2);
+  }
+  if(s.mode==='cold'){
+    const allO=[...new Set(COLD_RAW.map(m=>m.opener))];
+    const allTB=[...new Set(COLD_RAW.filter(m=>!s.coldOpener||m.opener===s.coldOpener).map(m=>m.threebettor))];
+    const allH=[...new Set(COLD_RAW.filter(m=>(!s.coldOpener||m.opener===s.coldOpener)&&(!s.coldTB||m.threebettor===s.coldTB)).map(m=>m.hero))];
+    const mk=(label,pool,field,mixVal)=>{pa.insertAdjacentHTML('beforeend','<div style="font-size:12px;color:var(--muted);font-weight:600;margin:8px 0 4px">'+label+'</div>');const row=document.createElement('div');row.className='rr-pick-row';['Микс',...pool].forEach(p=>{const b=document.createElement('div');b.className='rr-pick'+((s[field]||'Микс')===p?' active':'');b.textContent=p;b.onclick=()=>{s[field]=p==='Микс'?null:p;rrRenderSetup();};row.appendChild(b);});pa.appendChild(row);};
+    pa.innerHTML='';mk('Опенер',allO,'coldOpener');mk('3-беттор',allTB,'coldTB');mk('Колд-колл позиция',allH,'coldHero');
+  }
+  const best=profile.rrBest||0;
+  $('rrBestLine').textContent=best?'Рекорд: '+best+' очков':'';
+}
+
+let rrRAF=null,rrTimerRAF=null;
+
+function rrStart(){
+  const s=rrState;
+  s.score=0;s.lives=3;s.total=0;s.correct=0;
+  // fix context if no valid spot found
+  if(s.mode==='vsopen'){
+    const pool=VS_RAW.filter(m=>(!s.opener||m.opener===s.opener)&&(!s.hero||m.hero===s.hero));
+    if(!pool.length){toast('Нет споров для этого сочетания');return;}
+  }
+  if(s.mode==='vs3'){
+    const pool=VS3_RAW.filter(m=>(!s.tb||m.threebettor===s.tb)&&(!s.hero||m.hero===s.hero));
+    if(!pool.length){toast('Нет споров для этого сочетания');return;}
+  }
+  if(s.mode==='cold'){
+    const pool=COLD_RAW.filter(m=>(!s.coldOpener||m.opener===s.coldOpener)&&(!s.coldTB||m.threebettor===s.coldTB)&&(!s.coldHero||m.hero===s.coldHero));
+    if(!pool.length){toast('Нет споров для этого сочетания');return;}
+  }
+  $('rrSetup').style.display='none';$('rrGameOver').style.display='none';
+  const gEl=$('rrGame');gEl.style.display='flex';gEl.style.flexDirection='column';gEl.style.flex='1';
+  $('rrCtxInfo').textContent=rrCtxLabel();$('rrCtxBadge').textContent=rrCtxLabel();
+  rrRenderZones();rrUpdateHUD();rrNextTile();
+}
+
+function rrRenderZones(){
+  const m=RR_MODES.find(x=>x.key===rrState.mode);
+  const zc=$('rrZones');zc.innerHTML='';
+  m.zones.forEach(z=>{
+    const el=document.createElement('div');
+    el.className='rr-zone '+z.cls;
+    el.dataset.key=z.key;
+    el.innerHTML='<span>'+z.label+'</span>';
+    el.ontouchstart=e=>{e.preventDefault();};// prevent ghost clicks
+    zc.appendChild(el);
+  });
+}
+
+function rrUpdateHUD(){
+  const s=rrState;
+  $('rrLives').innerHTML=['❤️','❤️','❤️'].map((h,i)=>i<s.lives?h:'🖤').join('');
+  $('rrScoreNum').textContent=s.score;
+  $('rrHud').textContent='⚡ '+s.score;
+  const b=$('rrBestHome');if(b)b.textContent=profile.rrBest||0;
+}
+
+/* --- Tile drop speed: starts at 4s, floors at 1.2s, minus 0.15s every 5 correct --- */
+function rrSpeed(){return Math.max(1200,4000-Math.floor(rrState.correct/5)*150);}
+
+let rrTileData=null,rrTileDeadline=0,rrTileTimer=null,rrTimerStart=0;
+
+function rrNextTile(){
+  clearTimeout(rrTileTimer);if(rrTimerRAF)cancelAnimationFrame(rrTimerRAF);
+  const tile=$('rrTile');tile.style.display='flex';
+  // pick context-appropriate combo
+  let code,contextInfo='';
+  const s=rrState;
+  if(s.mode==='rfi'){
+    const pos=s.pos||oneOf(['UTG','HJ','CO','BTN','SB']);
+    const hand=dealHand();code=hand.code;contextInfo=pos;rrTileData={code,contextPos:pos};
+  }else if(s.mode==='vsopen'){
+    const pool=VS_RAW.filter(m=>(!s.opener||m.opener===s.opener)&&(!s.hero||m.hero===s.hero));
+    const m=oneOf(pool);const hand=dealHand();code=hand.code;rrTileData={code,ctx:m};
+  }else if(s.mode==='vs3'){
+    const pool=VS3_RAW.filter(m=>(!s.tb||m.threebettor===s.tb)&&(!s.hero||m.hero===s.hero));
+    const m=oneOf(pool);const hand=handFromRange(RFI[m.hero]);code=hand.code;rrTileData={code,ctx:m};
+  }else if(s.mode==='cold'){
+    const pool=COLD_RAW.filter(m=>(!s.coldOpener||m.opener===s.coldOpener)&&(!s.coldTB||m.threebettor===s.coldTB)&&(!s.coldHero||m.hero===s.coldHero));
+    const m=oneOf(pool);const hand=dealHand();code=hand.code;rrTileData={code,ctx:m};
+  }
+  // render tile
+  tile.textContent=code;
+  tile.className='rr-tile';
+  tile.style.left='50%';tile.style.top='-80px';tile.style.transform='translateX(-50%)';
+  tile.style.transition='';
+  // animate fall
+  const dur=rrSpeed();
+  const arena=$('rrArena');
+  const arenaH=arena.offsetHeight||400;
+  rrTileDeadline=Date.now()+dur;rrTimerStart=Date.now();
+  rrTimerAnim();
+  // CSS fall animation via transition after brief pause
+  requestAnimationFrame(()=>{
+    tile.style.transition='top '+dur+'ms linear';
+    tile.style.top=(arenaH-80)+'px';
+  });
+  rrTileTimer=setTimeout(()=>rrTileMissed(),dur);
+  rrBindDrag(tile);
+}
+
+function rrTimerAnim(){
+  const fill=$('rrTimerFill');if(!fill)return;
+  const pct=Math.max(0,(rrTileDeadline-Date.now())/(rrTileDeadline-rrTimerStart)*100);
+  fill.style.width=pct+'%';
+  if(pct>0)rrTimerRAF=requestAnimationFrame(rrTimerAnim);
+}
+
+function rrTileMissed(){
+  clearTimeout(rrTileTimer);if(rrTimerRAF)cancelAnimationFrame(rrTimerRAF);
+  rrLoseLife('Пропустил!');
+}
+
+function rrJudge(zoneKey){
+  clearTimeout(rrTileTimer);if(rrTimerRAF)cancelAnimationFrame(rrTimerRAF);
+  const s=rrState;s.total++;
+  // figure out correct action for current tile
+  let ca;
+  if(s.mode==='rfi'){
+    const range=RFI[rrTileData.contextPos]||RFI.UTG;
+    ca=range.has(rrTileData.code)?'raise':'fold';
+  }else{
+    ca=rrCorrectAction(rrTileData.code);
+    // vs3 context — use ctx from tile
+    if(s.mode==='vs3'&&rrTileData.ctx){const m=rrTileData.ctx;const hand={code:rrTileData.code};ca=m.fbS.has(hand.code)?'fourbet':m.clS.has(hand.code)?'call':'fold';}
+    if(s.mode==='vsopen'&&rrTileData.ctx){const m=rrTileData.ctx;ca=m.tbS.has(rrTileData.code)?'threebet':m.clS.has(rrTileData.code)?'call':'fold';}
+    if(s.mode==='cold'&&rrTileData.ctx){const m=rrTileData.ctx;ca=m.f4bS.has(rrTileData.code)?'fourbet':m.clS.has(rrTileData.code)?'call':'fold';}
+  }
+  const ok=zoneKey===ca;
+  const tile=$('rrTile');
+  if(ok){
+    s.score++;s.correct++;SND.correct();vibe(20);
+    tile.classList.add('correct-flash');
+    setTimeout(()=>rrNextTile(),320);
+  }else{
+    SND.wrong();vibe([30,20,30]);
+    tile.classList.add('wrong-flash');
+    setTimeout(()=>rrLoseLife(rrTileData.code+' → '+ca.toUpperCase()),320);
+  }
+  rrUpdateHUD();
+}
+
+function rrLoseLife(reason){
+  rrState.lives--;rrUpdateHUD();
+  if(rrState.lives<=0){setTimeout(()=>rrGameOver(),200);return;}
+  toast(reason,1200);
+  const tile=$('rrTile');tile.className='rr-tile wrong-flash';
+  setTimeout(()=>rrNextTile(),400);
+}
+
+function rrGameOver(){
+  clearTimeout(rrTileTimer);if(rrTimerRAF)cancelAnimationFrame(rrTimerRAF);
+  const s=rrState;const score=s.score;
+  const rec=score>(profile.rrBest||0);
+  if(rec){profile.rrBest=score;saveProfile();}
+  $('rrGame').style.display='none';
+  const go=$('rrGameOver');go.style.display='flex';
+  $('rrGoScore').textContent=score;
+  $('rrGoRec').textContent=rec&&score>0?'Новый рекорд! 🏆':'Рекорд: '+(profile.rrBest||0);
+  $('rrGoSub').textContent='Верных: '+s.correct+' / '+s.total+(s.total?(' · '+Math.round(s.correct/s.total*100)+'%'):'');
+  const b=$('rrBestHome');if(b)b.textContent=profile.rrBest||0;
+  SND.wrong();
+}
+
+function rrRestart(){
+  $('rrGameOver').style.display='none';rrStart();
+}
+
+function rrQuit(){
+  clearTimeout(rrTileTimer);if(rrTimerRAF)cancelAnimationFrame(rrTimerRAF);
+  nav('home');
+}
+
+/* --- Drag & tap --- */
+let _rrDrag=null;
+function rrBindDrag(tile){
+  tile.onpointerdown=e=>{
+    e.preventDefault();tile.setPointerCapture(e.pointerId);
+    tile.classList.add('dragging');
+    tile.style.transition='';
+    _rrDrag={startX:e.clientX,startY:e.clientY,offX:0,offY:0};
+    const ar=$('rrArena');const tr=ar.getBoundingClientRect();const tr2=tile.getBoundingClientRect();
+    _rrDrag.baseLeft=tr2.left-tr.left+tr2.width/2;_rrDrag.baseTop=tr2.top-tr.top+tr2.height/2;
+    tile.style.left=_rrDrag.baseLeft+'px';tile.style.top=_rrDrag.baseTop+'px';tile.style.transform='translate(-50%,-50%)';
+  };
+  tile.onpointermove=e=>{
+    if(!_rrDrag)return;e.preventDefault();
+    const dx=e.clientX-_rrDrag.startX,dy=e.clientY-_rrDrag.startY;
+    tile.style.left=(_rrDrag.baseLeft+dx)+'px';tile.style.top=(_rrDrag.baseTop+dy)+'px';
+    // highlight zone under pointer
+    document.querySelectorAll('.rr-zone').forEach(z=>z.classList.remove('active-drop'));
+    const el=document.elementFromPoint(e.clientX,e.clientY);const zone=el&&el.closest('.rr-zone');
+    if(zone)zone.classList.add('active-drop');
+  };
+  tile.onpointerup=e=>{
+    if(!_rrDrag)return;
+    tile.classList.remove('dragging');
+    document.querySelectorAll('.rr-zone').forEach(z=>z.classList.remove('active-drop'));
+    const el=document.elementFromPoint(e.clientX,e.clientY);const zone=el&&el.closest('.rr-zone');
+    if(zone)rrJudge(zone.dataset.key);
+    else{// dropped outside — restore fall
+      tile.style.transition='top '+(Math.max(400,rrTileDeadline-Date.now()))+'ms linear';
+      const arenaH=$('rrArena').offsetHeight||400;tile.style.top=(arenaH-80)+'px';}
+    _rrDrag=null;
+  };
+  tile.onpointercancel=()=>{_rrDrag=null;tile.classList.remove('dragging');};
+  // tap fallback: tap on zone
+  document.querySelectorAll('.rr-zone').forEach(z=>{z.onclick=()=>{if(!_rrDrag)rrJudge(z.dataset.key);};});
+}
 
 /* ===== SURVIVAL ===== */
 function startSurvival(){session={type:'survival',modeKey:'mixed',gen:()=>genMixed(3),n:999,idx:0,results:[],combo:0,maxCombo:0,lives:3,livesMax:3,score:0,survived:0};beginSession('💀 Survival');}
