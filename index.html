@@ -342,6 +342,27 @@ body{
 
 .section-h{padding:12px 14px 6px;font-size:11px;letter-spacing:1.5px;color:rgba(154,168,216,.7);text-transform:uppercase;font-weight:700}
 .modes{display:grid;grid-template-columns:1fr 1fr;gap:9px;padding:4px 12px 16px}
+.home-tiles{display:grid;grid-template-columns:1fr 1fr;gap:9px;padding:4px 12px 10px}
+.htile{position:relative;border-radius:18px;padding:14px 12px 12px;cursor:pointer;overflow:hidden;display:flex;flex-direction:column;gap:6px;min-height:100px;border:1px solid rgba(255,255,255,.1);transition:transform .12s}
+.htile:active{transform:scale(.96)}
+.htile::before{content:'';position:absolute;inset:0;border-radius:18px;box-shadow:inset 0 0 28px rgba(255,255,255,.04);pointer-events:none}
+.htile .tglow{position:absolute;right:-10px;top:-10px;width:70px;height:70px;border-radius:50%;filter:blur(28px);opacity:.55;pointer-events:none}
+.htile .tic{font-size:22px;position:relative;line-height:1}
+.htile .tnm{position:relative;font-size:13px;font-weight:800;color:#fff;line-height:1.2;margin-top:2px}
+.htile .tds{position:relative;font-size:10px;line-height:1.3;margin-top:2px;opacity:.8}
+.htile .tarr{position:absolute;right:11px;bottom:11px;font-size:16px;opacity:.6}
+.htile-green{background:linear-gradient(145deg,#12402a,#0a2618);border-color:rgba(52,209,122,.3);box-shadow:0 6px 20px rgba(0,0,0,.4),0 0 22px -8px #34d17a}
+.htile-green .tglow{background:#34d17a}.htile-green .tds{color:#a9e0c4}.htile-green .tarr{color:#34d17a}
+.htile-blue{background:linear-gradient(145deg,#0e2856,#081838);border-color:rgba(79,140,255,.3);box-shadow:0 6px 20px rgba(0,0,0,.4),0 0 22px -8px #4f8cff}
+.htile-blue .tglow{background:#4f8cff}.htile-blue .tds{color:#8dd8f0}.htile-blue .tarr{color:#4f8cff}
+.htile-purple{background:linear-gradient(145deg,#2d1260,#1a0a40);border-color:rgba(176,107,255,.3);box-shadow:0 6px 20px rgba(0,0,0,.4),0 0 22px -8px #b06bff}
+.htile-purple .tglow{background:#b06bff}.htile-purple .tds{color:#d4aaff}.htile-purple .tarr{color:#b06bff}
+.htile-gold{background:linear-gradient(145deg,#3a2806,#201600);border-color:rgba(224,165,50,.35);box-shadow:0 6px 20px rgba(0,0,0,.4),0 0 22px -8px #e0a532}
+.htile-gold .tglow{background:#e0a532}.htile-gold .tds{color:#f0c96a}.htile-gold .tarr{color:#e0a532}
+.htile-pink{background:linear-gradient(145deg,#3a0e2a,#220818);border-color:rgba(255,80,180,.3);box-shadow:0 6px 20px rgba(0,0,0,.4),0 0 22px -8px #ff50b4}
+.htile-pink .tglow{background:#ff50b4}.htile-pink .tds{color:#ffb3e0}.htile-pink .tarr{color:#ff50b4}
+.htile-cyan{background:linear-gradient(145deg,#062e3e,#041c28);border-color:rgba(0,210,220,.3);box-shadow:0 6px 20px rgba(0,0,0,.4),0 0 22px -8px #00d2dc}
+.htile-cyan .tglow{background:#00d2dc}.htile-cyan .tds{color:#a0f0f4}.htile-cyan .tarr{color:#00d2dc}
 .mode{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;background:linear-gradient(160deg,rgba(22,35,100,.9),rgba(12,18,56,.95));border:1px solid rgba(79,140,255,.25);border-radius:16px;padding:14px 10px 12px;cursor:pointer;text-align:center;min-height:90px;position:relative;overflow:hidden}
 .mode::after{content:'';position:absolute;inset:0;border-radius:16px;box-shadow:inset 0 0 20px rgba(79,140,255,.06);pointer-events:none}
 .mode:active{transform:scale(.97)}
@@ -1000,24 +1021,65 @@ body{
           <div class="statcard" style="--sc:#b06bff"><div class="glow"></div><div class="sv" id="hStreak">0</div><div class="sl">Стрик 🔥</div><svg class="spk" viewBox="0 0 100 28" preserveAspectRatio="none"><polygon class="fillz" points="0,28 0,24 18,16 36,18 54,9 72,15 90,8 100,11 100,28"/><polyline points="0,24 18,16 36,18 54,9 72,15 90,8 100,11" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
           <div class="statcard" style="--sc:#e0a532"><div class="glow"></div><div class="sv" id="hDays">0</div><div class="sl">Дни</div><svg class="spk" viewBox="0 0 100 28" preserveAspectRatio="none"><polygon class="fillz" points="0,28 0,20 18,17 36,19 54,12 72,14 90,9 100,5 100,28"/><polyline points="0,20 18,17 36,19 54,12 72,14 90,9 100,5" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
         </div>
-        <div class="pt-cta train" onclick="startPreflopTrain()"><div class="ic">🎓</div><div class="tx"><div class="nm">Префлоп-тренировка</div><div class="ds">60 спотов за столом · сложность растёт</div></div><div class="arr">›</div></div>
-        <div class="pt-cta help" onclick="openHelper()"><div class="ic">📡</div><div class="tx"><div class="nm">Помощник</div><div class="ds">Справочник диапазонов · за столом в реальной игре</div></div><div class="arr">›</div></div>
-        <div class="pt-cta" id="schoolCta" onclick="openSchool()" style="--ac:#d05cff;border-left-color:#d05cff;box-shadow:0 6px 20px rgba(0,0,0,.4),0 0 20px -8px #d05cff"><div class="ic">🥋</div><div class="tx"><div class="nm">Школа Шифу</div><div class="ds" id="schoolCtaDs">Закрепи диапазоны · интервальное повторение</div></div><div class="arr">›</div></div>
-        <div class="ctas">
-        <div class="bigcta" onclick="nav('career')"><div class="tag">🪜 КАРЬЕРА</div><h3 id="ctaStake">NL2 · Микролимит</h3><small id="ctaSub">Поднимайся по лимитам</small><div class="arrow">›</div></div>
+        <div class="section-h" style="padding-top:4px">Разделы</div>
+        <div class="home-tiles">
+          <div class="htile htile-green" onclick="startPreflopTrain()">
+            <div class="tglow"></div>
+            <div class="tic">🎓</div>
+            <div class="tnm">Префлоп-тренировка</div>
+            <div class="tds">60 спотов</div>
+            <div class="tarr">›</div>
+          </div>
+          <div class="htile htile-blue" onclick="openHelper()">
+            <div class="tglow"></div>
+            <div class="tic">📡</div>
+            <div class="tnm">Помощник</div>
+            <div class="tds">справочник</div>
+            <div class="tarr">›</div>
+          </div>
+          <div class="htile htile-purple" id="schoolCta" onclick="openSchool()">
+            <div class="tglow"></div>
+            <div class="tic">🥋</div>
+            <div class="tnm">Школа Шифу</div>
+            <div class="tds" id="schoolCtaDs">сессия дня</div>
+            <div class="tarr">›</div>
+          </div>
+          <div class="htile htile-gold" onclick="nav('career')">
+            <div class="tglow"></div>
+            <div class="tic">🪜</div>
+            <div class="tnm">Карьера</div>
+            <div class="tds" id="ctaSub">поднимайся</div>
+            <div class="tarr">›</div>
+          </div>
+          <div class="htile htile-pink" onclick="openRush()">
+            <div class="tglow"></div>
+            <div class="tic">⚡</div>
+            <div class="tnm">Шквал рук</div>
+            <div class="tds">аркада · рекорд <span id="rrBestHome">0</span></div>
+            <div class="tarr">›</div>
+          </div>
+          <div class="htile htile-cyan" onclick="nav('trainers')">
+            <div class="tglow"></div>
+            <div class="tic">🏹</div>
+            <div class="tnm">Тренажёры</div>
+            <div class="tds">RFI · vs Open · …</div>
+            <div class="tarr">›</div>
+          </div>
         </div>
         <div class="quests" onclick="nav('quests')"><div class="qh"><span>🎯 Задания дня</span><span class="badge" id="qBadge">0/3</span></div><div id="qMini" style="margin-top:8px"></div></div>
-        <div class="section-h">Тренировки</div>
-        <div class="modes" id="modeList"></div>
-        <div class="section-h">Испытания</div>
-        <div class="rushcard" onclick="openRush()"><div class="ic">⚡</div><div class="tx"><div class="nm">Шквал рук</div><div class="ds">Руки падают — тащи в нужный блок. 3 жизни. Рекорд: <span id="rrBestHome">0</span></div></div><div class="go">›</div></div>
-        <div class="challengecard" onclick="startSurvival()"><div class="ic">💀</div><div class="tx"><div class="nm">Survival</div><div class="ds">Бесконечно, пока 3 ошибки. Сколько продержишься?</div></div><div class="go" style="color:#e6b8d8;font-size:18px">›</div></div>
       </div>
       <div class="bottomnav">
         <div class="nv active" onclick="nav('home',this)"><span class="ic">🏠</span>Home</div>
         <div class="nv" onclick="nav('career',this)"><span class="ic">🪜</span>Карьера</div>
         <div class="nv nv-center" onclick="nav('hof',this)"><span class="ic">🏅</span>Лиги</div>
         <div class="nv" onclick="nav('profile',this)"><span class="ic">👤</span>Профиль</div>
+      </div>
+    </div>
+
+    <div class="screen" id="screen-trainers">
+      <div class="game-meta"><span class="hcount">🏹</span><span class="mid">Тренажёры</span><span class="x" onclick="nav('home')"><span class="ic">✕</span></span></div>
+      <div class="body" style="padding-top:12px">
+        <div class="modes" id="trainerModeList"></div>
       </div>
     </div>
 
@@ -1479,19 +1541,7 @@ function renderHome(){
   $('hLevel').textContent='Уровень '+lvl;$('hXp').textContent=xpIn+' / 600 XP';$('hXpFill').style.width=(xpIn/600*100)+'%';
   $('hHands').textContent=profile.hands;$('hAcc').textContent=profile.hands?Math.round(profile.correct/profile.hands*100)+'%':'—';$('hStreak').textContent=profile.bestStreak;$('hDays').textContent=(profile.dailyStreak||0);
   const cdone=profile.career.node>=CAREER.length,cn=Math.min(profile.career.node,CAREER.length-1),cnd=CAREER[cn];
-  $('ctaStake').textContent=cdone?'Дорожка пройдена 🏆':(cnd.ic+' '+cnd.nm);
-  $('ctaSub').textContent=cdone?'Вся база освоена':'Урок '+(cn+1)+'/'+CAREER.length+' — жми, чтобы продолжить';
-  const wrap=$('modeList');wrap.innerHTML='';
-  MODES_META.forEach(m=>{
-    const bm=profile.byMode[m.key==='review'?'mixed':m.key];const acc=bm&&bm.played?Math.round(bm.correct/bm.played*100)+'%':'—';
-    const isReview=m.key==='review';const mistakes=profile.mistakes.length;
-    const el=document.createElement('div');el.className='mode'+(isReview&&!mistakes?' locked':'');
-    if(m.neon)el.dataset.neon=m.neon;
-    el.onclick=()=>{if(isReview){if(!mistakes){toast('Ошибок нет — сыграй и возвращайся');return;}startReview();}else if(m.key==='custom')openCustom();else if(m.key==='findhand')openFindHand();else if(m.key==='memorize')openMemorize();else if(['rfi','vsopen','vs3'].includes(m.key))chooseMode(m.key);else startDrill(m.key);};
-    el.innerHTML='<div class="ic"><img src="emb/ic_'+m.key+'.jpg" alt=""></div><div class="tx"><div class="nm">'+m.nm+'</div></div>'+
-      (isReview&&mistakes?'<div class="badge">'+mistakes+'</div>':'');
-    wrap.appendChild(el);
-  });
+  const csub=$('ctaSub');if(csub)csub.textContent=cdone?'пройдена 🏆':cnd.nm+' · '+(cn+1)+'/'+CAREER.length;
   renderQuestMini();applyIdentityUI();updateCoins();
   const lp=$('learnProg');if(lp)lp.textContent=profile.lessonsRead.length+'/'+LESSONS.length;
   // School CTA subtitle
@@ -1514,6 +1564,19 @@ function nav(s){
   else if(s==='shop'){show('shop');setTitle('Магазин');renderShop();}
   else if(s==='settings'){show('settings');setTitle('Настройки');renderSettings();}
   else if(s==='school'){openSchool();}
+  else if(s==='trainers'){show('trainers');setTitle('Тренажёры');renderTrainers();}
+}
+function renderTrainers(){
+  const wrap=$('trainerModeList');if(!wrap)return;
+  wrap.innerHTML='';
+  MODES_META.forEach(m=>{
+    const isReview=m.key==='review';const mistakes=profile.mistakes.length;
+    const el=document.createElement('div');el.className='mode'+(isReview&&!mistakes?' locked':'');
+    if(m.neon)el.dataset.neon=m.neon;
+    el.onclick=()=>{if(isReview){if(!mistakes){toast('Ошибок нет — сыграй и возвращайся');return;}startReview();}else if(m.key==='custom')openCustom();else if(m.key==='findhand')openFindHand();else if(m.key==='memorize')openMemorize();else if(['rfi','vsopen','vs3'].includes(m.key))chooseMode(m.key);else startDrill(m.key);};
+    el.innerHTML='<div class="ic"><img src="emb/ic_'+m.key+'.jpg" alt=""></div><div class="tx"><div class="nm">'+m.nm+'</div></div>'+(isReview&&mistakes?'<div class="badge">'+mistakes+'</div>':'');
+    wrap.appendChild(el);
+  });
 }
 function quitGame(){if(confirm('Выйти из забега? Рейтинг по сыгранным рукам сохранится.')){clearExamTimer();clearTimeout(gridAdv);nav('home');}}
 
