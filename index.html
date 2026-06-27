@@ -6,7 +6,7 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#0a1230">
-<title>Poker Fighter</title>
+<title>Shaolin Preflop</title>
 <style>
 :root{--bg0:#0a1230;--bg2:#1d2a6e;--panel:#16204f;--line:#2c3a7d;--accent:#4f8cff;--accent2:#7b5cff;
 --gold:#ffcf4d;--green:#34d17a;--red:#ff5b6e;--felt0:#1f7a4d;--felt1:#0f4d30;--txt:#eaf0ff;--muted:#9aa8d8;}
@@ -929,10 +929,10 @@ body{
 <body>
 <div id="app">
   <div id="ambient"></div>
-  <div id="splash"><h1>POKER FIGHTER</h1><p>Learn · Practice · Improve</p><div class="spinner"></div></div>
+  <div id="splash"><h1>SHAOLIN PREFLOP</h1><p>Learn · Practice · Improve</p><div class="spinner"></div></div>
   <div class="topbar">
     <div class="burger" onclick="openDrawer()"><span></span><span></span><span></span></div>
-    <div class="tb-title" id="tbTitle">Poker Fighter</div>
+    <div class="tb-title" id="tbTitle">Shaolin Preflop</div>
     <div class="right2"><span class="coinpill" id="coinPill" onclick="nav('shop')">🪙 0</span><div class="tb-rating" onclick="nav('profile')"><span>📊</span><span id="tbRating">1000</span></div></div>
   </div>
   <main id="screens">
@@ -1189,7 +1189,7 @@ body{
   <div class="pickmask" id="pickMask" onclick="closePick(event)"><div class="picksheet" id="pickSheet"></div></div>
   <div class="drawer-mask" id="drawerMask" onclick="closeDrawer()"></div>
   <div class="drawer" id="drawer">
-    <div class="dh">POKER FIGHTER</div>
+    <div class="dh">SHAOLIN PREFLOP</div>
     <div class="di" onclick="nav('home');closeDrawer()"><span class="ic">🏠</span>Главная</div>
     <div class="di" onclick="nav('career');closeDrawer()"><span class="ic">🪜</span>Карьера</div>
     <div class="di" onclick="nav('hof');closeDrawer()"><span class="ic">🏅</span>Лиги</div>
@@ -1461,7 +1461,7 @@ function renderHome(){
 
 /* ===== NAV ===== */
 function nav(s){
-  if(s==='home'){show('home');setTitle('Poker Fighter');renderHome();}
+  if(s==='home'){show('home');setTitle('Shaolin Preflop');renderHome();}
   else if(s==='career'){show('career');setTitle('Карьера');renderLadder();}
   else if(s==='hof'){show('hof');setTitle('Лиги');renderHof();}
   else if(s==='profile'){show('profile');setTitle('Профиль');renderProfile();}
@@ -3330,7 +3330,7 @@ function replayTutorial(){startTutorial();}
 
 /* ===== ONBOARDING ===== */
 const ONB_SLIDES=[
-  {ic:'🃏',h:'Добро пожаловать в Poker Fighter',p:'Учись покеру через игру: решай реальные ситуации и сразу получай разбор.'},
+  {ic:'🃏',h:'Добро пожаловать в Shaolin Preflop',p:'Учись покеру через игру: решай реальные ситуации и сразу получай разбор.'},
   {ic:'🎯',h:'Решай ситуации',p:'Тебе раздают руку и позицию. Выбираешь fold, call или raise — как за реальным столом.'},
   {ic:'💡',h:'Получай разбор',p:'После каждого решения — почему так правильно, EV, диапазоны на сетке. Рейтинг растёт с каждой верной рукой.'},
   {ic:'🪜',h:'От новичка до акулы',p:'Карьера по лимитам, ежедневные задания, лиги и достижения. Возвращайся каждый день и прокачивайся.'},
