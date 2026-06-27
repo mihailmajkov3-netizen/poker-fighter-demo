@@ -966,8 +966,6 @@ body{
         <div class="modes" id="modeList"></div>
         <div class="section-h">Испытания</div>
         <div class="challengecard" onclick="startSurvival()"><div class="ic">💀</div><div class="tx"><div class="nm">Survival</div><div class="ds">Бесконечно, пока 3 ошибки. Сколько продержишься?</div></div><div class="go" style="color:#e6b8d8;font-size:18px">›</div></div>
-        <div class="section-h">Обучение</div>
-        <div class="mode" onclick="nav('learn')"><div class="ic">📚</div><div class="tx"><div class="nm">Теория покера</div><div class="ds">Короткие уроки: позиции, диапазоны, EV, оддсы</div></div><div class="acc" id="learnProg">0/6</div><div class="go">›</div></div>
       </div>
       <div class="bottomnav">
         <div class="nv active" onclick="nav('home',this)"><span class="ic">🏠</span>Home</div>
@@ -1084,7 +1082,7 @@ body{
             <button class="hlp-seg active" id="hlpSegRFI" onclick="hlpSetSit('rfi')">Открытие RFI</button>
             <button class="hlp-seg" id="hlpSegVsOpen" onclick="hlpSetSit('vsopen')">vs Open</button>
             <button class="hlp-seg" id="hlpSegVs3" onclick="hlpSetSit('vs3')">vs 3-бет</button>
-            <button class="hlp-seg" id="hlpSegCold" onclick="hlpSetSit('cold')">cold</button>
+            <button class="hlp-seg" id="hlpSegCold" onclick="hlpSetSit('cold')">Cold Call / 4Bet</button>
           </div>
           <!-- Два столбца позиций -->
           <div class="hlp-bottom-row">
@@ -1149,16 +1147,6 @@ body{
       <div class="body"><div class="qlist" id="qList"></div></div>
     </div>
 
-    <div class="screen" id="screen-learn">
-      <div class="game-meta"><span class="hcount">Теория</span><span class="mid">Уроки покера</span><span class="x" onclick="nav('home')"><span class="ic">✕</span></span></div>
-      <div class="body"><div class="learn-grid" id="learnGrid"></div></div>
-    </div>
-
-    <div class="screen" id="screen-lesson">
-      <div class="game-meta"><span class="hcount" id="lsTitle">Урок</span><span class="mid"></span><span class="x" onclick="nav('learn')"><span class="ic">✕</span></span></div>
-      <div class="reader" id="lsReader"></div>
-      <div class="reader-act"><button class="prev" id="lsPrev" onclick="lessonPrev()">‹</button><button class="next" id="lsNext" onclick="lessonNext()">Дальше ›</button></div>
-    </div>
 
     <div class="screen" id="screen-shop">
       <div class="game-meta"><span class="hcount">Магазин</span><span class="mid">Аватары и темы</span><span class="x" onclick="nav('home')"><span class="ic">✕</span></span></div>
@@ -1195,7 +1183,6 @@ body{
     <div class="di" onclick="nav('hof');closeDrawer()"><span class="ic">🏅</span>Лиги</div>
     <div class="di" onclick="nav('ach');closeDrawer()"><span class="ic">🏆</span>Достижения</div>
     <div class="di" onclick="startDaily();closeDrawer()"><span class="ic">⚡</span>Daily Fight</div>
-    <div class="di" onclick="nav('learn');closeDrawer()"><span class="ic">📚</span>Теория</div>
     <div class="di" onclick="nav('shop');closeDrawer()"><span class="ic">🛒</span>Магазин</div>
     <div class="di" onclick="open3D();closeDrawer()"><span class="ic">🎲</span>3D-стол (beta)</div>
     <div class="di" onclick="nav('settings');closeDrawer()"><span class="ic">⚙️</span>Настройки</div>
@@ -1419,7 +1406,6 @@ const MODES_META=[
   {key:'rfi',ic:'🎯',nm:'Preflop RFI',ds:'Открыть рейзом или фолд',neon:'blue'},
   {key:'vsopen',ic:'⚔️',nm:'vs Open',ds:'3-бет / колл / фолд',neon:'purple'},
   {key:'vs3',ic:'🛡️',nm:'vs 3-бет',ds:'4-бет / колл / фолд',neon:'green'},
-  {key:'postflop',ic:'🃏',nm:'Postflop',ds:'Линии на флопе и тёрне',neon:'gold'},
   {key:'potodds',ic:'🧮',nm:'Pot Odds & EV',ds:'Шансы банка и эквити',neon:'blue'},
   {key:'memorize',ic:'🧠',nm:'Range Trainer',ds:'Построй диапазон на сетке',neon:'purple'},
   {key:'custom',ic:'🛠️',nm:'Мои диапазоны',ds:'Создай свой ренж и тренируй по нему',neon:'green'},
@@ -1467,7 +1453,6 @@ function nav(s){
   else if(s==='profile'){show('profile');setTitle('Профиль');renderProfile();}
   else if(s==='ach'){show('ach');setTitle('Достижения');renderAch();}
   else if(s==='quests'){show('quests');setTitle('Задания');renderQuests();}
-  else if(s==='learn'){show('learn');setTitle('Теория');renderLearn();}
   else if(s==='shop'){show('shop');setTitle('Магазин');renderShop();}
   else if(s==='settings'){show('settings');setTitle('Настройки');renderSettings();}
   else if(s==='school'){openSchool();}
@@ -1678,13 +1663,13 @@ function hlpRenderPos(){
   left.innerHTML='';right.innerHTML='';
   if(lblL)left.appendChild(lblL);
   if(lblR)right.appendChild(lblR);
-  // cold-режим: степперы занимают всю ширину, правая колонка скрыта
+  // cold-режим: три столбца блоков занимают всю ширину, правая колонка скрыта
   right.style.display=hlp.sit==='cold'?'none':'';
   left.style.flex=hlp.sit==='cold'?'1 1 100%':'';
 
   if(hlp.sit==='cold'){
     lblL.textContent='';lblR.textContent='';
-    // Три степпера: Опенер / 3-беттор / Я — с валидацией по COLD_RAW
+    // Три столбца блоков: Опенер / 3-беттор / Я — с каскадной валидацией по COLD_RAW
     const allOpeners=[...new Set(COLD_RAW.map(m=>m.opener))].sort((a,b)=>ACT_ORDER.indexOf(a)-ACT_ORDER.indexOf(b));
     if(!allOpeners.includes(hlp.coldOpener))hlp.coldOpener=allOpeners[0];
     const validTB=[...new Set(COLD_RAW.filter(m=>m.opener===hlp.coldOpener).map(m=>m.threebettor))].sort((a,b)=>ACT_ORDER.indexOf(a)-ACT_ORDER.indexOf(b));
@@ -1692,26 +1677,28 @@ function hlpRenderPos(){
     const validHero=[...new Set(COLD_RAW.filter(m=>m.opener===hlp.coldOpener&&m.threebettor===hlp.coldThreebettor).map(m=>m.hero))].sort((a,b)=>ACT_ORDER.indexOf(a)-ACT_ORDER.indexOf(b));
     if(!validHero.includes(hlp.coldHero))hlp.coldHero=validHero[0];
 
-    function makeStepper(label,values,cur,onPick){
-      const wrap=document.createElement('div');
-      wrap.className='hlp-stepper';
-      const lbl=document.createElement('div');lbl.className='hlp-stepper-lbl';lbl.textContent=label;
-      const row=document.createElement('div');row.className='hlp-stepper-row';
-      const btnL=document.createElement('button');btnL.className='hlp-step-btn';btnL.textContent='‹';
-      const val=document.createElement('span');val.className='hlp-stepper-val';val.textContent=cur;
-      const btnR=document.createElement('button');btnR.className='hlp-step-btn';btnR.textContent='›';
-      btnL.onclick=()=>{const i=values.indexOf(cur);onPick(values[(i-1+values.length)%values.length]);};
-      btnR.onclick=()=>{const i=values.indexOf(cur);onPick(values[(i+1)%values.length]);};
-      row.appendChild(btnL);row.appendChild(val);row.appendChild(btnR);
-      wrap.appendChild(lbl);wrap.appendChild(row);
-      return wrap;
+    function makeColdCol(label,values,curKey,onPick){
+      const col=document.createElement('div');col.className='hlp-bottom-col';
+      const lbl=document.createElement('div');lbl.className='hlp-col-label';lbl.textContent=label;
+      col.appendChild(lbl);
+      const cur=hlp[curKey];
+      values.forEach(v=>{
+        const b=document.createElement('button');
+        b.className='hlp-pb'+(cur===v?' active':'');
+        b.innerHTML=posEmblem(v)+'<span>'+v+'</span>';
+        b.onclick=()=>{hlp[curKey]=v;hlpRenderPos();hlpRenderGrid();};
+        col.appendChild(b);
+      });
+      return col;
     }
-    const stepperWrap=document.createElement('div');
-    stepperWrap.className='hlp-steppers';
-    stepperWrap.appendChild(makeStepper('Опенер O',allOpeners,hlp.coldOpener,v=>{hlp.coldOpener=v;hlpRenderPos();hlpRenderGrid();}));
-    stepperWrap.appendChild(makeStepper('3-беттор T',validTB,hlp.coldThreebettor,v=>{hlp.coldThreebettor=v;hlpRenderPos();hlpRenderGrid();}));
-    stepperWrap.appendChild(makeStepper('Я (hero H)',validHero,hlp.coldHero,v=>{hlp.coldHero=v;hlpRenderPos();hlpRenderGrid();}));
-    left.appendChild(stepperWrap);
+    const wrap=document.createElement('div');
+    wrap.style.cssText='display:flex;flex-direction:row;gap:0;width:100%;flex:1 1 100%';
+    wrap.appendChild(makeColdCol('Опенер O',allOpeners,'coldOpener'));
+    const midCol=makeColdCol('3-беттор T',validTB,'coldThreebettor');
+    midCol.style.borderLeft='1px solid rgba(120,150,230,.12)';midCol.style.borderRight='1px solid rgba(120,150,230,.12)';
+    wrap.appendChild(midCol);
+    wrap.appendChild(makeColdCol('Я (hero)',validHero,'coldHero'));
+    left.appendChild(wrap);
     return;
   } else if(hlp.sit==='rfi'){
     lblL.textContent='Моя позиция';
@@ -1782,7 +1769,7 @@ function hlpRenderGrid(){
     const m=COLD_RAW.find(x=>x.opener===hlp.coldOpener&&x.threebettor===hlp.coldThreebettor&&x.hero===hlp.coldHero);
     if(!m){inner.innerHTML='<div class="hlp-no-data">Нет данных для этой тройки позиций</div>';title.textContent='';sub.textContent='';return;}
     title.textContent=m.label;
-    sub.textContent='Холодная защита · cold-4бет / колл / фолд';
+    sub.textContent='Cold Call / 4Bet · колл или 4-бет против 3-беттора';
     const shadow3b=(VS_RAW.find(x=>x.opener===hlp.coldOpener&&x.hero===hlp.coldThreebettor)||{}).tbS;
     inner.innerHTML=gridHTML({three:m.f4bS,call:m.clS,shadow:shadow3b},null,null,false,{att:hlp.coldThreebettor,def:hlp.coldHero});
   } else {
@@ -2142,17 +2129,16 @@ function genPotOdds(){
 
 /* ===== MIXED generator (career/daily) ===== */
 function genMixed(diffCap){const r=Math.random();
-  if(r<0.3)return tag(genRFI());
-  if(r<0.48)return tag(genVsOpen());
-  if(r<0.6)return tag(genVs3bet());
-  if(r<0.82)return genPostflop(diffCap);
+  if(r<0.35)return tag(genRFI());
+  if(r<0.6)return tag(genVsOpen());
+  if(r<0.8)return tag(genVs3bet());
   return tag(genPotOdds());}
 function tag(sp){return sp;}
 
 /* ===== SESSION ENGINE ===== */
 let session=null;
 function startDrill(key,pos,opener){
-  const gen=key==='rfi'?(()=>genRFI(pos)):key==='vsopen'?(()=>genVsOpen(pos,opener)):key==='vs3'?(()=>genVs3bet(pos,opener)):key==='postflop'?(()=>genPostflop(3)):genPotOdds;
+  const gen=key==='rfi'?(()=>genRFI(pos)):key==='vsopen'?(()=>genVsOpen(pos,opener)):key==='vs3'?(()=>genVs3bet(pos,opener)):genPotOdds;
   session={type:'drill',modeKey:key,gen,n:12,idx:0,results:[],combo:0,maxCombo:0,lives:99,livesMax:0,score:0};
   const sub=pos?(' · '+pos+(opener?(key==='vs3'?' vs '+opener+' 3-бет':' vs '+opener):'')):'';
   beginSession('Тренировка · '+MODE_NAMES[key]+sub);
@@ -2531,8 +2517,7 @@ function startReview(){
 function genFromMistake(){const m=session.queue&&session.queue.length?session.queue.shift():null;
   if(!m)return genMixed(3);
   if(m.mode==='rfi')return genRFI();if(m.mode==='vsopen')return genVsOpen();if(m.mode==='vs3')return genVs3bet();if(m.mode==='potodds')return genPotOdds();
-  if(m.mode==='postflop'&&m.archId){const a=ARCH.find(x=>x.id===m.archId);if(a){const d=newDeck();const heroPos=oneOf(['BTN','CO','HJ','BB']);const built=a.build(d);const dr=dressing(a.facing,heroPos);return genPostflopFrom(a,built,dr,heroPos);}}
-  return genPostflop(3);}
+  return genMixed(3);}
 function genPostflopFrom(a,built,dr,heroPos){const sp=genPostflop(3);return sp;} // simplify: fresh postflop
 /* ===== CAREER PATH ===== */
 const CAREER=[
@@ -2544,7 +2529,6 @@ const CAREER=[
   {id:'vsopen',ic:'⚔️',nm:'Против опена',concept:'vsopen',kind:'vsopen',learn:'Перед тобой открыли рейзом. Решение: 3-бет (сильные руки и блефы), колл (хорошие, но не топ) или фолд. Чем раньше позиция опенера — тем уже отвечаешь.'},
   {id:'vs3',ic:'🛡️',nm:'Против 3-бета',concept:'vs3',kind:'vs3',learn:'Ты открыл — тебя 3-бетят. Продолжай только тем, с чем открывал: 4-бет (велью и блефы), колл (достаточно сильные) или фолд. Не защищай мусор.'},
   {id:'potodds',ic:'🧮',nm:'Пот-оддсы и эквити',concept:'potodds',kind:'potodds',learn:'Считай шансы банка: сколько платишь относительно банка. Прикинь эквити (ауты ×4 на флопе). Колл выгоден, если твоё эквити ≥ нужного процента.'},
-  {id:'postflop',ic:'🃏',nm:'Постфлоп-линии',concept:'postflop',kind:'postflop',learn:'Игра после флопа. Оцени силу руки и характер борда, выбери линию: чек/бет/колл/фолд/рейз. Велью с сильным, контроль банка со средним, не плати без шансов.'}
 ];
 /* ===== SCHOOL SPOTS (Leitner source) ===== */
 const SCHOOL_SPOTS=(()=>{
@@ -2562,8 +2546,7 @@ function careerGen(nd){
   if(nd.kind==='rfi')return ()=>genRFI(nd.pos);
   if(nd.kind==='vsopen')return genVsOpen;
   if(nd.kind==='vs3')return genVs3bet;
-  if(nd.kind==='potodds')return genPotOdds;
-  return ()=>genPostflop(2);
+  return genPotOdds;
 }
 const CAREER_RANKS=[{min:0,ic:'🐣',nm:'Рекрут'},{min:1,ic:'🐟',nm:'Любитель'},{min:3,ic:'♠️',nm:'Регуляр'},{min:5,ic:'🎯',nm:'Грайндер'},{min:7,ic:'💎',nm:'Про'},{min:9,ic:'🏆',nm:'Краш'}];
 function plural(n,one,few,many){const m10=n%10,m100=n%100;return m10===1&&m100!==11?one:(m10>=2&&m10<=4&&(m100<10||m100>=20)?few:many);}
@@ -2578,7 +2561,6 @@ const CAREER_COACH={
   vsopen:'Против тебя открыли? Не паникуй. Сначала пойми — кто атакует и откуда. Потом отвечай.',
   vs3:'3-бет — это не конец света. Держись тем, чем открывал. Без паники, без мести.',
   potodds:'Математика не сочувствует. Посчитай шансы банка — колл либо есть, либо его нет.',
-  postflop:'Флоп врать не умеет. Читай борд, выбирай линию — и не выдумывай то, чего нет.'
 };
 let currentNodeIdx=0;
 function openNode(i){
@@ -2612,7 +2594,7 @@ function careerDrawDone(){const i=memCareer?memCareer.i:0;memCareer=null;$('memP
 function startCareerHands(i){const nd=CAREER[i];memCareer=null;
   const gridMode=(nd.kind==='rfi'||nd.kind==='vsopen'||nd.kind==='vs3');
   session={type:'carhands',modeKey:nd.concept,nodeIdx:i,gen:careerGen(nd),n:20,idx:0,results:[],combo:0,maxCombo:0,lives:99,livesMax:0,score:0,mistakes:0,
-    exam:true,timed:true,gridMode,timeLimit:(nd.kind==='postflop'||nd.kind==='potodds')?9000:6000};
+    exam:true,timed:true,gridMode,timeLimit:nd.kind==='potodds'?9000:6000};
   beginSession('Раздачи ⏱ · '+nd.nm);
 }
 function gsInfo(sp){
@@ -2686,7 +2668,7 @@ function choose(key){
   } else {
     session.combo=0;SND.wrong();vibe([35,25,35]);
     if(session.livesMax>0){session.lives--;session.mistakes=(session.mistakes||0)+1;$('stage').classList.add('shake');}
-    if(['rfi','vsopen','vs3','postflop','potodds'].includes(sp.mode)){profile.mistakes.unshift({mode:sp.mode,archId:sp.archId||null,concept:sp.concept});profile.mistakes=profile.mistakes.slice(0,30);saveProfile();}
+    if(['rfi','vsopen','vs3','potodds'].includes(sp.mode)){profile.mistakes.unshift({mode:sp.mode,archId:sp.archId||null,concept:sp.concept});profile.mistakes=profile.mistakes.slice(0,30);saveProfile();}
   }
   if(session.type==='review'&&g.correct&&profile.mistakes.length){profile.mistakes.shift();saveProfile();}
   trackQuest('hands',1);if(g.correct)trackQuest('mode_correct',1,sp.mode||session.modeKey);trackQuest('streak',profile.streak);if(session.combo>=5)trackQuest('combo5',1);
@@ -3151,7 +3133,7 @@ function renderProfile(){$('pRating').textContent=profile.rating;$('pTier').text
   $('pAva').innerHTML=avatarHTML(profile.avatar);$('pName').textContent=profile.name;$('pCoins').textContent='🪙 '+(profile.coins||0);
   $('pHands').textContent=profile.hands;$('pAcc').textContent=profile.hands?Math.round(profile.correct/profile.hands*100)+'%':'—';$('pStreak').textContent=profile.bestStreak;$('pXp').textContent=profile.xp;
   $('achCount').textContent=profile.achievements.length+'/'+ACH.length;
-  const w=$('modeAcc');w.innerHTML='';['rfi','vsopen','vs3','postflop','potodds','memorize'].forEach(k=>{const bm=profile.byMode[k];const acc=bm&&bm.played?Math.round(bm.correct/bm.played*100):0;const pl=bm?bm.played:0;const el=document.createElement('div');el.className='ma';el.innerHTML='<div class="top"><span>'+MODE_NAMES[k]+'</span><span style="color:var(--muted)">'+(pl?acc+'% · '+pl:'—')+'</span></div><div class="bar"><i style="width:'+acc+'%"></i></div>';w.appendChild(el);});}
+  const w=$('modeAcc');w.innerHTML='';['rfi','vsopen','vs3','potodds','memorize'].forEach(k=>{const bm=profile.byMode[k];const acc=bm&&bm.played?Math.round(bm.correct/bm.played*100):0;const pl=bm?bm.played:0;const el=document.createElement('div');el.className='ma';el.innerHTML='<div class="top"><span>'+MODE_NAMES[k]+'</span><span style="color:var(--muted)">'+(pl?acc+'% · '+pl:'—')+'</span></div><div class="bar"><i style="width:'+acc+'%"></i></div>';w.appendChild(el);});}
 function renderAch(){const w=$('achGrid');w.innerHTML='';ACH.forEach(a=>{const un=profile.achievements.includes(a.id);const el=document.createElement('div');el.className='ach'+(un?'':' locked');el.innerHTML='<div class="ic">'+(un?a.ic:'🔒')+'</div><div class="nm">'+a.nm+'</div><div class="ds">'+a.ds+'</div>';w.appendChild(el);});}
 
 /* ===== JUICE: confetti / flash / count-up / float ===== */
@@ -3198,7 +3180,6 @@ const QUEST_POOL=[
   {id:'play20',t:'Сыграй 20 рук',goal:20,track:'hands',rwt:'+60 XP',rw:{xp:60}},
   {id:'streak7',t:'Серия из 7 верных',goal:7,track:'streak',set:true,rwt:'+10 рейтинга',rw:{rating:10}},
   {id:'rfi10',t:'10 верных в Preflop RFI',goal:10,track:'mode_correct',mode:'rfi',rwt:'+60 XP',rw:{xp:60}},
-  {id:'post8',t:'8 верных в Postflop',goal:8,track:'mode_correct',mode:'postflop',rwt:'+60 XP',rw:{xp:60}},
   {id:'pot8',t:'8 верных в Pot Odds',goal:8,track:'mode_correct',mode:'potodds',rwt:'+60 XP',rw:{xp:60}},
   {id:'vs8',t:'8 верных в vs Open',goal:8,track:'mode_correct',mode:'vsopen',rwt:'+60 XP',rw:{xp:60}},
   {id:'career1',t:'Пройди лимит карьеры',goal:1,track:'career_pass',rwt:'+14 рейтинга',rw:{rating:14}},
@@ -3261,52 +3242,7 @@ function renderViz(v){
   if(v.type==='spot')return '<div class="viz vizspot"><div class="vsfelt"><div class="vspos">'+v.pos+'</div>'+(v.board?'<div class="vsboard">'+v.board.map(c=>vc(c,'tbl')).join('')+'</div>':'<div class="vsboard empty">префлоп</div>')+'<div class="vshero">'+v.hero.map(c=>vc(c,'tbl')).join('')+'</div></div><div class="vsverdict '+(v.actCls||'raise')+'">Верное действие: '+v.action+'</div><div class="vswhy">'+v.why+'</div></div>';
   return '';
 }
-const LESSONS=[
-  {id:'pos',ic:'🪑',t:'Позиция решает',pages:[
-    {h:'Что такое позиция',x:'Позиция — порядок хода. Кто действует последним на постфлопе («в позиции», IP), видит решение соперника перед своим. Это большое преимущество: контроль банка и больше пойманных блефов.'},
-    {h:'Чем позже — тем шире',x:'Из поздних позиций открываем намного больше рук, потому что играем точнее и чаще в позиции.',viz:{type:'bars',cap:'Доля рук для открытия по позициям',items:[{label:'UTG',val:'15%',pct:33,color:'linear-gradient(90deg,#ff5b6e,#c2364a)'},{label:'HJ',val:'19%',pct:42},{label:'CO',val:'25%',pct:56},{label:'BTN',val:'44%',pct:100,color:'linear-gradient(90deg,#34d17a,#1f7a4d)'},{label:'SB',val:'34%',pct:76}]}},
-    {h:'Практический пример',x:'KQ оффсьют на баттоне — лёгкий опен. На UTG ту же руку часто фолдят: впереди слишком много игроков.',viz:{type:'spot',pos:'BTN · в позиции',hero:['Ks','Qd'],action:'RAISE',actCls:'raise',why:'KQo входит в диапазон открытия BTN (~44%). Позиция позволяет открывать широко за велью и инициативу.'}}
-  ]},
-  {id:'ranges',ic:'🎯',t:'Диапазоны рук',pages:[
-    {h:'Думай диапазонами',x:'Сильные игроки думают не «что у меня», а «какой диапазон рук я бы так сыграл». Диапазон — все руки данного действия.'},
-    {h:'Как выглядит диапазон',x:'На сетке 13×13: пары по диагонали, одномастные сверху, разномастные снизу. Золотом — руки, которые открываем с Cutoff.',viz:{type:'grid',pos:'CO'}},
-    {h:'Практический пример',x:'A5s входит в диапазон как блефовый компонент: туз-блокер мешает оппоненту иметь AA/AK, а масть и колесо дают потенциал.',viz:{type:'cards',cards:['As','5s'],cap:'A5s — туз-блокер + потенциал младшего стрита и флеша'}}
-  ]},
-  {id:'odds',ic:'🧮',t:'Пот-оддсы',pages:[
-    {h:'Шансы банка',x:'Это отношение твоего колла к итоговому банку. Формула: нужное эквити = колл ÷ (банк + колл).'},
-    {h:'Считаем на примере',x:'В банке $10, оппонент ставит, коллить $5. Нужно ≥ 5/(10+5) = 33% эквити. У флеш-дро ~9 аутов ≈ 35%.',viz:{type:'board',hero:['Ah','Qh'],board:['Kh','8h','2c'],cap:'Флеш-дро: ~9 аутов → ~35% эквити'}},
-    {h:'Практический пример',x:'35% эквити больше требуемых 33% — значит колл прибыльный на дистанции.',viz:{type:'spot',pos:'Колл по шансам',board:['Kh','8h','2c'],hero:['Ah','Qh'],action:'CALL',actCls:'call',why:'Эквити флеш-дро (~35%) выше пот-оддсов (33%). Такой колл в долгую зарабатывает.'}}
-  ]},
-  {id:'outs',ic:'🎲',t:'Ауты и эквити',pages:[
-    {h:'Что такое ауты',x:'Аут — карта, делающая руку выигрышной. Флеш-дро = 9 аутов, двусторонний стрит = 8, гатшот = 4.'},
-    {h:'Правило 2 и 4',x:'Эквити ≈ ауты × 2 (одна карта) или × 4 (две карты до вскрытия).',viz:{type:'bars',cap:'Примерное эквити по аутам (две карты)',items:[{label:'Гатшот · 4 аута',val:'~16%',pct:30,color:'linear-gradient(90deg,#ff5b6e,#c2364a)'},{label:'Стрит-дро · 8',val:'~32%',pct:59},{label:'Флеш-дро · 9',val:'~35%',pct:65},{label:'Комбо · 15',val:'~54%',pct:100,color:'linear-gradient(90deg,#34d17a,#1f7a4d)'}]}},
-    {h:'Практический пример',x:'Двусторонний стрит-дро: 8 аутов, ~32% дойти. С нормальными шансами банка — колл или полублеф.',viz:{type:'spot',pos:'В позиции',board:['Qs','9d','4c'],hero:['Jh','Th'],action:'CALL / BET',actCls:'call',why:'JT на Q-9-4 — 8 аутов на стрит (нужна K или 8). Достаточно эквити, чтобы продолжать.'}}
-  ]},
-  {id:'ev',ic:'➕',t:'EV — ценность решения',pages:[
-    {h:'Что такое EV',x:'EV — сколько в среднем приносит решение на дистанции. +EV зарабатывает, −EV теряет. Цель — выбирать вариант с максимальным EV.'},
-    {h:'Сравни варианты',x:'У каждого действия свой EV. С оверпарой на сухом борде бет приносит больше всего.',viz:{type:'bars',cap:'EV действий (bb) — AA на 4-7-5',items:[{label:'Fold',val:'−10 bb',pct:8,color:'linear-gradient(90deg,#ff5b6e,#c2364a)'},{label:'Check/Call',val:'+6 bb',pct:64},{label:'Bet ★',val:'+9 bb',pct:100,color:'linear-gradient(90deg,#34d17a,#1f7a4d)'}]}},
-    {h:'Практический пример',x:'AA на 4-7-5 — топовая рука. Бет за велью имеет максимальный EV: платят пары и дро.',viz:{type:'spot',pos:'Велью-бет',board:['4d','7s','5h'],hero:['As','Ac'],action:'BET',actCls:'raise',why:'Оверпара на сухом борде. Бет (+9 bb) прибыльнее чека (+6) — не упускай ценность.'}}
-  ]},
-  {id:'texture',ic:'🌊',t:'Текстура борда',pages:[
-    {h:'Сухой и мокрый',x:'Сухой борд почти не даёт дро. Мокрый — много стрит- и флеш-дро. От этого зависит, как играть.'},
-    {h:'Почувствуй разницу',x:'Слева — сухой радужный борд. Справа — мокрый: одномастный и связанный, куча дро.',viz:{type:'boardcompare',a:{label:'Сухой',cards:['Kc','7d','2s']},b:{label:'Мокрый',cards:['Js','Ts','9s']},cap:'На сухом ставим тоньше; на мокром — защищаем руку крупнее'}},
-    {h:'Практический пример',x:'Топ-пара на сухом K-7-2 — тонкий велью-бет: мало что обгоняет, платят младшие пары.',viz:{type:'spot',pos:'Велью на сухом',board:['Kc','7d','2s'],hero:['Kh','Qd'],action:'BET',actCls:'raise',why:'KQ = топ-пара на сухом борде. Дро почти нет — ставь тонко за велью, оплатят худшие короли и пары.'}}
-  ]}
-];
-function renderLearn(){const w=$('learnGrid');w.innerHTML='';$('learnProg').textContent=profile.lessonsRead.length+'/'+LESSONS.length;
-  LESSONS.forEach(l=>{const read=profile.lessonsRead.includes(l.id);const el=document.createElement('div');el.className='lcard';el.onclick=()=>openLesson(l.id);
-    el.innerHTML=(read?'<div class="done">✓</div>':'')+'<div class="lic">'+l.ic+'</div><div class="lt">'+l.t+'</div>';w.appendChild(el);});}
-let lsCur=null,lsPage=0;
-function openLesson(id){lsCur=LESSONS.find(l=>l.id===id);lsPage=0;show('lesson');setTitle('Урок');renderLesson();}
-function renderLesson(){const l=lsCur,p=l.pages[lsPage];$('lsTitle').textContent=l.t;
-  $('lsReader').innerHTML='<div class="rdots">'+l.pages.map((_,i)=>'<i class="'+(i===lsPage?'on':'')+'"></i>').join('')+'</div><div class="ric">'+l.ic+'</div><h3>'+p.h+'</h3><div class="rtext">'+p.x+'</div>'+renderViz(p.viz);
-  $('lsReader').scrollTop=0;
-  $('lsPrev').style.visibility=lsPage===0?'hidden':'visible';
-  $('lsNext').textContent=lsPage===l.pages.length-1?'Завершить ✓':'Дальше ›';}
-function lessonPrev(){SND.tick();if(lsPage>0){lsPage--;renderLesson();}}
-function lessonNext(){SND.tick();if(lsPage<lsCur.pages.length-1){lsPage++;renderLesson();}else{
-  if(!profile.lessonsRead.includes(lsCur.id)){profile.lessonsRead.push(lsCur.id);profile.xp+=40;addCoins(25,true);saveProfile();fxBurst(true);SND.win();toast('Урок пройден! +40 XP, +25 🪙');}
-  nav('learn');}}
+const LESSONS=[];
 
 /* ===== SHOP ===== */
 const SHOP_AV=[{id:'warrior',p:0},{id:'monk',p:0},{id:'knight',p:80},{id:'samurai',p:100},{id:'veteran',p:120},{id:'prodigy',p:140},{id:'rogue',p:160},{id:'boxer',p:180},{id:'queen',p:220}];
