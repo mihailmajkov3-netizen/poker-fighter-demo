@@ -2695,7 +2695,7 @@ function schoolCard(id){
   return profile.school.cards[id];
 }
 
-function schoolUnlocked(){return profile.career.node>=CAREER.length;}
+function schoolUnlocked(){return true;}
 
 function schoolTrialExpired(){
   const sd=profile.school.startDay;
@@ -2886,6 +2886,186 @@ function renderSchoolScreen(){
     html+='<button onclick="startSchoolSession()" style="width:100%;padding:16px;background:linear-gradient(135deg,#7b5cff,#d05cff);border:none;border-radius:14px;color:#fff;font-size:17px;font-weight:800;cursor:pointer;box-shadow:0 0 24px rgba(208,92,255,.4)">Сессия дня · '+queue.length+' карточек ›</button>';
   }
   html+='</div>';
+
+  // Shaolin V2 — кнопка Распознавание (MVP)
+  html+='<div style="margin-top:14px"><div style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.5px;margin-bottom:8px">ШКОЛА ШИФУ V2 · БЕТА</div>';
+  html+='<button onclick="openRecognition(\'UTG\')" style="width:100%;padding:14px;background:linear-gradient(135deg,rgba(30,20,80,.9),rgba(50,30,100,.9));border:1px solid rgba(208,92,255,.4);border-radius:14px;color:#d09bff;font-size:15px;font-weight:700;cursor:pointer;text-align:left">🎯 Распознавание · UTG'+(profile.school2&&profile.school2.UTG&&profile.school2.UTG.recognition?' <span style="float:right;color:#34d17a;font-size:12px">'+profile.school2.UTG.recognition+'%</span>':'')+'</button></div>';
+
+  b.innerHTML=html;
+}
+
+/* ===== SHAOLIN V2 · RECOGNITION DRILL ===== */
+const SHAOLIN_SHIFU_RIGHT=['Верно! А ты не безнадёжен, падаван.','Правильно. Шифу доволен — почти.','Точно. Только не думай, что ты уже мастер.','Да, именно так. Продолжай в том же духе.','Верно! Один раз — случайность, посмотрим дальше.'];
+const SHAOLIN_SHIFU_WRONG=['Неверно. Шифу плачет. Тихо, но плачет.','Мимо! Может, стоило подумать?','Неправильно. За такое в монастыре — 50 приседаний.','Ошибка. Запомни — и больше так не делай.','Нет-нет-нет. Это было больно смотреть, Шифу.'];
+const SHAOLIN_SHIFU_TIMEOUT=['Медитируешь? Шифу ждал. Ошибка засчитана.','Тикало! Ты слышал? Тикало! Шифу в шоке.','Время вышло. В реальной игре ты бы уже потерял стек.','Слишком долго, ученик. Черепаха быстрее думает.','Таймер не ждёт, Шифу тоже. Ошибка.'];
+const SHAOLIN_SHIFU_PASS=['Зачёт. Шифу кивает — один раз, медленно. Это высшая похвала.','Освоено! Шифу даже улыбнулся. Немного.','Зачёт принят. Запомни это ощущение — оно редкое.','Шифу доволен. Не говори ему, что я это сказал.','Зачёт! Ты переходишь на следующий уровень страданий.'];
+const SHAOLIN_SHIFU_FAIL=['Не зачёт. Шифу вздохнул. Иди повторять чарты.','Маловато. ≥80% — цена зачёта. Ты заплатил меньше.','Шифу видел хуже... но редко. Ещё разок.','Недостаточно. Марш на повторение, ученик.','Зачёт не получен. Шифу засучивает рукава — повторяем.'];
+
+function gaugeHTML(pct){
+  const r=80,cx=100,cy=95,sw=18;
+  const startA=Math.PI,endA=0;
+  const toXY=(angle)=>[cx+r*Math.cos(angle),cy-r*Math.sin(angle)];
+  const arc=(a1,a2,col)=>{const [x1,y1]=toXY(a1),[x2,y2]=toXY(a2);return '<path d="M '+x1+' '+y1+' A '+r+' '+r+' 0 0 1 '+x2+' '+y2+'" stroke="'+col+'" stroke-width="'+sw+'" fill="none" stroke-linecap="round"/>';};
+  const p=Math.max(0,Math.min(100,pct));
+  const needle_a=Math.PI*(1-p/100);
+  const [nx,ny]=toXY(needle_a);
+  let zones='';
+  zones+=arc(Math.PI,Math.PI*0.6,'#E24B4A');
+  zones+=arc(Math.PI*0.6,Math.PI*0.2,'#EF9F27');
+  zones+=arc(Math.PI*0.2,0,'#639922');
+  const nc=p<50?'#E24B4A':p<80?'#EF9F27':'#639922';
+  return '<svg viewBox="0 0 200 110" xmlns="http://www.w3.org/2000/svg" style="width:200px;height:110px">'+zones+'<line x1="'+cx+'" y1="'+cy+'" x2="'+nx+'" y2="'+ny+'" stroke="'+nc+'" stroke-width="3" stroke-linecap="round"/><circle cx="'+cx+'" cy="'+cy+'" r="5" fill="'+nc+'"/><text x="'+cx+'" y="'+(cy+20)+'" text-anchor="middle" fill="#fff" font-size="18" font-weight="800">'+p+'%</text><text x="'+cx+'" y="'+(cy+34)+'" text-anchor="middle" fill="rgba(255,255,255,.5)" font-size="10">Освоение</text></svg>';
+}
+
+const REC_TOTAL=20;
+const REC_TIMER_MS=6000;
+let _rec=null;
+let _recTimerRAF=null,_recTimerTO=null,_recTimerDeadline=0,_recTimerStart=0,_recTimerFired=false;
+
+function _recStopTimer(){
+  if(_recTimerRAF){cancelAnimationFrame(_recTimerRAF);_recTimerRAF=null;}
+  clearTimeout(_recTimerTO);
+}
+
+function _recTimerAnim(){
+  const fill=document.getElementById('recTimerFill');if(!fill)return;
+  const pct=Math.max(0,(_recTimerDeadline-Date.now())/(_recTimerDeadline-_recTimerStart)*100);
+  fill.style.width=pct+'%';
+  fill.style.background=pct>50?'linear-gradient(90deg,#7b5cff,#d05cff)':pct>25?'linear-gradient(90deg,#EF9F27,#d05cff)':'linear-gradient(90deg,#E24B4A,#EF9F27)';
+  if(pct>0)_recTimerRAF=requestAnimationFrame(_recTimerAnim);
+}
+
+function _recStartTimer(){
+  _recStopTimer();
+  _recTimerFired=false;
+  const dur=Math.max(3000,REC_TIMER_MS-(_rec.streak>=5?500:0)-(_rec.streak>=10?500:0));
+  _recTimerStart=Date.now();_recTimerDeadline=_recTimerStart+dur;
+  _recTimerAnim();
+  _recTimerTO=setTimeout(()=>{
+    if(_recTimerFired)return;
+    _recTimerFired=true;
+    _recOnTimeout();
+  },dur);
+}
+
+function _recOnTimeout(){
+  _recStopTimer();
+  // засчитываем как ошибку
+  _rec.streak=0;
+  _rec.idx++;
+  const quote=SHAOLIN_SHIFU_TIMEOUT[Math.floor(Math.random()*SHAOLIN_SHIFU_TIMEOUT.length)];
+  const overlay=document.createElement('div');
+  overlay.id='recOverlay';
+  overlay.style.cssText='position:fixed;top:0;left:0;right:0;bottom:0;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(10,6,30,.92);padding:24px;text-align:center';
+  overlay.innerHTML='<div style="font-size:48px;margin-bottom:8px">⏱</div><div style="font-size:28px;font-weight:900;color:#EF9F27;margin-bottom:8px">ВРЕМЯ ВЫШЛО</div><div style="font-size:14px;color:rgba(255,255,255,.6);margin-bottom:12px">Серия сброшена</div><div style="font-size:13px;color:#d09bff;font-style:italic;margin-bottom:24px">«'+quote+'»</div><button onclick="document.getElementById(\'recOverlay\').remove();renderRecDrill()" style="padding:12px 32px;background:#EF9F27;border:none;border-radius:12px;color:#fff;font-size:15px;font-weight:700;cursor:pointer">Дальше ›</button>';
+  document.body.appendChild(overlay);
+}
+
+function buildRecQueue(pos,n){
+  const inRange=[...RFI[pos]];
+  const allCodes=[];
+  const RANKS2='AKQJT98765432'.split('');
+  for(let r=0;r<13;r++)for(let c=0;c<13;c++){let code;if(r===c)code=RANKS2[r]+RANKS2[r];else if(r<c)code=RANKS2[r]+RANKS2[c]+'s';else code=RANKS2[c]+RANKS2[r]+'o';allCodes.push(code);}
+  const outRange=allCodes.filter(c=>!RFI[pos].has(c));
+  const q=[];
+  const inN=Math.round(n*0.45),outN=n-inN;
+  for(let i=0;i<inN;i++)q.push({code:inRange[Math.floor(Math.random()*inRange.length)],inRange:true});
+  for(let i=0;i<outN;i++)q.push({code:outRange[Math.floor(Math.random()*outRange.length)],inRange:false});
+  for(let i=q.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[q[i],q[j]]=[q[j],q[i]];}
+  return q;
+}
+
+function openRecognition(pos){
+  pos=pos||'UTG';
+  _recStopTimer();
+  _rec={pos,queue:buildRecQueue(pos,REC_TOTAL),idx:0,correct:0,streak:0,bestStreak:0,phase:'drill'};
+  show('school');setTitle('Распознавание · '+pos);
+  renderRecDrill();
+}
+
+function renderRecDrill(){
+  _recStopTimer();
+  const b=$('schoolBody');
+  if(_rec.idx>=_rec.queue.length){renderRecResult();return;}
+  const item=_rec.queue[_rec.idx];
+  const done=_rec.idx,total=_rec.queue.length;
+  const pct=Math.round(done/total*100);
+  const streakLabel=_rec.streak>0?'🔥 '+_rec.streak:'—';
+  let html='<div style="padding:16px 16px 100px">';
+  html+='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">';
+  html+='<span style="font-size:12px;color:var(--muted)">'+done+'/'+total+'</span>';
+  html+='<span style="font-size:13px;font-weight:700;color:#EF9F27">'+streakLabel+'</span>';
+  html+='<span style="font-size:12px;color:var(--muted)">Точность: '+(done?Math.round(_rec.correct/done*100):'—')+'%</span>';
+  html+='</div>';
+  // прогресс сессии
+  html+='<div style="height:4px;background:#1a2350;border-radius:2px;margin-bottom:8px"><div style="height:100%;width:'+pct+'%;background:linear-gradient(90deg,#7b5cff,#d05cff);border-radius:2px;transition:width .3s"></div></div>';
+  // таймер-полоска
+  html+='<div style="height:4px;background:#1a2350;border-radius:2px;margin-bottom:16px"><div id="recTimerFill" style="height:100%;width:100%;background:linear-gradient(90deg,#7b5cff,#d05cff);border-radius:2px;transition:background .5s"></div></div>';
+  html+='<div style="text-align:center;margin-bottom:12px;font-size:13px;color:var(--muted)">Входит ли эта рука в диапазон открытия <b style="color:#d09bff">'+_rec.pos+'</b>?</div>';
+  html+=gridHTML({},item.code,null,true,null);
+  html+='<div style="text-align:center;margin:12px 0 4px;font-size:22px;font-weight:900;color:#fff;letter-spacing:1px">'+item.code+'</div>';
+  html+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px">';
+  html+='<button onclick="recChoose(\'raise\')" style="padding:16px;background:linear-gradient(135deg,#1a4a2a,#0e3020);border:1.5px solid #34d17a;border-radius:14px;color:#34d17a;font-size:16px;font-weight:800;cursor:pointer">RAISE</button>';
+  html+='<button onclick="recChoose(\'fold\')" style="padding:16px;background:linear-gradient(135deg,#4a1a1a,#300e0e);border:1.5px solid #E24B4A;border-radius:14px;color:#E24B4A;font-size:16px;font-weight:800;cursor:pointer">FOLD</button>';
+  html+='</div></div>';
+  b.innerHTML=html;
+  _recStartTimer();
+}
+
+function recChoose(action){
+  if(_recTimerFired)return; // защита от двойного тапа после таймаута
+  _recTimerFired=true;
+  _recStopTimer();
+  // убираем возможный overlay таймаута (двойной тап)
+  const oldOv=document.getElementById('recOverlay');if(oldOv)oldOv.remove();
+  const item=_rec.queue[_rec.idx];
+  const correct=(action==='raise')===item.inRange;
+  if(correct){_rec.correct++;_rec.streak++;if(_rec.streak>_rec.bestStreak)_rec.bestStreak=_rec.streak;}
+  else{_rec.streak=0;}
+  _rec.idx++;
+  const quote=correct?SHAOLIN_SHIFU_RIGHT[Math.floor(Math.random()*SHAOLIN_SHIFU_RIGHT.length)]:SHAOLIN_SHIFU_WRONG[Math.floor(Math.random()*SHAOLIN_SHIFU_WRONG.length)];
+  const oldOv2=document.getElementById('recOverlay');if(oldOv2)oldOv2.remove();
+  const overlay=document.createElement('div');
+  overlay.id='recOverlay';
+  overlay.style.cssText='position:fixed;top:0;left:0;right:0;bottom:0;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(10,6,30,.92);padding:24px;text-align:center';
+  const color=correct?'#34d17a':'#E24B4A';
+  const label=correct?'ВЕРНО':'НЕВЕРНО';
+  const hint=item.inRange?('Рука входит в RFI '+_rec.pos):'Рука не входит в RFI '+_rec.pos;
+  const streakLine=(_rec.streak>1)?'<div style="font-size:13px;color:#EF9F27;margin-bottom:8px">🔥 Серия: '+_rec.streak+'</div>':'';
+  overlay.innerHTML='<div style="font-size:48px;margin-bottom:8px">'+(correct?'✓':'✗')+'</div><div style="font-size:28px;font-weight:900;color:'+color+';margin-bottom:8px">'+label+'</div>'+streakLine+'<div style="font-size:14px;color:rgba(255,255,255,.6);margin-bottom:12px">'+hint+'</div><div style="font-size:13px;color:#d09bff;font-style:italic;margin-bottom:24px">«'+quote+'»</div><button onclick="document.getElementById(\'recOverlay\').remove();renderRecDrill()" style="padding:12px 32px;background:'+color+';border:none;border-radius:12px;color:#fff;font-size:15px;font-weight:700;cursor:pointer">Дальше ›</button>';
+  document.body.appendChild(overlay);
+}
+
+function renderRecResult(){
+  _recStopTimer();
+  const pct=Math.round(_rec.correct/_rec.queue.length*100);
+  const passed=pct>=80;
+  profile.school2=profile.school2||{};
+  profile.school2[_rec.pos]=profile.school2[_rec.pos]||{};
+  const prev=profile.school2[_rec.pos].recognition||0;
+  // сохраняем max, но признак «зачтено» только при passed
+  profile.school2[_rec.pos].recognition=Math.max(prev,pct);
+  if(passed)profile.school2[_rec.pos].recognitionPassed=true;
+  saveProfile();
+  const b=$('schoolBody');
+  const verdictColor=passed?'#34d17a':'#E24B4A';
+  const verdictLabel=passed?'ЗАЧЁТ':'ЕЩЁ РАЗОК';
+  const msg=passed?SHAOLIN_SHIFU_PASS[Math.floor(Math.random()*SHAOLIN_SHIFU_PASS.length)]:SHAOLIN_SHIFU_FAIL[Math.floor(Math.random()*SHAOLIN_SHIFU_FAIL.length)];
+  let html='<div style="padding:24px 16px 100px;text-align:center">';
+  html+='<div style="font-size:14px;color:var(--muted);margin-bottom:4px">Результат · RFI '+_rec.pos+'</div>';
+  html+='<div style="font-size:22px;font-weight:900;margin-bottom:16px">Распознавание</div>';
+  html+='<div style="display:flex;justify-content:center;margin-bottom:8px">'+gaugeHTML(pct)+'</div>';
+  html+='<div style="font-size:20px;font-weight:900;color:'+verdictColor+';margin-bottom:4px">'+verdictLabel+'</div>';
+  html+='<div style="font-size:13px;color:var(--muted);margin-bottom:16px">Лучшая серия: <b style="color:#EF9F27">🔥 '+_rec.bestStreak+'</b></div>';
+  html+='<div style="background:linear-gradient(135deg,rgba(30,20,80,.9),rgba(15,10,40,.95));border:1px solid rgba(208,92,255,.3);border-radius:14px;padding:14px;margin-bottom:20px;font-size:13px;color:#d09bff;font-style:italic">«'+msg+'»</div>';
+  html+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">';
+  if(!passed){
+    html+='<button onclick="openRecognition(\''+_rec.pos+'\')" style="padding:14px;background:linear-gradient(135deg,#7b5cff,#d05cff);border:2px solid #d05cff;border-radius:14px;color:#fff;font-size:15px;font-weight:700;cursor:pointer">Ещё раз!</button>';
+  }else{
+    html+='<button onclick="openRecognition(\''+_rec.pos+'\')" style="padding:14px;background:linear-gradient(135deg,#7b5cff,#d05cff);border:none;border-radius:14px;color:#fff;font-size:15px;font-weight:700;cursor:pointer">Ещё раз</button>';
+  }
+  html+='<button onclick="renderSchoolScreen()" style="padding:14px;background:rgba(255,255,255,.07);border:none;border-radius:14px;color:#fff;font-size:15px;font-weight:700;cursor:pointer">Выход</button>';
+  html+='</div></div>';
   b.innerHTML=html;
 }
 
