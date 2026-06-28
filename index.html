@@ -2855,17 +2855,17 @@ function renderSchoolScreen(){
     const unlocked=_schoolPosUnlocked(pos);
     const pd=s2[pos]||{};
     const pct=pd.recognition||0;
-    const passed=!!pd.recognitionPassed;
     const animal=posAnimal(pos);
     const emblem=posEmblem(pos);
-    const statusColor=passed?'#34d17a':pct>0?'#EF9F27':'var(--muted)';
-    const statusLabel=passed?'Зачёт ':pct>0?(pct+'% '):'Не начато';
+    const agg=school2Aggregate(pos);
+    const statusColor=agg>=80?'#34d17a':agg>0?'#EF9F27':'var(--muted)';
+    const statusLabel=agg>=80?'Зачёт ':agg>0?(agg+'% '):'Не начато';
     if(unlocked){
       html+='<div class="htile htile-purple" onclick="openSchoolPos(\''+pos+'\')" style="display:flex;flex-direction:column;align-items:center;padding:14px 10px;gap:4px;cursor:pointer">';
       html+='<div style="font-size:22px">'+emblem+'</div>';
       html+='<div style="font-weight:800;font-size:15px;color:#fff">'+pos+'</div>';
       html+='<div style="font-size:11px;color:var(--muted)">'+animal+'</div>';
-      html+=gaugeMiniHTML(pct);
+      html+=gaugeMiniHTML(agg);
       html+='<div style="font-size:11px;font-weight:700;color:'+statusColor+'">'+statusLabel+'</div>';
       html+='</div>';
     }else{
@@ -2887,8 +2887,7 @@ function openSchoolPos(pos){
   setTitle(pos+' · путь освоения');
   const s2=profile.school2||{};
   const pd=s2[pos]||{};
-  const pct=pd.recognition||0;
-  const passed=!!pd.recognitionPassed;
+  const agg=school2Aggregate(pos);
   const b=$('schoolBody');
   let html='<div style="padding:16px 16px 100px">';
   html+='<button onclick="renderSchoolScreen()" style="background:none;border:none;color:var(--muted);font-size:13px;cursor:pointer;padding:0;margin-bottom:12px">← Школа</button>';
@@ -2896,18 +2895,22 @@ function openSchoolPos(pos){
   html+='<div style="font-size:28px">'+posEmblem(pos)+'</div>';
   html+='<div style="font-weight:900;font-size:20px;color:#fff">'+pos+' · '+posAnimal(pos)+'</div>';
   html+='<div style="font-size:12px;color:var(--muted);margin-bottom:12px">путь освоения</div>';
-  html+='<div style="display:flex;justify-content:center">'+gaugeHTML(pct)+'</div></div>';
+  html+='<div style="display:flex;justify-content:center">'+gaugeHTML(agg)+'</div></div>';
   html+='<div style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.5px;margin:16px 0 10px">ЗАДАНИЯ</div>';
+  const recPct=pd.recognition||0;
+  const recPassed=!!pd.recognitionPassed;
+  const corrPct=pd.correction||0;
+  const simPct=pd.simulation||0;
+  const rushPct=pd.rush||0;
   const tasks=[
-    {label:'Распознавание',sub:'Узнай свои руки с ходу',action:'openRecognition(\''+pos+'\')',active:true,pct:pct,passed:passed},
-    {label:'Коррекция ±3',sub:'Оттачиваем границы диапазона',action:null},
-    {label:'Симуляция 30 рук',sub:'30 спотов подряд — без права на ошибку',action:null},
-    {label:'Шквал рук',sub:'Скорость под давлением',action:null},
-    {label:'Экзамен на время',sub:'Финальный тест позиции',action:null},
+    {label:'Распознавание',sub:'Узнай свои руки с ходу',action:'openRecognition(\''+pos+'\')',pct:recPct,passed:recPassed,active:true},
+    {label:'Коррекция ±3',sub:'3 лишних + 3 пропущенных — найди и исправь',action:'openCorrection(\''+pos+'\')',pct:corrPct,passed:corrPct>=80,active:true},
+    {label:'Симуляция 30 рук',sub:'30 спотов — без права на ошибку',action:'openSimulation(\''+pos+'\')',pct:simPct,passed:simPct>=80,active:true},
+    {label:'Шквал рук',sub:'Скорость под давлением',action:'openRushByPos(\''+pos+'\')',pct:rushPct,passed:rushPct>0,active:true},
+    {label:'Экзамен на время',sub:'Финальный тест позиции',action:null,active:false},
   ];
-  tasks.forEach((t,i)=>{
+  tasks.forEach(t=>{
     if(t.active){
-      const sc=t.passed?'#34d17a':t.pct>0?'#EF9F27':'#d09bff';
       const badge=t.passed?'<span style="color:#34d17a;font-size:11px">Зачёт</span>':t.pct>0?'<span style="color:#EF9F27;font-size:11px">'+t.pct+'%</span>':'<span style="color:#d09bff;font-size:11px">Старт</span>';
       html+='<div onclick="'+t.action+'" style="display:flex;align-items:center;gap:12px;background:linear-gradient(135deg,rgba(30,20,80,.9),rgba(50,30,100,.9));border:1px solid rgba(208,92,255,.4);border-radius:14px;padding:14px;margin-bottom:10px;cursor:pointer">';
       html+='<div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#7b5cff,#d05cff);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0">🎯</div>';
@@ -3095,6 +3098,238 @@ function renderRecResult(){
   html+='<button onclick="renderSchoolScreen()" style="padding:14px;background:rgba(255,255,255,.07);border:none;border-radius:14px;color:#fff;font-size:15px;font-weight:700;cursor:pointer">Выход</button>';
   html+='</div></div>';
   b.innerHTML=html;
+}
+
+/* ===== SHAOLIN V2 · AGGREGATE ===== */
+function school2Aggregate(pos){
+  const pd=(profile.school2||{})[pos]||{};
+  const vals=[];
+  if(pd.recognition!=null)vals.push(pd.recognition);
+  if(pd.correction!=null)vals.push(pd.correction);
+  if(pd.simulation!=null)vals.push(pd.simulation);
+  if(pd.rush!=null)vals.push(pd.rush);
+  if(!vals.length)return 0;
+  return Math.round(vals.reduce((a,b)=>a+b,0)/vals.length);
+}
+
+/* ===== SHAOLIN V2 · CORRECTION ±3 ===== */
+const CORR_SHIFU_OK=['Всё правильно. Шифу доволен. Почти.','Верно исправил! А ты растёшь, ученик.','Точно. Ошибки найдены. Шифу кивает.','Правильно! Диапазон восстановлен.','Верно. Глаз-алмаз у тебя, оказывается.'];
+const CORR_SHIFU_ERR=['Не всё нашёл. Шифу грустит — тихо.','Мимо нескольких! Смотри внимательней.','Ошибки остались. Шифу видит. Ты — нет.','Промах. Граница диапазона — это не угадайка.','Нашёл не всё. Марш смотреть чарты.'];
+let _corr=null;
+
+function openCorrection(pos){
+  const ALL_RANKS='AKQJT98765432'.split('');
+  const allCodes=[];
+  for(let r=0;r<13;r++)for(let c=0;c<13;c++){let code;if(r===c)code=ALL_RANKS[r]+ALL_RANKS[r];else if(r<c)code=ALL_RANKS[r]+ALL_RANKS[c]+'s';else code=ALL_RANKS[c]+ALL_RANKS[r]+'o';allCodes.push(code);}
+  const rfi=RFI[pos];
+  const inArr=[...rfi];
+  const outArr=allCodes.filter(c=>!rfi.has(c));
+  // pick 3 to remove from range, 3 to add (noise from outside)
+  const shuffle=a=>{for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
+  const removed=shuffle([...inArr]).slice(0,3);
+  const added=shuffle([...outArr]).slice(0,3);
+  // corrupted = (rfi - removed) + added
+  const corrupted=new Set([...inArr].filter(c=>!removed.includes(c)));
+  added.forEach(c=>corrupted.add(c));
+  _corr={pos,rfi,corrupted,removed,added,sel:new Set(corrupted),round:1};
+  _renderCorr();
+}
+
+function _corrAllCodes(){
+  const RANKS='AKQJT98765432'.split('');
+  const all=[];
+  for(let r=0;r<13;r++)for(let c=0;c<13;c++){let code;if(r===c)code=RANKS[r]+RANKS[r];else if(r<c)code=RANKS[r]+RANKS[c]+'s';else code=RANKS[c]+RANKS[r]+'o';all.push(code);}
+  return all;
+}
+
+function _renderCorr(){
+  const {pos,corrupted,sel,round}=_corr;
+  const b=$('schoolBody');
+  // build 13x13 grid manually (drag-select support)
+  const RANKS='AKQJT98765432'.split('');
+  let gridHtml='<div id="corrGrid" style="display:grid;grid-template-columns:repeat(13,1fr);gap:1px;user-select:none;touch-action:none;margin-bottom:12px">';
+  for(let r=0;r<13;r++){
+    for(let c=0;c<13;c++){
+      let code;if(r===c)code=RANKS[r]+RANKS[r];else if(r<c)code=RANKS[r]+RANKS[c]+'s';else code=RANKS[c]+RANKS[r]+'o';
+      const inSel=sel.has(code);
+      const color=inSel?'background:linear-gradient(135deg,#7b5cff,#d05cff);color:#fff':'background:rgba(255,255,255,.05);color:rgba(255,255,255,.3)';
+      gridHtml+='<div data-code="'+code+'" style="'+color+';border-radius:3px;font-size:8px;font-weight:700;text-align:center;padding:3px 0;cursor:pointer;transition:background .1s">'+code+'</div>';
+    }
+  }
+  gridHtml+='</div>';
+  let html='<div style="padding:16px 16px 100px">';
+  html+='<button onclick="openSchoolPos(\''+pos+'\')" style="background:none;border:none;color:var(--muted);font-size:13px;cursor:pointer;padding:0;margin-bottom:12px">← '+pos+'</button>';
+  html+='<div style="text-align:center;margin-bottom:8px"><div style="font-size:15px;font-weight:800;color:#fff">Коррекция ±3 · '+pos+' · Раунд '+round+'/3</div>';
+  html+='<div style="font-size:12px;color:var(--muted)">Диапазон испорчен: 3 лишних, 3 убраны. Исправь!</div></div>';
+  html+=gridHtml;
+  html+='<button onclick="_corrCheck()" style="width:100%;padding:14px;background:linear-gradient(135deg,#7b5cff,#d05cff);border:none;border-radius:14px;color:#fff;font-size:15px;font-weight:700;cursor:pointer">Проверить</button>';
+  html+='</div>';
+  b.innerHTML=html;
+  // bind tap + drag
+  let _dragging=false,_dragVal=null;
+  const grid=document.getElementById('corrGrid');
+  const toggle=code=>{
+    if(sel.has(code))sel.delete(code);else sel.add(code);
+    const cell=grid.querySelector('[data-code="'+code+'"]');
+    if(cell){if(sel.has(code)){cell.style.background='linear-gradient(135deg,#7b5cff,#d05cff)';cell.style.color='#fff';}else{cell.style.background='rgba(255,255,255,.05)';cell.style.color='rgba(255,255,255,.3)';}}
+  };
+  const setCell=(code,on)=>{
+    if(on&&!sel.has(code)){sel.add(code);const cell=grid.querySelector('[data-code="'+code+'"]');if(cell){cell.style.background='linear-gradient(135deg,#7b5cff,#d05cff)';cell.style.color='#fff';}}
+    if(!on&&sel.has(code)){sel.delete(code);const cell=grid.querySelector('[data-code="'+code+'"]');if(cell){cell.style.background='rgba(255,255,255,.05)';cell.style.color='rgba(255,255,255,.3)';}}
+  };
+  grid.addEventListener('pointerdown',e=>{
+    const cell=e.target.closest('[data-code]');if(!cell)return;
+    e.preventDefault();grid.setPointerCapture(e.pointerId);
+    _dragging=true;const code=cell.dataset.code;_dragVal=!sel.has(code);toggle(code);
+  });
+  grid.addEventListener('pointermove',e=>{
+    if(!_dragging)return;
+    const el=document.elementFromPoint(e.clientX,e.clientY);
+    const cell=el&&el.closest('[data-code]');if(cell)setCell(cell.dataset.code,_dragVal);
+  });
+  grid.addEventListener('pointerup',()=>{_dragging=false;});
+}
+
+function _corrCheck(){
+  const {pos,rfi,removed,added,sel,round}=_corr;
+  // правильные правки: убрать added, добавить removed
+  let correct=0;
+  added.forEach(c=>{if(!sel.has(c))correct++;});   // лишние убраны
+  removed.forEach(c=>{if(sel.has(c))correct++;});  // недостающие добавлены
+  const pct=Math.round(correct/6*100);
+  const msg=correct>=5?CORR_SHIFU_OK[Math.floor(Math.random()*CORR_SHIFU_OK.length)]:CORR_SHIFU_ERR[Math.floor(Math.random()*CORR_SHIFU_ERR.length)];
+  // save result (best of rounds)
+  profile.school2=profile.school2||{};
+  profile.school2[pos]=profile.school2[pos]||{};
+  const prev=profile.school2[pos].correction||0;
+  profile.school2[pos].correction=Math.max(prev,pct);
+  saveProfile();
+  const b=$('schoolBody');
+  const color=correct>=5?'#34d17a':'#EF9F27';
+  let html='<div style="padding:24px 16px 100px;text-align:center">';
+  html+='<div style="font-size:36px;margin-bottom:8px">'+(correct>=5?'✓':'⚠')+'</div>';
+  html+='<div style="font-size:22px;font-weight:900;color:'+color+';margin-bottom:4px">'+correct+' / 6 верных</div>';
+  html+='<div style="font-size:14px;color:var(--muted);margin-bottom:16px">'+pct+'% точности</div>';
+  html+='<div style="display:flex;justify-content:center;margin-bottom:16px">'+gaugeHTML(pct)+'</div>';
+  html+='<div style="background:linear-gradient(135deg,rgba(30,20,80,.9),rgba(15,10,40,.95));border:1px solid rgba(208,92,255,.3);border-radius:14px;padding:14px;margin-bottom:20px;font-size:13px;color:#d09bff;font-style:italic">«'+msg+'»</div>';
+  html+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">';
+  if(round<3){
+    html+='<button onclick="_corrNextRound()" style="padding:14px;background:linear-gradient(135deg,#7b5cff,#d05cff);border:none;border-radius:14px;color:#fff;font-size:15px;font-weight:700;cursor:pointer">Раунд '+(round+1)+'</button>';
+  }else{
+    html+='<button onclick="openCorrection(\''+pos+'\')" style="padding:14px;background:linear-gradient(135deg,#7b5cff,#d05cff);border:none;border-radius:14px;color:#fff;font-size:15px;font-weight:700;cursor:pointer">Ещё раз</button>';
+  }
+  html+='<button onclick="openSchoolPos(\''+pos+'\')" style="padding:14px;background:rgba(255,255,255,.07);border:none;border-radius:14px;color:#fff;font-size:15px;font-weight:700;cursor:pointer">Выход</button>';
+  html+='</div></div>';
+  b.innerHTML=html;
+}
+
+function _corrNextRound(){
+  const pos=_corr.pos;
+  const round=_corr.round+1;
+  const ALL_RANKS='AKQJT98765432'.split('');
+  const allCodes=_corrAllCodes();
+  const rfi=RFI[pos];
+  const inArr=[...rfi];
+  const outArr=allCodes.filter(c=>!rfi.has(c));
+  const shuffle=a=>{for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
+  const removed=shuffle([...inArr]).slice(0,3);
+  const added=shuffle([...outArr]).slice(0,3);
+  const corrupted=new Set([...inArr].filter(c=>!removed.includes(c)));
+  added.forEach(c=>corrupted.add(c));
+  _corr={pos,rfi,corrupted,removed,added,sel:new Set(corrupted),round};
+  _renderCorr();
+}
+
+/* ===== SHAOLIN V2 · SIMULATION 30 ===== */
+const SIM_TOTAL=30;
+const SIM_SHIFU_PASS=['Симуляция пройдена. Шифу даже встал — ненадолго.','30 рук — ни одного зазора. Шифу скупо аплодирует.','Зачёт! Диапазон у тебя в голове, не на шпаргалке.','Пройдено. Теперь так в каждой игре — и тогда поговорим.','Отлично. Шифу доволен. Почти счастлив. Почти.'];
+const SIM_SHIFU_FAIL=['Маловато. 30 рук — это ещё тренировка, а не экзамен.','Ошибки есть. Шифу видит. Повторяй чарты.','Недостаточно. Марш на повторение, ученик.','Мимо нескольких. Шифу вздыхает — не театрально, по-настоящему.','Слабовато для симуляции. Ещё разок.'];
+let _sim=null;
+
+function openSimulation(pos){
+  const queue=[];
+  const rfi=RFI[pos];
+  for(let i=0;i<SIM_TOTAL;i++){
+    const sp=genRFI(pos,6);
+    queue.push({code:sp.hand.code,inRange:rfi.has(sp.hand.code)});
+  }
+  _sim={pos,queue,idx:0,correct:0};
+  _renderSim();
+}
+
+function _renderSim(){
+  if(_sim.idx>=_sim.queue.length){_simResult();return;}
+  const item=_sim.queue[_sim.idx];
+  const done=_sim.idx,total=_sim.queue.length;
+  const pct=Math.round(done/total*100);
+  const b=$('schoolBody');
+  let html='<div style="padding:16px 16px 100px">';
+  html+='<button onclick="openSchoolPos(\''+_sim.pos+'\')" style="background:none;border:none;color:var(--muted);font-size:13px;cursor:pointer;padding:0;margin-bottom:12px">← '+_sim.pos+'</button>';
+  html+='<div style="display:flex;justify-content:space-between;margin-bottom:6px">';
+  html+='<span style="font-size:12px;color:var(--muted)">'+done+'/'+total+'</span>';
+  html+='<span style="font-size:12px;color:var(--muted)">Точность: '+(done?Math.round(_sim.correct/done*100):'—')+'%</span>';
+  html+='</div>';
+  html+='<div style="height:4px;background:#1a2350;border-radius:2px;margin-bottom:16px"><div style="height:100%;width:'+pct+'%;background:linear-gradient(90deg,#7b5cff,#d05cff);border-radius:2px;transition:width .3s"></div></div>';
+  html+='<div style="text-align:center;margin-bottom:12px;font-size:13px;color:var(--muted)">Открываем на <b style="color:#d09bff">'+_sim.pos+'</b>?</div>';
+  html+=gridHTML({},item.code,null,true,null);
+  html+='<div style="text-align:center;margin:12px 0 4px;font-size:22px;font-weight:900;color:#fff;letter-spacing:1px">'+item.code+'</div>';
+  html+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px">';
+  html+='<button onclick="_simChoose(\'raise\')" style="padding:16px;background:linear-gradient(135deg,#1a4a2a,#0e3020);border:1.5px solid #34d17a;border-radius:14px;color:#34d17a;font-size:16px;font-weight:800;cursor:pointer">RAISE</button>';
+  html+='<button onclick="_simChoose(\'fold\')" style="padding:16px;background:linear-gradient(135deg,#4a1a1a,#300e0e);border:1.5px solid #E24B4A;border-radius:14px;color:#E24B4A;font-size:16px;font-weight:800;cursor:pointer">FOLD</button>';
+  html+='</div></div>';
+  b.innerHTML=html;
+}
+
+function _simChoose(action){
+  const item=_sim.queue[_sim.idx];
+  const correct=(action==='raise')===item.inRange;
+  if(correct)_sim.correct++;
+  _sim.idx++;
+  const color=correct?'#34d17a':'#E24B4A';
+  const hint=item.inRange?('Входит в RFI '+_sim.pos):('Не входит в RFI '+_sim.pos);
+  const ol=document.createElement('div');
+  ol.style.cssText='position:fixed;top:0;left:0;right:0;bottom:0;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(10,6,30,.92);padding:24px;text-align:center';
+  ol.innerHTML='<div style="font-size:48px;margin-bottom:8px">'+(correct?'✓':'✗')+'</div><div style="font-size:28px;font-weight:900;color:'+color+';margin-bottom:8px">'+(correct?'ВЕРНО':'НЕВЕРНО')+'</div><div style="font-size:14px;color:rgba(255,255,255,.6);margin-bottom:24px">'+hint+'</div><button onclick="this.closest(\'div[style*=fixed]\').remove();_renderSim()" style="padding:12px 32px;background:'+color+';border:none;border-radius:12px;color:#fff;font-size:15px;font-weight:700;cursor:pointer">Дальше ›</button>';
+  document.body.appendChild(ol);
+}
+
+function _simResult(){
+  const {pos,correct,queue}=_sim;
+  const pct=Math.round(correct/queue.length*100);
+  const passed=pct>=80;
+  profile.school2=profile.school2||{};
+  profile.school2[pos]=profile.school2[pos]||{};
+  const prev=profile.school2[pos].simulation||0;
+  profile.school2[pos].simulation=Math.max(prev,pct);
+  saveProfile();
+  const msg=passed?SIM_SHIFU_PASS[Math.floor(Math.random()*SIM_SHIFU_PASS.length)]:SIM_SHIFU_FAIL[Math.floor(Math.random()*SIM_SHIFU_FAIL.length)];
+  const b=$('schoolBody');
+  const color=passed?'#34d17a':'#E24B4A';
+  let html='<div style="padding:24px 16px 100px;text-align:center">';
+  html+='<div style="font-size:14px;color:var(--muted);margin-bottom:4px">Результат · RFI '+pos+'</div>';
+  html+='<div style="font-size:22px;font-weight:900;margin-bottom:16px">Симуляция 30 рук</div>';
+  html+='<div style="display:flex;justify-content:center;margin-bottom:8px">'+gaugeHTML(pct)+'</div>';
+  html+='<div style="font-size:20px;font-weight:900;color:'+color+';margin-bottom:4px">'+(passed?'ЗАЧЁТ':'ЕЩЁ РАЗОК')+'</div>';
+  html+='<div style="font-size:13px;color:var(--muted);margin-bottom:16px">'+correct+' / '+queue.length+' верных</div>';
+  html+='<div style="background:linear-gradient(135deg,rgba(30,20,80,.9),rgba(15,10,40,.95));border:1px solid rgba(208,92,255,.3);border-radius:14px;padding:14px;margin-bottom:20px;font-size:13px;color:#d09bff;font-style:italic">«'+msg+'»</div>';
+  html+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">';
+  html+='<button onclick="openSimulation(\''+pos+'\')" style="padding:14px;background:linear-gradient(135deg,#7b5cff,#d05cff);border:none;border-radius:14px;color:#fff;font-size:15px;font-weight:700;cursor:pointer">Ещё раз</button>';
+  html+='<button onclick="openSchoolPos(\''+pos+'\')" style="padding:14px;background:rgba(255,255,255,.07);border:none;border-radius:14px;color:#fff;font-size:15px;font-weight:700;cursor:pointer">Выход</button>';
+  html+='</div></div>';
+  b.innerHTML=html;
+}
+
+/* ===== SHAOLIN V2 · RUSH BY POS ===== */
+function openRushByPos(pos){
+  // сохраняем контекст Rush, форсируем mode=rfi + позицию
+  if(!rrState)rrState={mode:'rfi',pos:'BTN',opener:'BTN',hero:'BB',tb:'BB',coldOpener:'UTG',coldTB:'HJ',coldHero:'BB'};
+  rrState.mode='rfi';
+  rrState.pos=pos;
+  // флаг: по завершении игры вернуть в экран позиции
+  rrState._schoolPos=pos;
+  show('rush');setTitle('Шквал рук · '+pos);
+  $('rrSetup').style.display='none';$('rrGame').style.display='none';$('rrGameOver').style.display='none';
+  rrStart();
 }
 
 /* ===== HOF ===== */
@@ -3409,6 +3644,15 @@ function rrGameOver(){
   const s=rrState;const score=s.score;
   const rec=score>(profile.rrBest||0);
   if(rec){profile.rrBest=score;saveProfile();}
+  // если запущен из школы — сохранить rush-результат позиции
+  if(s._schoolPos&&s.total>0){
+    const rushPct=Math.round(s.correct/s.total*100);
+    profile.school2=profile.school2||{};
+    profile.school2[s._schoolPos]=profile.school2[s._schoolPos]||{};
+    const prev=profile.school2[s._schoolPos].rush||0;
+    profile.school2[s._schoolPos].rush=Math.max(prev,rushPct);
+    saveProfile();
+  }
   $('rrGame').style.display='none';
   const go=$('rrGameOver');go.style.display='flex';
   $('rrGoScore').textContent=score;
@@ -3416,6 +3660,17 @@ function rrGameOver(){
   $('rrGoSub').textContent='Верных: '+s.correct+' / '+s.total+(s.total?(' · '+Math.round(s.correct/s.total*100)+'%'):'');
   const b=$('rrBestHome');if(b)b.textContent=profile.rrBest||0;
   SND.wrong();
+  // если из школы — добавить кнопку возврата в экран позиции (один раз)
+  if(s._schoolPos&&!document.getElementById('rrSchoolBack')){
+    const pos=s._schoolPos;
+    const goEl=$('rrGameOver');
+    const btn=document.createElement('button');
+    btn.id='rrSchoolBack';
+    btn.textContent='← '+pos+' · Школа';
+    btn.style.cssText='margin-top:12px;padding:12px 24px;background:rgba(255,255,255,.08);border:none;border-radius:12px;color:#fff;font-size:14px;font-weight:700;cursor:pointer';
+    btn.onclick=()=>{s._schoolPos=null;show('school');openSchoolPos(pos);};
+    goEl.appendChild(btn);
+  }
 }
 
 function rrRestart(){
